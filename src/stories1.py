@@ -277,7 +277,7 @@ LE_GENTIL = dict(
             kicker="Chapter Two · The trick, planet-sized",
             title="Two Eyes for the Whole Earth",
             html="""
-<p>Remember Tycho's parallax: thumb up, blink left eye, blink right eye — the thumb jumps against the background. Your two eyes see from slightly different places, so nearby things shift more than faraway things.</p>
+<p>Remember Tycho's parallax: thumb up, eyes fixed on the far background (not the thumb!), blink left eye, blink right eye — the thumb jumps against that background. Your two eyes see from slightly different places, so nearby things shift more than faraway things.</p>
 <p>Halley's plan simply made the "eyes" bigger. One observer near the top of the world and one near the bottom are like two eyes <b>thousands of kilometers apart</b>. Venus is the thumb; the Sun's face is the background. Each observer times precisely when Venus enters and leaves the Sun's disk, and notes the path it takes. Compare the two records → geometry → <b>the distance to the Sun</b>.</p>
 <svg class="illus" width="480" height="200" viewBox="0 0 480 200" role="img" aria-label="Two observers on Earth see Venus cross the Sun along slightly different paths">
   <rect width="480" height="200" fill="#0d1330" rx="10"/>
