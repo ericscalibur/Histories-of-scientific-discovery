@@ -2,5 +2,5 @@ __pycache__/
 *.pyc
 node_modules/
 src/tests/test_plans.json
-*.png
+src/tests/*.png
 .DS_Store
