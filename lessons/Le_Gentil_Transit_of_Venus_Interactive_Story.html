@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Unluckiest Astronomer — Le Gentil & the Transit of Venus</title>
+<style>
+  :root{
+    --night:#0b1230; --night2:#141c42; --parchment:#f9f3e4; --parchment2:#f1e7cf;
+    --ink:#22304f; --ink-soft:#4a5878; --gold:#e8a90c; --gold-dark:#8a6400;
+    --accent:#3a5da8; --good:#1e7d43; --bad:#b03030; --locked:#2a3560;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:linear-gradient(180deg,#070c22 0%, #0b1230 40%, #10173a 100%);
+    color:var(--parchment); font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh; overflow-x:hidden;}
+  .stars,.stars2{position:fixed; inset:0; pointer-events:none; z-index:0;}
+  .stars{box-shadow:8vw 12vh 0 0 #fff,22vw 6vh 0 1px #ffe9b0,35vw 18vh 0 0 #fff,48vw 9vh 0 0 #cfe0ff,
+    61vw 14vh 0 1px #fff,74vw 5vh 0 0 #ffe9b0,88vw 11vh 0 0 #fff,15vw 28vh 0 0 #cfe0ff,
+    29vw 33vh 0 1px #fff,55vw 27vh 0 0 #fff,69vw 31vh 0 0 #ffe9b0,83vw 26vh 0 0 #fff,
+    5vw 45vh 0 0 #fff,42vw 41vh 0 1px #cfe0ff,78vw 44vh 0 0 #fff,93vw 39vh 0 0 #ffe9b0,
+    12vw 58vh 0 0 #fff,33vw 62vh 0 0 #fff,52vw 55vh 0 1px #ffe9b0,66vw 60vh 0 0 #cfe0ff,
+    81vw 57vh 0 0 #fff,96vw 63vh 0 0 #fff,9vw 74vh 0 1px #fff,27vw 79vh 0 0 #ffe9b0,
+    45vw 72vh 0 0 #fff,63vw 77vh 0 0 #cfe0ff,87vw 74vh 0 1px #fff,18vw 90vh 0 0 #fff,
+    38vw 87vh 0 0 #ffe9b0,58vw 92vh 0 0 #fff,76vw 88vh 0 0 #fff,94vw 91vh 0 1px #cfe0ff;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.8;}
+  .stars2{box-shadow:4vw 20vh 0 0 #fff8,19vw 15vh 0 0 #fff6,44vw 23vh 0 0 #fff7,71vw 19vh 0 0 #fff6,
+    91vw 16vh 0 0 #fff8,25vw 48vh 0 0 #fff6,49vw 46vh 0 0 #fff7,73vw 50vh 0 0 #fff5,
+    7vw 66vh 0 0 #fff7,36vw 69vh 0 0 #fff6,60vw 66vh 0 0 #fff8,85vw 68vh 0 0 #fff6,
+    14vw 83vh 0 0 #fff7,47vw 82vh 0 0 #fff5,69vw 84vh 0 0 #fff7,90vw 81vh 0 0 #fff6;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.6;}
+  .wrap{position:relative; z-index:1; max-width:860px; margin:0 auto; padding:24px 16px 80px;}
+  header{text-align:center; padding:36px 8px 10px;}
+  header h1{font-size:clamp(1.6rem,4.2vw,2.4rem); color:var(--gold); letter-spacing:.5px;
+    text-shadow:0 2px 12px rgba(232,169,12,.35);}
+  header .sub{font-style:italic; color:#cdd6ee; margin-top:8px; font-size:1.05rem;}
+  header .byline{color:#8f9cc4; font-size:.85rem; margin-top:6px;}
+  #tracker{position:sticky; top:0; z-index:5; background:rgba(7,12,34,.92);
+    backdrop-filter:blur(4px); border-bottom:1px solid #2a3560; padding:6px 0 2px; margin:18px -16px 8px;}
+  #tracker svg{display:block; margin:0 auto;}
+  #tracker .tlabel{fill:#8f9cc4; font-size:10px; font-family:Georgia,serif;}
+  .card{background:var(--parchment); color:var(--ink); border-radius:14px; padding:28px 30px;
+    margin:26px 0; box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 0 60px rgba(180,140,60,.08);
+    border:1px solid #d9c9a3;}
+  .card, .checkpoint{scroll-margin-top:88px;}
+  .card.locked{display:none;}
+  .checkpoint.locked{display:none;}
+  .chap-kicker{font-size:.8rem; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--gold-dark); font-weight:bold;}
+  .card h2{font-size:1.55rem; margin:6px 0 14px; color:var(--ink);}
+  .card p{line-height:1.65; margin:0 0 13px; font-size:1.04rem;}
+  .card .funfact{background:#fff8e6; border-left:4px solid var(--gold);
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.95rem; margin:14px 0; color:#5a4a1a;}
+  .bigidea{background:#eef2fb; border:1.5px solid #b9c7e8; border-radius:10px;
+    padding:12px 16px; margin:16px 0; color:#22304f; font-size:1rem;}
+  .bigidea b{color:var(--accent);}
+  .illus{display:block; margin:16px auto; max-width:100%;}
+  .checkpoint{background:linear-gradient(180deg,#1b2450,#141c42); color:#eef1fb;
+    border-radius:12px; padding:20px 22px; margin:20px -8px -6px; border:1.5px solid #3a4a86;}
+  .checkpoint + .checkpoint{margin-top:16px;}
+  .checkpoint .cp-kicker{color:var(--gold); font-weight:bold; letter-spacing:1.5px;
+    font-size:.8rem; text-transform:uppercase;}
+  .checkpoint .question{font-size:1.08rem; line-height:1.55; margin:8px 0 14px;}
+  .answer-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .answer-row input[type=text]{font-size:1.15rem; padding:9px 13px; border-radius:8px;
+    border:2px solid #3a4a86; width:140px; background:#0d1330; color:#ffe9b0;
+    font-family:Georgia,serif; text-align:center;}
+  .answer-row input[type=text]:focus{outline:2px solid var(--gold);}
+  button{font-family:Georgia,serif; cursor:pointer;}
+  .check-btn{background:var(--gold); color:#2a2005; font-weight:bold; font-size:1rem;
+    border:none; border-radius:8px; padding:10px 20px;}
+  .check-btn:hover{background:#f7bb2b;}
+  .hint-btn{background:transparent; color:#aebadf; border:1.5px dashed #4a5a9a;
+    border-radius:8px; padding:9px 14px; font-size:.9rem;}
+  .hint-btn:hover{color:#fff;}
+  .mc-btn{background:#0d1330; color:#eef1fb; border:2px solid #3a4a86; border-radius:8px;
+    padding:10px 16px; font-size:.98rem;}
+  .mc-btn:hover{border-color:var(--gold);}
+  .hint{display:none; margin-top:10px; color:#ffd97a; font-size:.95rem;}
+  .feedback{margin-top:12px; font-size:1rem; min-height:1.2em;}
+  .feedback.good{color:#7fe0a7;}
+  .feedback.bad{color:#ff9d9d;}
+  .unit{color:#aebadf; font-size:.95rem;}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .solved-glow{animation:glow 1.2s;}
+  @keyframes glow{0%{box-shadow:0 0 0 rgba(232,169,12,0)} 40%{box-shadow:0 0 40px rgba(232,169,12,.8)} 100%{box-shadow:0 0 0 rgba(232,169,12,0)}}
+  #finale{text-align:center;}
+  #finale h2{color:var(--gold-dark);}
+  #finale p{text-align:left;}
+  .cert{border:3px double var(--gold-dark); border-radius:12px; padding:22px; margin:18px 0; background:#fffdf4;}
+  .cert .cname{font-size:1.4rem; color:var(--accent); font-weight:bold;}
+  .laws{text-align:left; background:#eef2fb; border-radius:10px; padding:14px 18px; margin:14px 0;}
+  .laws p{margin:8px 0;}
+  .name-row{margin:14px 0 4px;}
+  .name-row input{font-size:1.05rem; padding:8px 12px; border-radius:8px;
+    border:2px solid #b9c7e8; font-family:Georgia,serif; width:240px;}
+  footer{color:#8f9cc4; text-align:center; font-size:.85rem; margin-top:40px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="stars"></div><div class="stars2"></div>
+<div class="wrap">
+<header>
+  <h1>✦ The Unluckiest Astronomer ✦</h1>
+  <div class="sub">Le Gentil, the transit of Venus, and humanity's first worldwide science project — 1761 & 1769</div>
+  <div class="byline">An interactive adventure &middot; solve each problem to unlock the next chapter</div>
+  <div class="name-row"><input id="playerName" type="text" placeholder="Write your name, astronomer&hellip;" aria-label="Your name"></div>
+</header>
+<div id="tracker" aria-label="progress">
+  <svg width="760" height="64" viewBox="0 0 760 64" preserveAspectRatio="xMidYMid meet" style="max-width:100%">
+    <path id="cometPath" d="M 30 48 C 160 14, 300 56, 420 30 S 660 40, 730 18" fill="none" stroke="#2a3560" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g id="trackStars"></g>
+    <text class="tlabel" x="30" y="62" text-anchor="middle">start</text>
+    <text class="tlabel" x="730" y="34" text-anchor="middle">&#9732;</text>
+  </svg>
+</div>
+<section class="card" id="ch1">
+<div class="chap-kicker">Chapter One · London, 1716</div>
+<h2>Homework from Beyond the Grave</h2>
+
+<p>Edmond Halley — the comet man — had one more great idea in him, and he knew he wouldn't live to see it tested. Astronomers of his day had a humiliating secret: they knew the <i>shape</i> of the solar system perfectly (thank you, Kepler), but not its <b>size</b>. They knew Mars was 1.5 times farther from the Sun than Earth — but 1.5 times <i>what</i>? Nobody knew if the Sun was 50 million kilometers away or 250 million.</p>
+<p>Halley's plan: on rare occasions, <b>Venus crosses directly in front of the Sun</b> — a little black dot sliding across the bright disk for about six hours. If observers watch this <i>transit</i> from places far apart on Earth — the top of the world and the bottom — they'll see Venus trace <b>slightly different paths</b> across the Sun, at slightly different timings. That difference is parallax — your old friend, the thumb-blink trick — and from it, with geometry, you can calculate the actual distance to the Sun.</p>
+<p>In 1716, Halley published detailed instructions addressed to astronomers <i>not yet born</i>, begging them to scatter across the Earth for the transits he had calculated would come in <b>1761 and 1769</b>. He died in 1742, nineteen years too soon. The world took his homework seriously: for the first time in history, dozens of nations — some actively at war — sent scientists to the ends of the Earth <b>for the same measurement</b>. It was humanity's first global science project.</p>
+<div class="checkpoint" id="cp1">
+<div class="cp-kicker">&#9733; Checkpoint 1 &middot; Halley's long bet</div>
+<div class="question">Halley died in <b>1742</b>. The first transit of his great experiment came in <b>1761</b>. How many years after his death did his homework come due?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a1" aria-label="answer 1">
+<span class="unit">years</span>
+<button class="check-btn" onclick="check(1)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h1').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h1">1761 − 1742.</div>
+<div class="feedback" id="f1" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch2">
+<div class="chap-kicker">Chapter Two · The trick, planet-sized</div>
+<h2>Two Eyes for the Whole Earth</h2>
+
+<p>Remember Tycho's parallax: thumb up, blink left eye, blink right eye — the thumb jumps against the background. Your two eyes see from slightly different places, so nearby things shift more than faraway things.</p>
+<p>Halley's plan simply made the "eyes" bigger. One observer near the top of the world and one near the bottom are like two eyes <b>thousands of kilometers apart</b>. Venus is the thumb; the Sun's face is the background. Each observer times precisely when Venus enters and leaves the Sun's disk, and notes the path it takes. Compare the two records → geometry → <b>the distance to the Sun</b>.</p>
+<svg class="illus" width="480" height="200" viewBox="0 0 480 200" role="img" aria-label="Two observers on Earth see Venus cross the Sun along slightly different paths">
+  <rect width="480" height="200" fill="#0d1330" rx="10"/>
+  <circle cx="60" cy="100" r="34" fill="#1b2a55" stroke="#3a4a86" stroke-width="2"/>
+  <circle cx="60" cy="78" r="5" fill="#7fe0a7"/><text x="26" y="66" fill="#7fe0a7" font-size="11" font-family="Georgia">observer N</text>
+  <circle cx="60" cy="122" r="5" fill="#ff9d6e"/><text x="26" y="146" fill="#ff9d6e" font-size="11" font-family="Georgia">observer S</text>
+  <circle cx="250" cy="100" r="7" fill="#f9f3e4"/><text x="250" y="84" fill="#cdd6ee" font-size="11" text-anchor="middle" font-family="Georgia">Venus</text>
+  <circle cx="400" cy="100" r="58" fill="#ffe9b0"/>
+  <line x1="60" y1="78" x2="452" y2="118" stroke="#7fe0a7" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="60" y1="122" x2="452" y2="82" stroke="#ff9d6e" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="352" y1="112" x2="448" y2="117" stroke="#2a6b45" stroke-width="2.5"/>
+  <line x1="352" y1="88" x2="448" y2="83" stroke="#a04a20" stroke-width="2.5"/>
+  <text x="400" y="176" fill="#8f9cc4" font-size="11.5" text-anchor="middle" font-family="Georgia">two viewpoints → two paths across the Sun</text>
+</svg>
+<div class="checkpoint" id="cp2">
+<div class="cp-kicker">&#9733; Checkpoint 2 &middot; Bigger baseline, better blink</div>
+<div class="question">With the thumb trick, your eyes are a few centimeters apart. What happens to the shift you see if the two "eyes" (observers) move <b>farther apart</b> — say, Norway and Tahiti?</div>
+<div class="answer-row">
+<button class="mc-btn" onclick="checkMC(2,this,true)">The shift gets bigger — easier to measure</button>
+<button class="mc-btn" onclick="checkMC(2,this,false)">The shift gets smaller — harder to measure</button>
+<button class="mc-btn" onclick="checkMC(2,this,false)">Nothing changes</button>
+</div>
+<div class="feedback" id="f2" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch3">
+<div class="chap-kicker">Chapter Three · 1760–1761 · The first try</div>
+<h2>War Gets in the Way</h2>
+
+<p>Enter our hero: <b>Guillaume Le Gentil</b>, French astronomer, 35 years old, sailing for the French colony of <b>Pondicherry, India</b>, over a year early, to be safely in position for the transit of June 6, 1761. Nothing could go wrong.</p>
+<p>Everything went wrong. France and Britain were fighting the Seven Years' War — a true world war fought on five continents. As his ship neared India, news came: <b>Pondicherry had fallen to the British.</b> There was nowhere to land. On transit day, Le Gentil was stuck on the heaving deck of a ship in the Indian Ocean. He could <i>see</i> Venus, a perfect black dot on the Sun — but a transit measurement is a <b>precise timing</b> from a <b>precisely known location</b>, and he had neither: no steady telescope, no fixed position, a clock made useless by the rolling sea. He watched the whole thing, helpless, knowing every second of it was scientifically worthless.</p>
+<p>Then he made the decision that made him a legend. The second transit of the pair was coming. He wrote to Paris, in effect: <i>I'm not coming home. I'll wait for the next one.</i></p>
+<div class="checkpoint" id="cp3">
+<div class="cp-kicker">&#9733; Checkpoint 3 &middot; The stubborn calendar</div>
+<div class="question">Transits of Venus come in pairs <b>8 years apart</b>. Le Gentil missed the transit of <b>1761</b>. In what year was his second — and last — chance?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a3" aria-label="answer 3">
+<span class="unit"></span>
+<button class="check-btn" onclick="check(3)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h3').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h3">1761 + 8.</div>
+<div class="feedback" id="f3" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch4">
+<div class="chap-kicker">Chapter Four · 1761–1769 · The wait</div>
+<h2>Eight Years in the Indian Ocean</h2>
+
+<p>Le Gentil did not sulk for eight years. He mapped the coasts of Madagascar. He studied tides, winds, and monsoons. He sailed to Manila, decided the Spanish governor there couldn't be trusted, and — when Pondicherry returned to French hands with the peace — sailed back to India. The colony welcomed him; the governor helped him build a small, perfect observatory on the ruins of the fort, with a masonry pier for his telescope, his clocks checked night after night.</p>
+<p>He was ready absurdly early. And the sky cooperated: all through May 1769, morning after morning dawned <b>flawlessly clear</b>. The transit would come on the morning of <b>June 4</b> (local date). The evening before, the sky was so beautiful he could hardly sleep.</p>
+<div class="funfact">🗓️ Add it up: he left France in March 1760 and would finally step back onto French soil in October 1771 — more than eleven years, for two mornings of astronomy.</div>
+<div class="checkpoint" id="cp4">
+<div class="cp-kicker">&#9733; Checkpoint 4 &middot; A long time from home</div>
+<div class="question">Le Gentil was away for about <b>11 years and 6 months</b>. How many <b>months</b> is that?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a4" aria-label="answer 4">
+<span class="unit">months</span>
+<button class="check-btn" onclick="check(4)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h4').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h4">11 × 12 = 132, then add the 6.</div>
+<div class="feedback" id="f4" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch5">
+<div class="chap-kicker">Chapter Five · The morning of June 4, 1769</div>
+<h2>One Cloud</h2>
+
+<p>In the pre-dawn dark, the stars shone. Le Gentil took his post. And then, as sunrise approached — after <i>weeks</i> of perfect skies — a haze drifted in from the sea, thickening into cloud, and parked itself <b>in front of the Sun</b>.</p>
+<p>It stayed there for almost exactly the length of the transit. As Venus slid off the Sun's face — the last contact he had crossed the world twice and waited eight years to time — the sky was a white blank. Within the hour, the cloud dissolved. The Sun blazed down on Pondicherry for the rest of the day, brilliant and useless.</p>
+<p>Le Gentil wrote in his journal that he could barely hold his pen: <i>"That is the fate which often awaits astronomers… I had traveled more than ten thousand leagues, only to be the spectator of a fatal cloud."</i> For two weeks he couldn't bring himself to write up the record. (Cruelest of all: in Manila, the city he'd left, the morning was perfectly clear.)</p>
+<p>But here is the thing about a <b>worldwide</b> experiment: Le Gentil's cloud didn't kill it. That same morning, Captain Cook's team timed the transit from <b>Tahiti</b>; others succeeded in Norway, in Hudson Bay, in Baja California, in Russia. The data poured back to Europe from every corner of the Earth and was <b>shared</b> — added up into one answer no single observer, however unlucky, could have reached alone.</p>
+<div class="bigidea">🌟 <b>Big Idea:</b> Tycho hoarded his data and nearly took it to the grave. Halley's generation flipped the model: <b>plan together, measure everywhere, share everything.</b> When science works like that, one cloud — or one war, or one heartbreak — can't stop it.</div>
+<div class="checkpoint" id="cp5">
+<div class="cp-kicker">&#9733; Checkpoint 5 &middot; The team's answer</div>
+<div class="question">Combining everyone's timings, astronomers calculated the Earth–Sun distance at about <b>153 million km</b>. The modern value is about <b>150 million km</b>. By how many <b>million km</b> did the 1769 team miss?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a5" aria-label="answer 5">
+<span class="unit">million km</span>
+<button class="check-btn" onclick="check(5)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h5').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h5">153 − 150.</div>
+<div class="feedback" id="f5" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch6">
+<div class="chap-kicker">Chapter Six · Paris, October 1771</div>
+<h2>The Dead Man Comes Home</h2>
+
+<p>The voyage home nearly finished him — dysentery, storms, a hurricane, missed ships. When Le Gentil finally walked back into Paris after eleven and a half years, he discovered the final insult: he had been <b>declared legally dead</b>. His relatives were busily dividing up his estate. His seat in the Academy of Sciences had been given to another man. His mail had been lost or stolen for years; as far as France was concerned, he was a ghost.</p>
+<p>A lesser man would have shattered. Le Gentil went to court, and eventually the King himself intervened to restore his place. He married a woman named Madame Potier, had a daughter he utterly adored, was welcomed back into the Academy, and spent two happy decades writing the story of his voyage — clouds, pirates, monsoons, and all. He outlived nearly every misfortune the universe had thrown at him, and by every account, he died content.</p>
+<p>Astronomers still tell his story to each other, half as a joke and half as a prayer. But notice: <b>the experiment he suffered for worked.</b> His name is stitched into the first true measurement of the solar system — not because his telescope succeeded, but because he was part of the team that did.</p>
+<div class="checkpoint" id="cp6">
+<div class="cp-kicker">&#9733; Checkpoint 6 &middot; Mark your calendar (or your great-great-grandchild's)</div>
+<div class="question">After a transit pair, the next pair doesn't come for over a century. The transits of 1761 &amp; 1769 were followed by 1874 &amp; 1882, then 2004 &amp; 2012. The next transit is <b>105 years after 2012</b>. What year should your great-great-grandchildren be ready?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a6" aria-label="answer 6">
+<span class="unit"></span>
+<button class="check-btn" onclick="check(6)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h6').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h6">2012 + 105.</div>
+<div class="feedback" id="f6" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="finale">
+<div class="chap-kicker">Epilogue</div>
+<h2>&#10022; The Mission That No Cloud Could Stop &#10022;</h2>
+
+<p>Combining timings from observers scattered across the planet — Tahiti, Norway, Hudson Bay, Baja California, India — astronomers computed the distance from the Earth to the Sun: about <b>153 million kilometers</b>. The modern value is <b>149.6 million</b>. Within about 2%, humanity had measured the solar system — using the same parallax trick Tycho used on the comet, stretched across the whole Earth.</p>
+<p>And Le Gentil? France's Academy had given him up for dead; his relatives were dividing his property; his job had been handed to someone else. He fought his way back, the King himself took his side, he married, raised a daughter he adored, and spent 21 more years writing his adventures — which became, of course, a bestseller. Transits of Venus come in pairs 8 years apart, separated by more than a century: after 1769 came 1874 and 1882, then 2004 and 2012. The next one is <b>December 2117</b>. Somewhere out there is a kid — maybe doing a worksheet like yours — who will see it.</p>
+<div class="cert">
+    <div style="font-size:.85rem; letter-spacing:2px; color:#8a6400; text-transform:uppercase;">Académie Royale des Sciences · Worldwide Transit Expedition</div>
+    <div style="margin:10px 0 4px;">certifies that</div>
+    <div class="cname" id="certName">Astronomer</div>
+    <div style="margin:6px 0 10px;">has completed all 6 checkpoints of the tale of the transit of Venus<br>and is hereby granted the rank of</div>
+    <div style="font-size:1.25rem; color:#8a6400; font-weight:bold;">&#11088; Member of the Worldwide Transit Corps &#11088;</div>
+  </div>
+<div class="laws">
+<p><b>What you now know that most adults don't:</b></p>
+<p>① The size of the solar system was first measured by <b>teamwork</b> — dozens of observers on every continent timing the same 6 hours.</p>
+<p>② In a worldwide team, no single storm, war, or heartbreak can sink the mission. Shared data is unsinkable — the lesson Tycho learned almost too late.</p>
+<p>③ You can do everything right and still fail. That's not the end of the story — Le Gentil's life proves it.</p>
+</div>
+</section>
+<footer>Companion lesson to the Constellation Plotting Worksheets · All dates and misfortunes are historical<br>(yes, even the single cloud)</footer>
+</div>
+<script>
+(function(){
+  var TOTAL = 6;
+  var solved = 0;
+  var answers = {"1": [19], "3": [1769], "4": [138], "5": [3], "6": [2117]};
+  var unlocks = {"1": "ch2", "2": "ch3", "3": "ch4", "4": "ch5", "5": "ch6", "6": "finale"};
+  var praise = ["Perfectly measured, {name}!", "The Academy salutes you, {name}!", "Exactly right, voyager!", "Sharper than a ship's chronometer!", "Le Gentil would trade his luck for yours, {name}!"];
+  var path = document.getElementById('cometPath');
+  var g = document.getElementById('trackStars');
+  var L = path.getTotalLength();
+  for (var i=0;i<TOTAL;i++){
+    var p = path.getPointAtLength(L*(i+0.5)/TOTAL);
+    var s = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var r1=8, r2=3.4, d='';
+    for (var k=0;k<10;k++){
+      var rr = (k%2===0)?r1:r2, an = -Math.PI/2 + k*Math.PI/5;
+      d += (k===0?'M':'L') + (p.x+rr*Math.cos(an)).toFixed(1) + ' ' + (p.y+rr*Math.sin(an)).toFixed(1) + ' ';
+    }
+    s.setAttribute('d', d+'Z');
+    s.setAttribute('fill', '#2a3560');
+    s.setAttribute('stroke', '#3a4a86');
+    s.setAttribute('id', 'tstar'+(i+1));
+    g.appendChild(s);
+  }
+  var starOrder = [1, 2, 3, 4, 5, 6];
+  function lightStar(cpid){
+    var s = document.getElementById('tstar'+(starOrder.indexOf(cpid)+1));
+    if(s){ s.setAttribute('fill','#e8a90c'); s.setAttribute('stroke','#ffe9b0'); }
+  }
+  function reveal(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('locked');
+    el.classList.add('solved-glow');
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 250);
+  }
+  function parseNum(v){
+    v = (v||'').replace(/[,\s]/g,'').replace(/[^0-9.\-]/g,'');
+    return v === '' ? NaN : Number(v);
+  }
+  function pname(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    return nm !== '' ? nm : 'astronomer';
+  }
+  function withName(msg){ return msg.replace(/\{name\}/g, pname()); }
+  function solve(cpid){
+    solved++; lightStar(cpid); reveal(unlocks[cpid]);
+    if (solved >= TOTAL) finish();
+  }
+  var tries = {};
+  window.check = function(n){
+    var input = document.getElementById('a'+n);
+    var fb = document.getElementById('f'+n);
+    var val = parseNum(input.value);
+    var ok = answers[n].indexOf(val) !== -1;
+    if (ok){
+      if (!input.dataset.done){
+        input.dataset.done = '1';
+        fb.className = 'feedback good';
+        fb.textContent = '\u2713 ' + withName(praise[Math.floor(Math.random()*praise.length)]);
+        input.disabled = true;
+        solve(n);
+      }
+    } else {
+      tries[n] = (tries[n]||0)+1;
+      fb.className = 'feedback bad';
+      fb.textContent = isNaN(val) ? withName('\u2717 Type a number first, {name}!') :
+        (tries[n] >= 2 ? withName('\u2717 Not yet, {name} \u2014 try the Hint button. Real scientists redo their math all the time.') :
+         withName('\u2717 Not quite, {name} \u2014 measure again!'));
+      input.classList.add('shake');
+      setTimeout(function(){input.classList.remove('shake');}, 450);
+      if (tries[n] >= 2) { var h=document.getElementById('h'+n); if(h) h.style.display='block'; }
+    }
+  };
+  var mcMsgs = {"2": {"good": "Exactly. A wider baseline exaggerates the shift, like having eyes on opposite sides of the planet. That's WHY they had to sail to the ends of the Earth \u2014 the whole point was to get far apart.", "bad": "Try the thumb trick and then imagine your eyes moving apart. Would the thumb jump more, or less?"}};
+  var mcDone = {};
+  window.checkMC = function(n, btn, correct){
+    var fb = document.getElementById('f'+n);
+    if (mcDone[n]) return;
+    if (correct){
+      mcDone[n] = true;
+      btn.style.borderColor = '#7fe0a7'; btn.style.color = '#7fe0a7';
+      fb.className = 'feedback good';
+      fb.textContent = '\u2713 ' + withName(mcMsgs[n].good);
+      solve(n);
+    } else {
+      fb.className = 'feedback bad';
+      fb.textContent = '\u2717 ' + withName(mcMsgs[n].bad);
+      btn.classList.add('shake');
+      setTimeout(function(){btn.classList.remove('shake');}, 450);
+    }
+  };
+  function finish(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
+  }
+})();
+</script>
+</body>
+</html>

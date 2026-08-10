@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Man Who Measured the World — Eratosthenes</title>
+<style>
+  :root{
+    --night:#0b1230; --night2:#141c42; --parchment:#f9f3e4; --parchment2:#f1e7cf;
+    --ink:#22304f; --ink-soft:#4a5878; --gold:#e8a90c; --gold-dark:#8a6400;
+    --accent:#3a5da8; --good:#1e7d43; --bad:#b03030; --locked:#2a3560;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:linear-gradient(180deg,#070c22 0%, #0b1230 40%, #10173a 100%);
+    color:var(--parchment); font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh; overflow-x:hidden;}
+  .stars,.stars2{position:fixed; inset:0; pointer-events:none; z-index:0;}
+  .stars{box-shadow:8vw 12vh 0 0 #fff,22vw 6vh 0 1px #ffe9b0,35vw 18vh 0 0 #fff,48vw 9vh 0 0 #cfe0ff,
+    61vw 14vh 0 1px #fff,74vw 5vh 0 0 #ffe9b0,88vw 11vh 0 0 #fff,15vw 28vh 0 0 #cfe0ff,
+    29vw 33vh 0 1px #fff,55vw 27vh 0 0 #fff,69vw 31vh 0 0 #ffe9b0,83vw 26vh 0 0 #fff,
+    5vw 45vh 0 0 #fff,42vw 41vh 0 1px #cfe0ff,78vw 44vh 0 0 #fff,93vw 39vh 0 0 #ffe9b0,
+    12vw 58vh 0 0 #fff,33vw 62vh 0 0 #fff,52vw 55vh 0 1px #ffe9b0,66vw 60vh 0 0 #cfe0ff,
+    81vw 57vh 0 0 #fff,96vw 63vh 0 0 #fff,9vw 74vh 0 1px #fff,27vw 79vh 0 0 #ffe9b0,
+    45vw 72vh 0 0 #fff,63vw 77vh 0 0 #cfe0ff,87vw 74vh 0 1px #fff,18vw 90vh 0 0 #fff,
+    38vw 87vh 0 0 #ffe9b0,58vw 92vh 0 0 #fff,76vw 88vh 0 0 #fff,94vw 91vh 0 1px #cfe0ff;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.8;}
+  .stars2{box-shadow:4vw 20vh 0 0 #fff8,19vw 15vh 0 0 #fff6,44vw 23vh 0 0 #fff7,71vw 19vh 0 0 #fff6,
+    91vw 16vh 0 0 #fff8,25vw 48vh 0 0 #fff6,49vw 46vh 0 0 #fff7,73vw 50vh 0 0 #fff5,
+    7vw 66vh 0 0 #fff7,36vw 69vh 0 0 #fff6,60vw 66vh 0 0 #fff8,85vw 68vh 0 0 #fff6,
+    14vw 83vh 0 0 #fff7,47vw 82vh 0 0 #fff5,69vw 84vh 0 0 #fff7,90vw 81vh 0 0 #fff6;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.6;}
+  .wrap{position:relative; z-index:1; max-width:860px; margin:0 auto; padding:24px 16px 80px;}
+  header{text-align:center; padding:36px 8px 10px;}
+  header h1{font-size:clamp(1.6rem,4.2vw,2.4rem); color:var(--gold); letter-spacing:.5px;
+    text-shadow:0 2px 12px rgba(232,169,12,.35);}
+  header .sub{font-style:italic; color:#cdd6ee; margin-top:8px; font-size:1.05rem;}
+  header .byline{color:#8f9cc4; font-size:.85rem; margin-top:6px;}
+  #tracker{position:sticky; top:0; z-index:5; background:rgba(7,12,34,.92);
+    backdrop-filter:blur(4px); border-bottom:1px solid #2a3560; padding:6px 0 2px; margin:18px -16px 8px;}
+  #tracker svg{display:block; margin:0 auto;}
+  #tracker .tlabel{fill:#8f9cc4; font-size:10px; font-family:Georgia,serif;}
+  .card{background:var(--parchment); color:var(--ink); border-radius:14px; padding:28px 30px;
+    margin:26px 0; box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 0 60px rgba(180,140,60,.08);
+    border:1px solid #d9c9a3;}
+  .card, .checkpoint{scroll-margin-top:88px;}
+  .card.locked{display:none;}
+  .checkpoint.locked{display:none;}
+  .chap-kicker{font-size:.8rem; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--gold-dark); font-weight:bold;}
+  .card h2{font-size:1.55rem; margin:6px 0 14px; color:var(--ink);}
+  .card p{line-height:1.65; margin:0 0 13px; font-size:1.04rem;}
+  .card .funfact{background:#fff8e6; border-left:4px solid var(--gold);
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.95rem; margin:14px 0; color:#5a4a1a;}
+  .bigidea{background:#eef2fb; border:1.5px solid #b9c7e8; border-radius:10px;
+    padding:12px 16px; margin:16px 0; color:#22304f; font-size:1rem;}
+  .bigidea b{color:var(--accent);}
+  .illus{display:block; margin:16px auto; max-width:100%;}
+  .checkpoint{background:linear-gradient(180deg,#1b2450,#141c42); color:#eef1fb;
+    border-radius:12px; padding:20px 22px; margin:20px -8px -6px; border:1.5px solid #3a4a86;}
+  .checkpoint + .checkpoint{margin-top:16px;}
+  .checkpoint .cp-kicker{color:var(--gold); font-weight:bold; letter-spacing:1.5px;
+    font-size:.8rem; text-transform:uppercase;}
+  .checkpoint .question{font-size:1.08rem; line-height:1.55; margin:8px 0 14px;}
+  .answer-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .answer-row input[type=text]{font-size:1.15rem; padding:9px 13px; border-radius:8px;
+    border:2px solid #3a4a86; width:140px; background:#0d1330; color:#ffe9b0;
+    font-family:Georgia,serif; text-align:center;}
+  .answer-row input[type=text]:focus{outline:2px solid var(--gold);}
+  button{font-family:Georgia,serif; cursor:pointer;}
+  .check-btn{background:var(--gold); color:#2a2005; font-weight:bold; font-size:1rem;
+    border:none; border-radius:8px; padding:10px 20px;}
+  .check-btn:hover{background:#f7bb2b;}
+  .hint-btn{background:transparent; color:#aebadf; border:1.5px dashed #4a5a9a;
+    border-radius:8px; padding:9px 14px; font-size:.9rem;}
+  .hint-btn:hover{color:#fff;}
+  .mc-btn{background:#0d1330; color:#eef1fb; border:2px solid #3a4a86; border-radius:8px;
+    padding:10px 16px; font-size:.98rem;}
+  .mc-btn:hover{border-color:var(--gold);}
+  .hint{display:none; margin-top:10px; color:#ffd97a; font-size:.95rem;}
+  .feedback{margin-top:12px; font-size:1rem; min-height:1.2em;}
+  .feedback.good{color:#7fe0a7;}
+  .feedback.bad{color:#ff9d9d;}
+  .unit{color:#aebadf; font-size:.95rem;}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .solved-glow{animation:glow 1.2s;}
+  @keyframes glow{0%{box-shadow:0 0 0 rgba(232,169,12,0)} 40%{box-shadow:0 0 40px rgba(232,169,12,.8)} 100%{box-shadow:0 0 0 rgba(232,169,12,0)}}
+  #finale{text-align:center;}
+  #finale h2{color:var(--gold-dark);}
+  #finale p{text-align:left;}
+  .cert{border:3px double var(--gold-dark); border-radius:12px; padding:22px; margin:18px 0; background:#fffdf4;}
+  .cert .cname{font-size:1.4rem; color:var(--accent); font-weight:bold;}
+  .laws{text-align:left; background:#eef2fb; border-radius:10px; padding:14px 18px; margin:14px 0;}
+  .laws p{margin:8px 0;}
+  .name-row{margin:14px 0 4px;}
+  .name-row input{font-size:1.05rem; padding:8px 12px; border-radius:8px;
+    border:2px solid #b9c7e8; font-family:Georgia,serif; width:240px;}
+  footer{color:#8f9cc4; text-align:center; font-size:.85rem; margin-top:40px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="stars"></div><div class="stars2"></div>
+<div class="wrap">
+<header>
+  <h1>✦ The Man Who Measured the World ✦</h1>
+  <div class="sub">How Eratosthenes measured the entire Earth with a stick, a shadow, and a very long walk — 2,200 years ago</div>
+  <div class="byline">An interactive adventure &middot; solve each problem to unlock the next chapter</div>
+  <div class="name-row"><input id="playerName" type="text" placeholder="Write your name, astronomer&hellip;" aria-label="Your name"></div>
+</header>
+<div id="tracker" aria-label="progress">
+  <svg width="760" height="64" viewBox="0 0 760 64" preserveAspectRatio="xMidYMid meet" style="max-width:100%">
+    <path id="cometPath" d="M 30 48 C 160 14, 300 56, 420 30 S 660 40, 730 18" fill="none" stroke="#2a3560" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g id="trackStars"></g>
+    <text class="tlabel" x="30" y="62" text-anchor="middle">start</text>
+    <text class="tlabel" x="730" y="34" text-anchor="middle">&#9732;</text>
+  </svg>
+</div>
+<section class="card" id="ch1">
+<div class="chap-kicker">Chapter One · Alexandria, Egypt · about 240 BC</div>
+<h2>Mr. Second Place</h2>
+
+<p>Two thousand two hundred years ago, the greatest building in the world wasn't a palace or a temple. It was a <b>library</b>. The Great Library of Alexandria tried to collect a copy of every scroll ever written — hundreds of thousands of them. Ships docking in the harbor were searched, not for treasure, but for <i>books</i>, which were borrowed and copied before being returned.</p>
+<p>The man in charge of all of it was <b>Eratosthenes</b>. He studied everything: poetry, history, math, maps, the stars. His friends teasingly nicknamed him <b>"Beta"</b> — the second letter of the Greek alphabet — because they said he was the <i>second-best</i> in the world at everything, champion of nothing. The nickname was supposed to be an insult.</p>
+<p>Keep that nickname in mind. Because the man who was "second-best at everything" was about to do something nobody — no specialist, no champion — had ever done: measure the size of the entire Earth without leaving Egypt.</p>
+<div class="funfact">📜 Educated Greeks already knew the Earth was round — they saw its curved shadow on the Moon during eclipses, and watched ships disappear bottom-first over the horizon. But <b>nobody knew how big it was</b>. It could have been cozy, or endless. Nobody knew.</div>
+<div class="checkpoint" id="cp1">
+<div class="cp-kicker">&#9733; Checkpoint 1 &middot; Welcome to the Library</div>
+<div class="question">Nobody knows exactly how many scrolls the Library held, so let's suppose it was <b>400,000</b>, stored equally in <b>40,000-scroll halls</b>. How many halls would that take?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a1" aria-label="answer 1">
+<span class="unit">halls</span>
+<button class="check-btn" onclick="check(1)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h1').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h1">How many times does 40,000 fit into 400,000? Try covering up matching zeros.</div>
+<div class="feedback" id="f1" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch2">
+<div class="chap-kicker">Chapter Two · A traveler's tale</div>
+<h2>The Well with No Shadow</h2>
+
+<p>One day a traveler told Eratosthenes something odd about the city of <b>Syene</b>, far to the south (today it's called Aswan). On one special day each year — the longest day of summer, at exactly noon — the sun shone <b>straight down to the bottom of the deepest wells</b>. Columns cast no shadow at all. The sun stood perfectly overhead.</p>
+<p>Most people would say "huh, neat" and move on. Eratosthenes froze. Because he knew for a fact that in Alexandria, on that <i>same day</i> at that <i>same noon</i>, sticks and columns <b>do</b> cast a shadow. Short — but definitely there.</p>
+<p>Now think like a librarian who reads everything. The Sun is far, far away, so its rays arrive at Earth practically <b>parallel</b> — like lines of rain falling straight down together. If the Earth were <b>flat</b>, parallel rays would hit every city at the same angle, and every stick everywhere would cast the <i>same</i> shadow at the same moment.</p>
+<p>But Syene had no shadow while Alexandria had one. Same moment, same sun, different shadows. There was only one explanation: the ground itself must be <b>tilted</b> between the two cities. The Earth's surface <i>curves</i>.</p>
+<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Curved Earth with two sticks: parallel sun rays make no shadow at Syene but a shadow at Alexandria">
+  <rect width="480" height="210" fill="#0d1330" rx="10"/>
+  <path d="M 40 210 A 260 260 0 0 1 440 210" fill="#1b2a55" stroke="#3a4a86" stroke-width="2"/>
+  <g stroke="#ffd97a" stroke-width="2" opacity=".85">
+    <line x1="150" y1="14" x2="150" y2="120"/>
+    <line x1="205" y1="14" x2="205" y2="106"/>
+    <line x1="275" y1="14" x2="275" y2="106"/>
+    <line x1="330" y1="14" x2="330" y2="122"/>
+  </g>
+  <text x="416" y="26" fill="#ffd97a" font-size="12" text-anchor="end" font-family="Georgia">sunlight (parallel rays)</text>
+  <line x1="240" y1="116" x2="240" y2="72" stroke="#f9f3e4" stroke-width="4"/>
+  <text x="240" y="144" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Syene: no shadow</text>
+  <line x1="120" y1="145" x2="101" y2="109" stroke="#f9f3e4" stroke-width="4"/>
+  <line x1="120" y1="145" x2="100" y2="157" stroke="#e8a90c" stroke-width="3.5"/>
+  <text x="106" y="182" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Alexandria: shadow!</text>
+</svg>
+<div class="checkpoint" id="cp2">
+<div class="cp-kicker">&#9733; Checkpoint 2 &middot; Flat-Earth test</div>
+<div class="question">The Sun is so far away that its rays hit Earth as <b>parallel lines</b>. IF the Earth were flat, what would two identical sticks in Syene and Alexandria do at the same noon moment?</div>
+<div class="answer-row">
+<button class="mc-btn" onclick="checkMC(2,this,true)">Cast exactly the same shadow</button>
+<button class="mc-btn" onclick="checkMC(2,this,false)">Cast different shadows</button>
+<button class="mc-btn" onclick="checkMC(2,this,false)">Cast no shadows at all</button>
+</div>
+<div class="feedback" id="f2" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch3">
+<div class="chap-kicker">Chapter Three · Noon, the longest day of the year</div>
+<h2>The Stick and the Angle</h2>
+
+<p>Curved how much, though? That's the genius part. On the next summer solstice, at exact noon, Eratosthenes measured the shadow of a vertical stick (a <i>gnomon</i>) in Alexandria and worked out the angle of the sunbeam: <b>7.2 degrees</b> away from straight overhead.</p>
+<p>Remember your sky-measuring units: a full circle — all the way around the Earth and back — is <b>360 degrees</b>. And 7.2° is a very special slice of 360°…</p>
+<p>Here's the picture in Eratosthenes' head: since the sun stood exactly overhead at Syene and 7.2° off-overhead at Alexandria, then walking from Syene to Alexandria bends you <b>7.2° around the curve of the Earth</b>. That walk is one slice of the full journey around the world.</p>
+<div class="checkpoint" id="cp3">
+<div class="cp-kicker">&#9733; Checkpoint 3 &middot; The magic slice</div>
+<div class="question">How many times does <b>7.2°</b> fit into a full circle of <b>360°</b>? (In other words: the Syene–Alexandria distance is 1/? of the way around the whole Earth.)</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a3" aria-label="answer 3">
+<span class="unit">times</span>
+<button class="check-btn" onclick="check(3)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h3').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h3">Try 7.2 × 10 = 72. Then how many 72s make 360? Multiply your two answers.</div>
+<div class="feedback" id="f3" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch4">
+<div class="chap-kicker">Chapter Four · The road south</div>
+<h2>The Men Who Walked in Perfect Steps</h2>
+
+<p>So the whole Earth is 50 of those slices. Now Eratosthenes needed just one more number: <b>how far is it from Syene to Alexandria?</b></p>
+<p>No cars. No maps with distance markers. Egypt's answer: <b>bematists</b> — professional step-counters. These were trained surveyors who walked with perfectly even strides, counting every single step, for days and weeks, across the desert beside the Nile. (Camels were involved. Camels do not walk in even steps. The humans did the counting.)</p>
+<p>The official distance came back: <b>5,000 stadia</b> — the stadion being the length of a Greek stadium racetrack. Now Eratosthenes had everything: the walk was 1/50 of the way around the world, and the walk was 5,000 stadia long.</p>
+<div class="funfact">👣 Bematists were astonishingly good. Records from Alexander the Great's step-counters show their measured distances over hundreds of kilometers were often within 1–2% of modern values. Careful counting was a real profession — Tycho would have approved.</div>
+<div class="checkpoint" id="cp4">
+<div class="cp-kicker">&#9733; Checkpoint 4 &middot; Around the world in one multiplication</div>
+<div class="question">If <b>1/50</b> of the way around the Earth is <b>5,000 stadia</b>, how many stadia is the <b>whole</b> way around?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a4" aria-label="answer 4">
+<span class="unit">stadia</span>
+<button class="check-btn" onclick="check(4)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h4').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h4">50 × 5,000. Do 5 × 5 first, then bring back all five zeros.</div>
+<div class="feedback" id="f4" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch5">
+<div class="chap-kicker">Chapter Five · The answer</div>
+<h2>How Close Did He Get?</h2>
+
+<p><b>250,000 stadia.</b> Convert the ancient stadion to modern units (about 157.5 meters each, by the most common reckoning) and Eratosthenes' Earth comes out to roughly <b>39,000 kilometers</b> around.</p>
+<p>The modern measured value, with satellites and lasers? <b>About 40,000 km.</b></p>
+<p>Sit with that for a second. A man in sandals, using a stick, a shadow, a well, and a hired walker, measured the planet — and landed within about 2% of the space-age answer. It would stand as one of the greatest measurements in history for over a thousand years.</p>
+<div class="bigidea">🌟 <b>Big Idea:</b> Eratosthenes never saw the Earth from space. He didn't need to. A great measurement is a <b>chain of small, checkable steps</b>: an angle anyone can re-measure, a distance anyone can re-walk, and arithmetic anyone can re-do. That's what makes it science — every link of the chain is open for checking.</div>
+<div class="checkpoint" id="cp5">
+<div class="cp-kicker">&#9733; Checkpoint 5 &middot; Grading a 2,200-year-old homework</div>
+<div class="question">Eratosthenes got about <b>39,000 km</b>. The modern value is about <b>40,000 km</b>. By how many kilometers was the librarian off?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a5" aria-label="answer 5">
+<span class="unit">km</span>
+<button class="check-btn" onclick="check(5)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h5').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h5">40,000 − 39,000.</div>
+<div class="feedback" id="f5" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="finale">
+<div class="chap-kicker">Epilogue</div>
+<h2>&#10022; A Stick, a Shadow, and the Whole World &#10022;</h2>
+
+<p>Think about what just happened in this story. No telescope — not invented for another 1,850 years. No satellites, no lasers, no computers. One curious librarian measured <b>the entire planet</b> using a shadow, an angle, and a well-counted walk — and got within a couple of percent of the answer we use today. When astronauts finally saw the round Earth from space in the 20th century, they were looking at something a librarian had already measured with a stick.</p>
+<p>Eratosthenes went on to invent the word <i>geography</i>, draw some of the best maps of the ancient world, and build a famous trick for finding prime numbers (the "Sieve of Eratosthenes" — your math teacher still uses it). Not bad for a man whose nickname meant "second place."</p>
+<div class="cert">
+    <div style="font-size:.85rem; letter-spacing:2px; color:#8a6400; text-transform:uppercase;">The Great Library of Alexandria</div>
+    <div style="margin:10px 0 4px;">certifies that</div>
+    <div class="cname" id="certName">Astronomer</div>
+    <div style="margin:6px 0 10px;">has completed all 5 checkpoints of the tale of Eratosthenes<br>and is hereby granted the rank of</div>
+    <div style="font-size:1.25rem; color:#8a6400; font-weight:bold;">&#11088; Chief Surveyor of the Round Earth &#11088;</div>
+  </div>
+<div class="laws">
+<p><b>What you now know that most adults don't:</b></p>
+<p>① You can measure something enormous by measuring something small — <b>if you pick the right small thing</b>.</p>
+<p>② The same sunbeam, hitting two cities differently, proves the Earth is curved — evidence you can check with two sticks.</p>
+<p>③ Simple tools plus a clever question beat fancy tools with no question. Every time.</p>
+</div>
+</section>
+<footer>Companion lesson to the Constellation Plotting Worksheets · Alexandria, ~240 BC<br>(the step-counters were real)</footer>
+</div>
+<script>
+(function(){
+  var TOTAL = 5;
+  var solved = 0;
+  var answers = {"1": [10], "3": [50], "4": [250000], "5": [1000]};
+  var unlocks = {"1": "ch2", "2": "ch3", "3": "ch4", "4": "ch5", "5": "finale"};
+  var praise = ["Perfectly measured, {name}!", "The Library would hire you on the spot, {name}!", "Exactly right, geometer!", "Sharp as a noonday shadow!", "Even \"Beta\" never counted better, {name}!"];
+  var path = document.getElementById('cometPath');
+  var g = document.getElementById('trackStars');
+  var L = path.getTotalLength();
+  for (var i=0;i<TOTAL;i++){
+    var p = path.getPointAtLength(L*(i+0.5)/TOTAL);
+    var s = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var r1=8, r2=3.4, d='';
+    for (var k=0;k<10;k++){
+      var rr = (k%2===0)?r1:r2, an = -Math.PI/2 + k*Math.PI/5;
+      d += (k===0?'M':'L') + (p.x+rr*Math.cos(an)).toFixed(1) + ' ' + (p.y+rr*Math.sin(an)).toFixed(1) + ' ';
+    }
+    s.setAttribute('d', d+'Z');
+    s.setAttribute('fill', '#2a3560');
+    s.setAttribute('stroke', '#3a4a86');
+    s.setAttribute('id', 'tstar'+(i+1));
+    g.appendChild(s);
+  }
+  var starOrder = [1, 2, 3, 4, 5];
+  function lightStar(cpid){
+    var s = document.getElementById('tstar'+(starOrder.indexOf(cpid)+1));
+    if(s){ s.setAttribute('fill','#e8a90c'); s.setAttribute('stroke','#ffe9b0'); }
+  }
+  function reveal(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('locked');
+    el.classList.add('solved-glow');
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 250);
+  }
+  function parseNum(v){
+    v = (v||'').replace(/[,\s]/g,'').replace(/[^0-9.\-]/g,'');
+    return v === '' ? NaN : Number(v);
+  }
+  function pname(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    return nm !== '' ? nm : 'astronomer';
+  }
+  function withName(msg){ return msg.replace(/\{name\}/g, pname()); }
+  function solve(cpid){
+    solved++; lightStar(cpid); reveal(unlocks[cpid]);
+    if (solved >= TOTAL) finish();
+  }
+  var tries = {};
+  window.check = function(n){
+    var input = document.getElementById('a'+n);
+    var fb = document.getElementById('f'+n);
+    var val = parseNum(input.value);
+    var ok = answers[n].indexOf(val) !== -1;
+    if (ok){
+      if (!input.dataset.done){
+        input.dataset.done = '1';
+        fb.className = 'feedback good';
+        fb.textContent = '\u2713 ' + withName(praise[Math.floor(Math.random()*praise.length)]);
+        input.disabled = true;
+        solve(n);
+      }
+    } else {
+      tries[n] = (tries[n]||0)+1;
+      fb.className = 'feedback bad';
+      fb.textContent = isNaN(val) ? withName('\u2717 Type a number first, {name}!') :
+        (tries[n] >= 2 ? withName('\u2717 Not yet, {name} \u2014 try the Hint button. Real scientists redo their math all the time.') :
+         withName('\u2717 Not quite, {name} \u2014 measure again!'));
+      input.classList.add('shake');
+      setTimeout(function(){input.classList.remove('shake');}, 450);
+      if (tries[n] >= 2) { var h=document.getElementById('h'+n); if(h) h.style.display='block'; }
+    }
+  };
+  var mcMsgs = {"2": {"good": "Right! Flat ground + parallel rays = identical shadows everywhere. So DIFFERENT shadows meant the ground must curve. Two sticks just proved the Earth is round.", "bad": "Careful \u2014 picture parallel rain hitting a flat table: every spot gets hit at the same angle. So a flat Earth would give identical shadows. But that's not what happens\u2026"}};
+  var mcDone = {};
+  window.checkMC = function(n, btn, correct){
+    var fb = document.getElementById('f'+n);
+    if (mcDone[n]) return;
+    if (correct){
+      mcDone[n] = true;
+      btn.style.borderColor = '#7fe0a7'; btn.style.color = '#7fe0a7';
+      fb.className = 'feedback good';
+      fb.textContent = '\u2713 ' + withName(mcMsgs[n].good);
+      solve(n);
+    } else {
+      fb.className = 'feedback bad';
+      fb.textContent = '\u2717 ' + withName(mcMsgs[n].bad);
+      btn.classList.add('shake');
+      setTimeout(function(){btn.classList.remove('shake');}, 450);
+    }
+  };
+  function finish(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
+  }
+})();
+</script>
+</body>
+</html>
