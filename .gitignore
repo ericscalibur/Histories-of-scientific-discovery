@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+node_modules/
+src/tests/test_plans.json
+*.png
+.DS_Store

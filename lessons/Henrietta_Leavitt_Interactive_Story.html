@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Yardstick of the Universe — Henrietta Leavitt</title>
+<style>
+  :root{
+    --night:#0b1230; --night2:#141c42; --parchment:#f9f3e4; --parchment2:#f1e7cf;
+    --ink:#22304f; --ink-soft:#4a5878; --gold:#e8a90c; --gold-dark:#8a6400;
+    --accent:#3a5da8; --good:#1e7d43; --bad:#b03030; --locked:#2a3560;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:linear-gradient(180deg,#070c22 0%, #0b1230 40%, #10173a 100%);
+    color:var(--parchment); font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh; overflow-x:hidden;}
+  .stars,.stars2{position:fixed; inset:0; pointer-events:none; z-index:0;}
+  .stars{box-shadow:8vw 12vh 0 0 #fff,22vw 6vh 0 1px #ffe9b0,35vw 18vh 0 0 #fff,48vw 9vh 0 0 #cfe0ff,
+    61vw 14vh 0 1px #fff,74vw 5vh 0 0 #ffe9b0,88vw 11vh 0 0 #fff,15vw 28vh 0 0 #cfe0ff,
+    29vw 33vh 0 1px #fff,55vw 27vh 0 0 #fff,69vw 31vh 0 0 #ffe9b0,83vw 26vh 0 0 #fff,
+    5vw 45vh 0 0 #fff,42vw 41vh 0 1px #cfe0ff,78vw 44vh 0 0 #fff,93vw 39vh 0 0 #ffe9b0,
+    12vw 58vh 0 0 #fff,33vw 62vh 0 0 #fff,52vw 55vh 0 1px #ffe9b0,66vw 60vh 0 0 #cfe0ff,
+    81vw 57vh 0 0 #fff,96vw 63vh 0 0 #fff,9vw 74vh 0 1px #fff,27vw 79vh 0 0 #ffe9b0,
+    45vw 72vh 0 0 #fff,63vw 77vh 0 0 #cfe0ff,87vw 74vh 0 1px #fff,18vw 90vh 0 0 #fff,
+    38vw 87vh 0 0 #ffe9b0,58vw 92vh 0 0 #fff,76vw 88vh 0 0 #fff,94vw 91vh 0 1px #cfe0ff;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.8;}
+  .stars2{box-shadow:4vw 20vh 0 0 #fff8,19vw 15vh 0 0 #fff6,44vw 23vh 0 0 #fff7,71vw 19vh 0 0 #fff6,
+    91vw 16vh 0 0 #fff8,25vw 48vh 0 0 #fff6,49vw 46vh 0 0 #fff7,73vw 50vh 0 0 #fff5,
+    7vw 66vh 0 0 #fff7,36vw 69vh 0 0 #fff6,60vw 66vh 0 0 #fff8,85vw 68vh 0 0 #fff6,
+    14vw 83vh 0 0 #fff7,47vw 82vh 0 0 #fff5,69vw 84vh 0 0 #fff7,90vw 81vh 0 0 #fff6;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.6;}
+  .wrap{position:relative; z-index:1; max-width:860px; margin:0 auto; padding:24px 16px 80px;}
+  header{text-align:center; padding:36px 8px 10px;}
+  header h1{font-size:clamp(1.6rem,4.2vw,2.4rem); color:var(--gold); letter-spacing:.5px;
+    text-shadow:0 2px 12px rgba(232,169,12,.35);}
+  header .sub{font-style:italic; color:#cdd6ee; margin-top:8px; font-size:1.05rem;}
+  header .byline{color:#8f9cc4; font-size:.85rem; margin-top:6px;}
+  #tracker{position:sticky; top:0; z-index:5; background:rgba(7,12,34,.92);
+    backdrop-filter:blur(4px); border-bottom:1px solid #2a3560; padding:6px 0 2px; margin:18px -16px 8px;}
+  #tracker svg{display:block; margin:0 auto;}
+  #tracker .tlabel{fill:#8f9cc4; font-size:10px; font-family:Georgia,serif;}
+  .card{background:var(--parchment); color:var(--ink); border-radius:14px; padding:28px 30px;
+    margin:26px 0; box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 0 60px rgba(180,140,60,.08);
+    border:1px solid #d9c9a3;}
+  .card, .checkpoint{scroll-margin-top:88px;}
+  .card.locked{display:none;}
+  .checkpoint.locked{display:none;}
+  .chap-kicker{font-size:.8rem; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--gold-dark); font-weight:bold;}
+  .card h2{font-size:1.55rem; margin:6px 0 14px; color:var(--ink);}
+  .card p{line-height:1.65; margin:0 0 13px; font-size:1.04rem;}
+  .card .funfact{background:#fff8e6; border-left:4px solid var(--gold);
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.95rem; margin:14px 0; color:#5a4a1a;}
+  .bigidea{background:#eef2fb; border:1.5px solid #b9c7e8; border-radius:10px;
+    padding:12px 16px; margin:16px 0; color:#22304f; font-size:1rem;}
+  .bigidea b{color:var(--accent);}
+  .illus{display:block; margin:16px auto; max-width:100%;}
+  .checkpoint{background:linear-gradient(180deg,#1b2450,#141c42); color:#eef1fb;
+    border-radius:12px; padding:20px 22px; margin:20px -8px -6px; border:1.5px solid #3a4a86;}
+  .checkpoint + .checkpoint{margin-top:16px;}
+  .checkpoint .cp-kicker{color:var(--gold); font-weight:bold; letter-spacing:1.5px;
+    font-size:.8rem; text-transform:uppercase;}
+  .checkpoint .question{font-size:1.08rem; line-height:1.55; margin:8px 0 14px;}
+  .answer-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .answer-row input[type=text]{font-size:1.15rem; padding:9px 13px; border-radius:8px;
+    border:2px solid #3a4a86; width:140px; background:#0d1330; color:#ffe9b0;
+    font-family:Georgia,serif; text-align:center;}
+  .answer-row input[type=text]:focus{outline:2px solid var(--gold);}
+  button{font-family:Georgia,serif; cursor:pointer;}
+  .check-btn{background:var(--gold); color:#2a2005; font-weight:bold; font-size:1rem;
+    border:none; border-radius:8px; padding:10px 20px;}
+  .check-btn:hover{background:#f7bb2b;}
+  .hint-btn{background:transparent; color:#aebadf; border:1.5px dashed #4a5a9a;
+    border-radius:8px; padding:9px 14px; font-size:.9rem;}
+  .hint-btn:hover{color:#fff;}
+  .mc-btn{background:#0d1330; color:#eef1fb; border:2px solid #3a4a86; border-radius:8px;
+    padding:10px 16px; font-size:.98rem;}
+  .mc-btn:hover{border-color:var(--gold);}
+  .hint{display:none; margin-top:10px; color:#ffd97a; font-size:.95rem;}
+  .feedback{margin-top:12px; font-size:1rem; min-height:1.2em;}
+  .feedback.good{color:#7fe0a7;}
+  .feedback.bad{color:#ff9d9d;}
+  .unit{color:#aebadf; font-size:.95rem;}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .solved-glow{animation:glow 1.2s;}
+  @keyframes glow{0%{box-shadow:0 0 0 rgba(232,169,12,0)} 40%{box-shadow:0 0 40px rgba(232,169,12,.8)} 100%{box-shadow:0 0 0 rgba(232,169,12,0)}}
+  #finale{text-align:center;}
+  #finale h2{color:var(--gold-dark);}
+  #finale p{text-align:left;}
+  .cert{border:3px double var(--gold-dark); border-radius:12px; padding:22px; margin:18px 0; background:#fffdf4;}
+  .cert .cname{font-size:1.4rem; color:var(--accent); font-weight:bold;}
+  .laws{text-align:left; background:#eef2fb; border-radius:10px; padding:14px 18px; margin:14px 0;}
+  .laws p{margin:8px 0;}
+  .name-row{margin:14px 0 4px;}
+  .name-row input{font-size:1.05rem; padding:8px 12px; border-radius:8px;
+    border:2px solid #b9c7e8; font-family:Georgia,serif; width:240px;}
+  footer{color:#8f9cc4; text-align:center; font-size:.85rem; margin-top:40px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="stars"></div><div class="stars2"></div>
+<div class="wrap">
+<header>
+  <h1>✦ The Yardstick of the Universe ✦</h1>
+  <div class="sub">Henrietta Leavitt, the Harvard Computers, and the discovery that measured the cosmos · 1893–1923</div>
+  <div class="byline">An interactive adventure &middot; solve each problem to unlock the next chapter</div>
+  <div class="name-row"><input id="playerName" type="text" placeholder="Write your name, astronomer&hellip;" aria-label="Your name"></div>
+</header>
+<div id="tracker" aria-label="progress">
+  <svg width="760" height="64" viewBox="0 0 760 64" preserveAspectRatio="xMidYMid meet" style="max-width:100%">
+    <path id="cometPath" d="M 30 48 C 160 14, 300 56, 420 30 S 660 40, 730 18" fill="none" stroke="#2a3560" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g id="trackStars"></g>
+    <text class="tlabel" x="30" y="62" text-anchor="middle">start</text>
+    <text class="tlabel" x="730" y="34" text-anchor="middle">&#9732;</text>
+  </svg>
+</div>
+<section class="card" id="ch1">
+<div class="chap-kicker">Chapter One · Harvard College Observatory · 1890s</div>
+<h2>The Computers Wore Skirts</h2>
+
+<p>Before "computer" meant a machine, it meant a <b>person who computes</b>. At Harvard's observatory, the director hired a room full of them — all women, because (he openly admitted) he could pay women a fraction of what men demanded: about <b>25 cents an hour</b>. The men worked the telescopes at night; the women were handed the glass photographs the telescopes produced and told to measure, catalog, and calculate. They were expected to be careful, quiet, and unimportant.</p>
+<p>The room had other plans. Williamina Fleming, hired away from work as the director's maid, ended up classifying ten thousand stars and discovering the Horsehead Nebula. Annie Jump Cannon, nearly deaf since childhood, invented the system for sorting stars (O-B-A-F-G-K-M) that every astronomer on Earth still memorizes today. And at one desk sat a minister's daughter from Massachusetts, also nearly deaf after an illness: <b>Henrietta Swan Leavitt</b>. Colleagues remembered her as the quietest person in the room, and the hardest working. One astronomer called her "possessed of the best mind at the Observatory."</p>
+<div class="checkpoint" id="cp1">
+<div class="cp-kicker">&#9733; Checkpoint 1 &middot; A computer's paycheck</div>
+<div class="question">At <b>25 cents</b> an hour, how many <b>dollars</b> did a Harvard computer earn in an <b>8-hour</b> day? (100 cents = 1 dollar.)</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a1" aria-label="answer 1">
+<span class="unit">dollars</span>
+<button class="check-btn" onclick="check(1)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h1').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h1">25 × 8 = 200 cents. Now make it dollars.</div>
+<div class="feedback" id="f1" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch2">
+<div class="chap-kicker">Chapter Two · Glass universes</div>
+<h2>Ten Years of Blinking Dots</h2>
+
+<p>Leavitt's assignment sounded numbing: compare photographs of the same patch of sky taken on different nights, and find stars that <b>changed brightness</b> — variable stars. The photos came from Harvard's southern station in Peru and showed the <b>Magellanic Clouds</b>, two little companion galaxies of the Milky Way (southern-sky neighbors of Crux, which you've plotted).</p>
+<p>Her method was a marvel of patience: lay a negative plate from one night over a positive plate from another; any star that changed brightness pops out as a mismatched dot among tens of thousands. Dot by dot, plate by plate, year after year, Leavitt found them — eventually <b>2,400 variable stars</b>, roughly half of all the variable stars known to humanity at the time. A Princeton astronomer, half-joking and half-awed, called her a "variable-star fiend."</p>
+<p>Among her variables was one special breed: <b>Cepheids</b>, stars that pulse like slow heartbeats — brightening, dimming, brightening again on a steady rhythm of days or weeks, each star keeping its own faithful period like a lighthouse with its own signature.</p>
+<div class="checkpoint" id="cp2">
+<div class="cp-kicker">&#9733; Checkpoint 2 &middot; The patience budget</div>
+<div class="question">Leavitt cataloged about <b>2,400</b> variable stars over roughly <b>10 years</b> of plate work. On average, about how many per year is that?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a2" aria-label="answer 2">
+<span class="unit">stars per year</span>
+<button class="check-btn" onclick="check(2)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h2').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h2">2,400 ÷ 10 — just knock off one zero.</div>
+<div class="feedback" id="f2" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch3">
+<div class="chap-kicker">Chapter Three · 1908–1912</div>
+<h2>The Pattern in the Blinking</h2>
+
+<p>Here's the problem Leavitt solved without anyone asking her to. Normally, you can't tell if a star looks bright because it <i>is</i> bright, or just because it's <i>close</i> — a candle nearby outshines a lighthouse far away. Brightness alone tells you nothing about distance. This is why nobody knew how big anything in the universe was.</p>
+<p>But Leavitt noticed her Small Magellanic Cloud Cepheids had a hidden advantage: they're all in the same faraway cloud, so they're all at <b>practically the same distance</b> from us — like streetlights in one distant town. Same distance means the comparison is fair: if one looks brighter than another, it truly <i>is</i> brighter.</p>
+<p>So she compared 25 of them, and there it was — a pattern so clean it looks like a law of nature, because it is one. <b>The longer a Cepheid's blink cycle, the brighter the star truly is.</b> A 3-day blinker is modest; a 30-day blinker is a monster thousands of times brighter than the Sun. Plot period against brightness and the stars fall obediently along a single line.</p>
+<svg class="illus" width="440" height="240" viewBox="0 0 440 240" role="img" aria-label="Chart: Cepheid blink period versus true brightness, points rising along a line">
+  <rect width="440" height="240" fill="#0d1330" rx="10"/>
+  <line x1="56" y1="192" x2="404" y2="192" stroke="#3a4a86" stroke-width="1.5"/>
+  <line x1="56" y1="192" x2="56" y2="28" stroke="#3a4a86" stroke-width="1.5"/>
+  <text x="230" y="222" fill="#8f9cc4" font-size="12" text-anchor="middle" font-family="Georgia">blink period (days) →</text>
+  <text x="30" y="110" fill="#8f9cc4" font-size="12" text-anchor="middle" font-family="Georgia" transform="rotate(-90 30 110)">true brightness →</text>
+  <line x1="70" y1="176" x2="390" y2="44" stroke="#3a5da8" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <g fill="#e8a90c" stroke="#8a6400" stroke-width="0.8">
+    <circle cx="80" cy="174" r="4.5"/><circle cx="112" cy="158" r="4.5"/><circle cx="140" cy="150" r="4.5"/>
+    <circle cx="168" cy="134" r="4.5"/><circle cx="196" cy="126" r="4.5"/><circle cx="224" cy="112" r="4.5"/>
+    <circle cx="252" cy="102" r="4.5"/><circle cx="280" cy="88" r="4.5"/><circle cx="308" cy="80" r="4.5"/>
+    <circle cx="336" cy="64" r="4.5"/><circle cx="364" cy="56" r="4.5"/>
+  </g>
+  <text x="96" y="205" fill="#aebadf" font-size="11" font-family="Georgia">quick blinkers: dimmer</text>
+  <text x="392" y="40" fill="#aebadf" font-size="11" text-anchor="end" font-family="Georgia">slow blinkers: brighter</text>
+</svg>
+<div class="bigidea">🌟 <b>Big Idea:</b> Leavitt's discovery came from doing a "boring" job with ferocious care — thousands of comparisons nobody would ever applaud — until a pattern surfaced that nobody else on Earth had the data, or the patience, to see. Tycho would recognize her instantly as one of his own.</div>
+<div class="checkpoint" id="cp3">
+<div class="cp-kicker">&#9733; Checkpoint 3 &middot; Read the pattern</div>
+<div class="question">Three Cepheids, all in the Small Magellanic Cloud (so: all the same distance). Star A blinks every <b>2 days</b>. Star B blinks every <b>10 days</b>. Star C blinks every <b>30 days</b>. According to Leavitt's law, which star is truly the brightest?</div>
+<div class="answer-row">
+<button class="mc-btn" onclick="checkMC(3,this,false)">Star A — the fast blinker</button>
+<button class="mc-btn" onclick="checkMC(3,this,false)">Star B — the middle one</button>
+<button class="mc-btn" onclick="checkMC(3,this,true)">Star C — the slow blinker</button>
+</div>
+<div class="feedback" id="f3" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch4">
+<div class="chap-kicker">Chapter Four · The yardstick</div>
+<h2>How to Measure the Unmeasurable</h2>
+
+<p>Why does that pattern matter so much? Because it breaks the candle-versus-lighthouse problem wide open. Think of car headlights: they're all about equally bright, so when you see faint headlights at night, you instantly know the car is <i>far</i>. Faintness becomes distance — <b>once you know the true brightness</b>.</p>
+<p>Cepheids are headlights that <i>announce their true brightness</i> — you just have to time the blink. Spot a Cepheid anywhere in the universe: time its period → Leavitt's law gives its true brightness → compare with how faint it looks → out comes the <b>distance</b>. Astronomers finally had a yardstick that reached beyond the solar system, beyond the nearest stars, out into the deep.</p>
+<p>Within a few years, astronomers used Leavitt's law to measure the Milky Way itself. Then, in 1923, Edwin Hubble — with the world's new biggest telescope — spotted a Cepheid blinking inside the Andromeda spiral, timed it, applied the law… and the universe grew a thousandfold in one calculation.</p>
+<div class="checkpoint" id="cp4">
+<div class="cp-kicker">&#9733; Checkpoint 4 &middot; From her desk to Andromeda</div>
+<div class="question">Leavitt published her period–brightness law in <b>1912</b>. Hubble used it on Andromeda in <b>1923</b>. How many years from her quiet paper to the universe getting bigger?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a4" aria-label="answer 4">
+<span class="unit">years</span>
+<button class="check-btn" onclick="check(4)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h4').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h4">1923 − 1912.</div>
+<div class="feedback" id="f4" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch5">
+<div class="chap-kicker">Chapter Five · What she never knew</div>
+<h2>The Prize That Came Too Late</h2>
+
+<p>Henrietta Leavitt kept working at the Observatory — eventually promoted to head of stellar photometry — through illness, hearing loss, and a salary that never came close to matching her importance. She died of cancer in December <b>1921</b>, at 53. Andromeda's secret fell two years after her death; the expanding universe, a few years after that. All of it stood on her law.</p>
+<p>In <b>1925</b>, the Swedish mathematician Gösta Mittag-Leffler began preparing her Nobel Prize nomination — and learned, to his dismay, that he was writing to a woman who had died. The rules were firm then as now: no posthumous prizes. The nomination stopped there.</p>
+<p>Remember Kepler waiting decades to keep his promise to Tycho? History kept a small promise to Leavitt too, in its own way: there is a crater on the Moon named <b>Leavitt</b>, an asteroid named for her, and every measured distance in the cosmos carrying her fingerprints. And her story has a warning worth saying out loud: when Jocelyn Bell Burnell found pulsars in 1967, the prize went to her supervisor. Science is a team sport — <b>watch who gets left off the podium.</b></p>
+<div class="checkpoint" id="cp5">
+<div class="cp-kicker">&#9733; Checkpoint 5 &middot; Four years too late</div>
+<div class="question">Leavitt died in <b>1921</b>. The Nobel nomination attempt began in <b>1925</b>. By how many years did the world's biggest prize miss the quietest person in the room?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a5" aria-label="answer 5">
+<span class="unit">years</span>
+<button class="check-btn" onclick="check(5)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h5').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h5">1925 − 1921.</div>
+<div class="feedback" id="f5" aria-live="polite"></div>
+</div>
+<div class="checkpoint locked" id="cp6">
+<div class="cp-kicker">&#9733; Checkpoint 6 &middot; One last big number</div>
+<div class="question">Andromeda — the galaxy Leavitt's yardstick unlocked — is about <b>2.5 million</b> light-years away: the light arriving tonight left it 2,500,000 years ago. How many <b>zeros</b> are in 2,500,000?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a6" aria-label="answer 6">
+<span class="unit">zeros</span>
+<button class="check-btn" onclick="check(6)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h6').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h6">Write it out: 2,500,000 — count only the zeros.</div>
+<div class="feedback" id="f6" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="finale">
+<div class="chap-kicker">Epilogue</div>
+<h2>&#10022; The Woman Who Handed Us the Universe &#10022;</h2>
+
+<p>In 1923, Edwin Hubble found a Cepheid star blinking in the Andromeda "nebula," applied Leavitt's law, and proved Andromeda was not a cloud inside our galaxy but <b>another galaxy entirely</b> — an island of hundreds of billions of stars, unimaginably far away. The universe went from one galaxy to billions, almost overnight, and the tool that did it was Leavitt's yardstick. Hubble himself said she deserved the Nobel Prize.</p>
+<p>The Nobel committee agreed — too late. In 1925 a Swedish mathematician began paperwork to nominate her, and only then learned she had died of cancer in 1921, at 53. Nobel Prizes are never given to those who have passed away. She never knew what her law would do: today, when astronomers say a galaxy is 50 million light-years away, somewhere at the bottom of that measurement is Henrietta Leavitt, at a wooden desk, being paid 25 cents an hour, noticing a pattern no one else had the patience to see.</p>
+<div class="cert">
+    <div style="font-size:.85rem; letter-spacing:2px; color:#8a6400; text-transform:uppercase;">Harvard College Observatory</div>
+    <div style="margin:10px 0 4px;">certifies that</div>
+    <div class="cname" id="certName">Astronomer</div>
+    <div style="margin:6px 0 10px;">has completed all 6 checkpoints of the tale of Henrietta Leavitt<br>and is hereby granted the rank of</div>
+    <div style="font-size:1.25rem; color:#8a6400; font-weight:bold;">&#11088; Harvard Computer, First Class &#11088;</div>
+  </div>
+<div class="laws">
+<p><b>What you now know that most adults don't:</b></p>
+<p>① Some stars blink in a code: <b>the slower the blink, the brighter the star truly is</b> — Leavitt's law.</p>
+<p>② That law turns brightness into <b>distance</b> — it's the yardstick that measured the Milky Way, Andromeda, and the expanding universe.</p>
+<p>③ Titles and paychecks measure a person's job. They do not measure a person's contribution.</p>
+</div>
+</section>
+<footer>Companion lesson to the Constellation Plotting Worksheets · All events are historical<br>(the pay really was 25 cents an hour)</footer>
+</div>
+<script>
+(function(){
+  var TOTAL = 6;
+  var solved = 0;
+  var answers = {"1": [2], "2": [240], "4": [11], "5": [4], "6": [5]};
+  var unlocks = {"1": "ch2", "2": "ch3", "3": "ch4", "4": "ch5", "5": "cp6", "6": "finale"};
+  var praise = ["Perfectly measured, {name}!", "Miss Leavitt would double-check and approve, {name}!", "Exactly right, computer!", "Precise as a glass plate under a magnifier!", "{name}, best mind at the Observatory!"];
+  var path = document.getElementById('cometPath');
+  var g = document.getElementById('trackStars');
+  var L = path.getTotalLength();
+  for (var i=0;i<TOTAL;i++){
+    var p = path.getPointAtLength(L*(i+0.5)/TOTAL);
+    var s = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var r1=8, r2=3.4, d='';
+    for (var k=0;k<10;k++){
+      var rr = (k%2===0)?r1:r2, an = -Math.PI/2 + k*Math.PI/5;
+      d += (k===0?'M':'L') + (p.x+rr*Math.cos(an)).toFixed(1) + ' ' + (p.y+rr*Math.sin(an)).toFixed(1) + ' ';
+    }
+    s.setAttribute('d', d+'Z');
+    s.setAttribute('fill', '#2a3560');
+    s.setAttribute('stroke', '#3a4a86');
+    s.setAttribute('id', 'tstar'+(i+1));
+    g.appendChild(s);
+  }
+  var starOrder = [1, 2, 3, 4, 5, 6];
+  function lightStar(cpid){
+    var s = document.getElementById('tstar'+(starOrder.indexOf(cpid)+1));
+    if(s){ s.setAttribute('fill','#e8a90c'); s.setAttribute('stroke','#ffe9b0'); }
+  }
+  function reveal(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('locked');
+    el.classList.add('solved-glow');
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 250);
+  }
+  function parseNum(v){
+    v = (v||'').replace(/[,\s]/g,'').replace(/[^0-9.\-]/g,'');
+    return v === '' ? NaN : Number(v);
+  }
+  function pname(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    return nm !== '' ? nm : 'astronomer';
+  }
+  function withName(msg){ return msg.replace(/\{name\}/g, pname()); }
+  function solve(cpid){
+    solved++; lightStar(cpid); reveal(unlocks[cpid]);
+    if (solved >= TOTAL) finish();
+  }
+  var tries = {};
+  window.check = function(n){
+    var input = document.getElementById('a'+n);
+    var fb = document.getElementById('f'+n);
+    var val = parseNum(input.value);
+    var ok = answers[n].indexOf(val) !== -1;
+    if (ok){
+      if (!input.dataset.done){
+        input.dataset.done = '1';
+        fb.className = 'feedback good';
+        fb.textContent = '\u2713 ' + withName(praise[Math.floor(Math.random()*praise.length)]);
+        input.disabled = true;
+        solve(n);
+      }
+    } else {
+      tries[n] = (tries[n]||0)+1;
+      fb.className = 'feedback bad';
+      fb.textContent = isNaN(val) ? withName('\u2717 Type a number first, {name}!') :
+        (tries[n] >= 2 ? withName('\u2717 Not yet, {name} \u2014 try the Hint button. Real scientists redo their math all the time.') :
+         withName('\u2717 Not quite, {name} \u2014 measure again!'));
+      input.classList.add('shake');
+      setTimeout(function(){input.classList.remove('shake');}, 450);
+      if (tries[n] >= 2) { var h=document.getElementById('h'+n); if(h) h.style.display='block'; }
+    }
+  };
+  var mcMsgs = {"3": {"good": "Right \u2014 slower blink, brighter star. Now flip it around: measure any Cepheid's blink, anywhere in the sky, and Leavitt's law tells you its TRUE brightness. That's about to become the most powerful trick in astronomy.", "bad": "Look at the chart: which side of the line are the slow blinkers on?"}};
+  var mcDone = {};
+  window.checkMC = function(n, btn, correct){
+    var fb = document.getElementById('f'+n);
+    if (mcDone[n]) return;
+    if (correct){
+      mcDone[n] = true;
+      btn.style.borderColor = '#7fe0a7'; btn.style.color = '#7fe0a7';
+      fb.className = 'feedback good';
+      fb.textContent = '\u2713 ' + withName(mcMsgs[n].good);
+      solve(n);
+    } else {
+      fb.className = 'feedback bad';
+      fb.textContent = '\u2717 ' + withName(mcMsgs[n].bad);
+      btn.classList.add('shake');
+      setTimeout(function(){btn.classList.remove('shake');}, 450);
+    }
+  };
+  function finish(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
+  }
+})();
+</script>
+</body>
+</html>
