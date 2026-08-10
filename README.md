@@ -88,5 +88,6 @@ Pluto, Katherine Johnson, and more.
 
 ## License
 
-TBD. Code and prose are original to this project; embedded artwork is public-domain
-historical material (see `media/README.md` for sourcing notes before redistributing).
+[MIT](LICENSE). Code and prose are original to this project; embedded artwork is
+public-domain historical material (see `media/README.md` for sourcing notes before
+redistributing).
