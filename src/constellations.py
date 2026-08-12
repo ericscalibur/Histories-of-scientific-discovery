@@ -584,7 +584,7 @@ def make_page(c, xs, ys, geom, place, answer_key):
     for key in SKY_LINE_STYLE:
         if place.get(key) is None:
             continue
-        show = answer_key or key == "gal"   # ecliptic: students plot it
+        show = answer_key   # worksheet gets only the equation: students plot it
         pos = place_legend(xs, ys, rects, lpts)
         rects.append(draw_sky_line(ax, *place[key], key, show, pos))
     rose_pos = place_rose(xs, ys, rects, lpts)
