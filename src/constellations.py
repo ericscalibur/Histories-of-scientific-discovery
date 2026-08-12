@@ -13,6 +13,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.patches import FancyBboxPatch
+import os
 import string
 
 # ---------------- page/grid geometry ----------------
@@ -62,6 +63,7 @@ CONSTELLATIONS = [
     ),
     dict(
         key="scorpius", title="Scorpius", subtitle="The Scorpion",
+        ecliptic=True,
         stars=[("Acrab", 16.090, -19.805), ("Dschubba", 16.005, -22.622),
                ("Pi Sco", 15.981, -26.114), ("Sigma Sco", 16.353, -25.593),
                ("Antares", 16.490, -26.432), ("Tau Sco", 16.598, -28.216),
@@ -75,6 +77,7 @@ CONSTELLATIONS = [
     dict(
         key="sagittarius", title="Sagittarius",
         subtitle='The Archer — find the "Teapot"!',
+        ecliptic=True,
         stars=[("Alnasl", 18.096, -30.424), ("Kaus Australis", 18.403, -34.385),
                ("Ascella", 19.043, -29.880), ("Phi Sgr", 18.762, -26.991),
                ("Kaus Borealis", 18.466, -25.421), ("Kaus Media", 18.350, -29.828),
@@ -115,6 +118,7 @@ CONSTELLATIONS = [
                ("Deneb (in Cygnus)", 20.690, 45.280),
                ("Altair (in Aquila)", 19.846, 8.868)],
         paths=["ABCA"],
+        galactic=True,
     ),
     dict(
         key="lyra", title="Lyra", subtitle="The Harp",
@@ -143,6 +147,14 @@ CONSTELLATIONS = [
 ]
 
 # ---------------- projection & snapping ----------------
+def gnomonic(ra, dec, ra0, dec0):
+    """Gnomonic projection about (ra0, dec0); returns x, y, cos(angular dist)."""
+    d = ra - ra0
+    cosc = np.sin(dec0) * np.sin(dec) + np.cos(dec0) * np.cos(dec) * np.cos(d)
+    x = np.cos(dec) * np.sin(d) / cosc
+    y = (np.cos(dec0) * np.sin(dec) - np.sin(dec0) * np.cos(dec) * np.cos(d)) / cosc
+    return -x, y, cosc  # flip x: RA increases to the left (sky view)
+
 def project(stars):
     """Gnomonic projection centered on the constellation, north up, east left."""
     ra = np.array([s[1] for s in stars]) * 15.0 * np.pi / 180.0
@@ -151,15 +163,13 @@ def project(stars):
     vx = np.cos(dec) * np.cos(ra); vy = np.cos(dec) * np.sin(ra); vz = np.sin(dec)
     cx, cy, cz = vx.mean(), vy.mean(), vz.mean()
     ra0 = np.arctan2(cy, cx); dec0 = np.arctan2(cz, np.hypot(cx, cy))
-    d = ra - ra0
-    cosc = np.sin(dec0) * np.sin(dec) + np.cos(dec0) * np.cos(dec) * np.cos(d)
-    x = np.cos(dec) * np.sin(d) / cosc
-    y = (np.cos(dec0) * np.sin(dec) - np.sin(dec0) * np.cos(dec) * np.cos(d)) / cosc
-    return -x, y  # flip x: RA increases to the left (sky view)
+    x, y, _ = gnomonic(ra, dec, ra0, dec0)
+    return x, y, (ra0, dec0)
 
 def fit_and_snap(x, y, factor=1.0):
-    x = x - (x.max() + x.min()) / 2.0
-    y = y - (y.max() + y.min()) / 2.0
+    cx = (x.max() + x.min()) / 2.0
+    cy = (y.max() + y.min()) / 2.0
+    x = x - cx; y = y - cy
     sx = FIT_X / max(abs(x).max(), 1e-9)
     sy = FIT_Y / max(abs(y).max(), 1e-9)
     s = min(sx, sy) * factor
@@ -171,7 +181,73 @@ def fit_and_snap(x, y, factor=1.0):
         while pts[:i].count(pts[i]) > 0:
             pts[i] = (pts[i][0] + 0.5, pts[i][1])
     xs = np.array([p[0] for p in pts]); ys = np.array([p[1] for p in pts])
-    return xs, ys
+    return xs, ys, (cx, cy, s)
+
+# J2000 poles of reference great circles on the sky (RA_deg, Dec_deg)
+GAL_POLE = (192.85948, 27.12825)   # galactic north pole -> galactic equator
+ECL_POLE = (270.0, 66.5607)        # ecliptic north pole -> ecliptic
+
+def great_circle_line(pole, center, transform, min_len=5.0):
+    """Slope/intercept in final worksheet coords of the great circle with the
+    given pole.
+
+    A great circle maps to a straight line under the gnomonic projection, so
+    the fit is exact; m and b are rounded to quarter-units for the worksheet.
+    Returns None if the circle misses the grid (or barely clips a corner).
+    """
+    cx, cy, s = transform
+    ra_p = np.radians(pole[0]); dec_p = np.radians(pole[1])
+    p = np.array([np.cos(dec_p) * np.cos(ra_p),
+                  np.cos(dec_p) * np.sin(ra_p), np.sin(dec_p)])
+    u = np.cross(p, (0.0, 0.0, 1.0)); u /= np.linalg.norm(u)
+    v = np.cross(p, u)
+    t = np.linspace(0, 2 * np.pi, 1441)
+    pts = np.outer(np.cos(t), u) + np.outer(np.sin(t), v)
+    ra = np.arctan2(pts[:, 1], pts[:, 0])
+    dec = np.arcsin(np.clip(pts[:, 2], -1, 1))
+    gx, gy, cosc = gnomonic(ra, dec, *center)
+    near = cosc > 0.5   # same hemisphere, close to the projection center
+    X = (gx[near] - cx) * s; Y = (gy[near] - cy) * s
+    inview = (np.abs(X) < GX) & (np.abs(Y) < GY)
+    if inview.sum() < 2:
+        return None
+    m, b = np.polyfit(X[inview], Y[inview], 1)
+    # kid-friendly: slope to quarter-units, intercept onto the half-unit grid
+    m = round(m * 4) / 4.0; b = round(b * 2) / 2.0
+    ends = clip_line_to_grid(m, b)
+    if ends is None or np.hypot(ends[1][0] - ends[0][0],
+                                ends[1][1] - ends[0][1]) < min_len:
+        return None
+    mx = (ends[0][0] + ends[1][0]) / 2.0; my = (ends[0][1] + ends[1][1]) / 2.0
+    if GX - abs(mx) < 1.0 or GY - abs(my) < 0.5:   # only grazes the border
+        return None
+    return m, b
+
+def sky_lines(c, center, transform):
+    """The reference lines (galactic / ecliptic) requested by constellation c."""
+    out = {}
+    if c.get("galactic"):
+        out["gal"] = great_circle_line(GAL_POLE, center, transform)
+    if c.get("ecliptic"):
+        out["ecl"] = great_circle_line(ECL_POLE, center, transform)
+    return out
+
+def sky_ok(c, lines):
+    """True if every requested reference line landed on the grid."""
+    return all(v is not None for v in lines.values())
+
+def clip_line_to_grid(m, b):
+    """Endpoints of y = m*x + b clipped to the grid rectangle."""
+    pts = []
+    for x in (-GX, GX):
+        y = m * x + b
+        if -GY <= y <= GY: pts.append((x, y))
+    if abs(m) > 1e-9:
+        for y in (-GY, GY):
+            x = (y - b) / m
+            if -GX <= x <= GX: pts.append((x, y))
+    pts = sorted(set(pts))
+    return (pts[0], pts[-1]) if len(pts) >= 2 else None
 
 def fmt(v):
     return str(int(v)) if float(v).is_integer() else f"{v:g}"
@@ -380,7 +456,7 @@ def label_rect(lx, ly, ha, va, w=2.1, h=0.55):
     y0 = ly if va == "bottom" else (ly - h if va == "top" else ly - h / 2)
     return (x0, y0, x0 + w, y0 + h)
 
-def draw_stars(ax, c, xs, ys, block_rects, labeled=True):
+def draw_stars(ax, c, xs, ys, block_rects, labeled=True, line_pts=()):
     letters = string.ascii_uppercase
     for a, b in path_segments(c["paths"]):
         ax.plot([xs[a], xs[b]], [ys[a], ys[b]], lw=2.0, color=LINE, zorder=7,
@@ -389,6 +465,7 @@ def draw_stars(ax, c, xs, ys, block_rects, labeled=True):
                linewidth=0.7, zorder=8)
     if not labeled:
         return
+    lp = np.array(line_pts) if len(line_pts) else None
     placed = []   # rects of placed labels
     for i in range(len(xs)):
         best, bestscore = None, -1e9
@@ -409,6 +486,10 @@ def draw_stars(ax, c, xs, ys, block_rects, labeled=True):
                 sx, sy = xs[j], ys[j]
                 if rect[0] - 0.25 < sx < rect[2] + 0.25 and rect[1] - 0.25 < sy < rect[3] + 0.25:
                     score -= 25
+            if lp is not None:
+                inside = ((lp[:, 0] > rect[0] - 0.1) & (lp[:, 0] < rect[2] + 0.1) &
+                          (lp[:, 1] > rect[1] - 0.1) & (lp[:, 1] < rect[3] + 0.1))
+                if inside.any(): score -= 15
             score -= 0.35 * np.hypot(dx, dy)  # prefer close offsets, all else equal
             if score > bestscore:
                 bestscore, best = score, (lx, ly, ha, va, rect)
@@ -419,33 +500,131 @@ def draw_stars(ax, c, xs, ys, block_rects, labeled=True):
                     fontsize=8, fontweight="bold", color=NAVY, zorder=9,
                     bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.75))
 
+# (flag key in place dict, color, dash pattern, legend wording)
+SKY_LINE_STYLE = dict(
+    gal=("#7a6bb5", (0, (6, 3)), "galactic plane (the Milky Way)"),
+    ecl=("#c9761e", (0, (6, 2, 1, 2)), "ecliptic (the Sun's path)"),
+)
+LEG_W, LEG_H = 8.7, 0.8
+
+def place_legend(xs, ys, rects, lpts):
+    for pad in (0.9, 0.6, 0.35):
+        pos = find_block_pos(LEG_W, LEG_H, xs, ys, pad=pad,
+                             avoid_rects=rects, line_pts=lpts)
+        if pos is not None:
+            return pos
+    return (-GX + 0.3, GY - 0.25)
+
+def draw_sky_line(ax, m, b, key, show_line, pos):
+    """Reference line (if show_line) plus its equation legend; returns the
+    legend's rect."""
+    color, dashes, label = SKY_LINE_STYLE[key]
+    if show_line:
+        (x1, y1), (x2, y2) = clip_line_to_grid(m, b)
+        ax.plot([x1, x2], [y1, y2], lw=1.6, color=color, ls=dashes,
+                zorder=1, solid_capstyle="round")
+    else:
+        label = "plot the " + label
+    sign = "+" if b >= 0 else "−"
+    eq = f"{label}:   y = {fmt(m)}x {sign} {fmt(abs(b))}".replace("-", "−")
+    bx, by = pos
+    ly = by - LEG_H / 2
+    ax.plot([bx + 0.1, bx + 0.7], [ly, ly], lw=1.6, color=color, ls=dashes,
+            zorder=5, solid_capstyle="round")
+    ax.text(bx + 0.9, ly, eq, fontsize=9, style="italic", color=color,
+            ha="left", va="center", zorder=5,
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.85))
+    return (bx, by - LEG_H, bx + LEG_W, by)
+
+# ------- cardinal (compass) rose -------
+# Every chart is projected north-up / east-left (sky view), so the rose has the
+# same orientation on all pages; only its position is chosen per page.
+ROSE_W, ROSE_H = 2.7, 3.0
+
+def place_rose(xs, ys, rects, lpts):
+    for pad in (0.9, 0.6, 0.35):
+        pos = find_block_pos(ROSE_W, ROSE_H, xs, ys, pad=pad,
+                             avoid_rects=rects, line_pts=lpts)
+        if pos is not None:
+            return pos
+    return None
+
+def draw_rose(ax, pos):
+    bx, by = pos
+    cx, cy = bx + ROSE_W / 2, by - ROSE_H / 2 + 0.2
+    R = 0.8
+    ax.add_patch(plt.Circle((cx, cy), 0.5 * R, fill=False, ec=GRID_MAJOR,
+                            lw=0.8, zorder=4))
+    for ang, lab, col in [(90, "N", "#b03030"), (270, "S", NAVY),
+                          (180, "E", NAVY), (0, "W", NAVY)]:
+        a = np.radians(ang); dx, dy = np.cos(a), np.sin(a)
+        ax.annotate("", xy=(cx + R * dx, cy + R * dy), xytext=(cx, cy),
+                    arrowprops=dict(arrowstyle="-|>,head_width=0.16",
+                                    color=AXIS_COL, lw=1.2), zorder=5)
+        ax.text(cx + (R + 0.32) * dx, cy + (R + 0.34) * dy, lab, fontsize=9.5,
+                fontweight="bold", color=col, ha="center", va="center", zorder=5)
+    ax.text(cx, cy - R - 0.68, "sky view", fontsize=7, style="italic",
+            color="#4a5a7a", ha="center", va="center", zorder=5)
+    return (bx, by - ROSE_H, bx + ROSE_W, by)
+
 def make_page(c, xs, ys, geom, place, answer_key):
     fig = plt.figure(figsize=(PAGE_W, PAGE_H))
     ax = make_axes(fig)
     title_block(fig, c, answer_key)
     rects = draw_table(ax, c, xs, ys, geom, place)
+    sky_pts = []
+    for key in SKY_LINE_STYLE:
+        sky_pts += line_obstacles(place.get(key))
+    lpts = sample_lines(c, xs, ys) + sky_pts
+    # legends (positions depend only on layout, so worksheet and key match)
+    for key in SKY_LINE_STYLE:
+        if place.get(key) is None:
+            continue
+        show = answer_key or key == "gal"   # ecliptic: students plot it
+        pos = place_legend(xs, ys, rects, lpts)
+        rects.append(draw_sky_line(ax, *place[key], key, show, pos))
+    rose_pos = place_rose(xs, ys, rects, lpts)
+    if rose_pos is not None:
+        rects.append(draw_rose(ax, rose_pos))
     if answer_key:
-        draw_stars(ax, c, xs, ys, rects, labeled=True)
+        draw_stars(ax, c, xs, ys, rects, labeled=True, line_pts=sky_pts)
     return fig
 
 # ---------------- build ----------------
 FACTORS = (1.0, 0.94, 0.88, 0.82, 0.76, 0.7)
 
+def line_obstacles(mb, step=0.2):
+    """Points along a reference line (obstacles for block placement)."""
+    if mb is None:
+        return []
+    ends = clip_line_to_grid(*mb)
+    if ends is None:
+        return []
+    (x1, y1), (x2, y2) = ends
+    n = max(2, int(np.hypot(x2 - x1, y2 - y1) / step))
+    return [(x1 + t * (x2 - x1), y1 + t * (y2 - y1)) for t in np.linspace(0, 1, n)]
+
 def layout(c):
-    """Project, then shrink until the table fits in true dead space."""
-    x, y = project(c["stars"])
+    """Project, then shrink until the table fits in true dead space (and every
+    requested reference line lands on the grid)."""
+    x, y, center = project(c["stars"])
     geom = table_geom(c)
     n = geom["n"]
     modes = ["single", "split"] if n <= 9 else ["split", "single"]
     for mode in modes:
         for factor in FACTORS:
-            xs, ys = fit_and_snap(x, y, factor)
+            xs, ys, tf = fit_and_snap(x, y, factor)
+            lines = sky_lines(c, center, tf)
+            if not sky_ok(c, lines):
+                continue
             lpts = sample_lines(c, xs, ys)
+            for mb in lines.values():
+                lpts += line_obstacles(mb)
             if mode == "single":
                 pos = find_block_pos(geom["w_blk"], geom["single_h"], xs, ys, pad=1.05,
                                      line_pts=lpts)
                 if pos is not None:
-                    return xs, ys, geom, dict(mode="single", pos1=pos), factor
+                    return xs, ys, geom, dict(mode="single", pos1=pos, **lines), factor
             else:
                 pos1 = find_block_pos(geom["w_blk"], geom["h1"], xs, ys, pad=1.05,
                                       line_pts=lpts)
@@ -455,11 +634,16 @@ def layout(c):
                 pos2 = find_block_pos(geom["w_blk"], geom["h2"], xs, ys, pad=1.05,
                                       avoid_rects=[r1], line_pts=lpts)
                 if pos2 is not None:
-                    return xs, ys, geom, dict(mode="split", pos1=pos1, pos2=pos2), factor
-    xs, ys = fit_and_snap(x, y, 1.0)
+                    return xs, ys, geom, dict(mode="split", pos1=pos1, pos2=pos2,
+                                              **lines), factor
+    xs, ys, tf = fit_and_snap(x, y, 1.0)
+    lines = sky_lines(c, center, tf)
+    lpts = sample_lines(c, xs, ys)
+    for mb in lines.values():
+        lpts += line_obstacles(mb)
     pos = find_block_pos(geom["w_blk"], geom["single_h"], xs, ys, pad=0.5,
-                         line_pts=sample_lines(c, xs, ys)) or (-GX + 0.3, GY - 0.3)
-    return xs, ys, geom, dict(mode="single", pos1=pos), 1.0
+                         line_pts=lpts) or (-GX + 0.3, GY - 0.3)
+    return xs, ys, geom, dict(mode="single", pos1=pos, **lines), 1.0
 
 def main():
     layouts = {}
@@ -470,9 +654,10 @@ def main():
               f"pos1=({place['pos1'][0]:.2f}, {place['pos1'][1]:.2f})"
               + (f" pos2=({place['pos2'][0]:.2f}, {place['pos2'][1]:.2f})"
                  if place["mode"] == "split" else ""))
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "worksheets")
     for fname, key_flag in [("Constellation_Worksheets.pdf", False),
                             ("Constellation_Answer_Keys.pdf", True)]:
-        with PdfPages("/home/claude/out/" + fname) as pdf:
+        with PdfPages(os.path.join(out_dir, fname)) as pdf:
             for c in CONSTELLATIONS:
                 xs, ys, geom, place = layouts[c["key"]]
                 fig = make_page(c, xs, ys, geom, place, answer_key=key_flag)
