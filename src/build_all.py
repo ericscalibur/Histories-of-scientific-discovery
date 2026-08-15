@@ -13,20 +13,23 @@ from story_engine import build
 from stories1 import ERATOSTHENES, ECLIPSE_1919, LE_GENTIL
 from stories2 import PIGEON, LEAVITT
 from stories3 import NEWTON
+import figs
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "lessons") + os.sep
+MEDIA = os.path.join(os.path.dirname(__file__), "..", "media")
 
 jobs = [
-    (ERATOSTHENES, "Eratosthenes_Measures_the_World_Interactive_Story.html"),
-    (ECLIPSE_1919, "Einstein_Eclipse_1919_Interactive_Story.html"),
-    (LE_GENTIL, "Le_Gentil_Transit_of_Venus_Interactive_Story.html"),
-    (PIGEON, "Pigeon_Poop_Big_Bang_Interactive_Story.html"),
-    (LEAVITT, "Henrietta_Leavitt_Interactive_Story.html"),
-    (NEWTON, "Newton_Apple_and_Moon_Interactive_Story.html"),
+    (ERATOSTHENES, "ERATOSTHENES", "Eratosthenes_Measures_the_World_Interactive_Story.html"),
+    (ECLIPSE_1919, "ECLIPSE_1919", "Einstein_Eclipse_1919_Interactive_Story.html"),
+    (LE_GENTIL, "LE_GENTIL", "Le_Gentil_Transit_of_Venus_Interactive_Story.html"),
+    (PIGEON, "PIGEON", "Pigeon_Poop_Big_Bang_Interactive_Story.html"),
+    (LEAVITT, "LEAVITT", "Henrietta_Leavitt_Interactive_Story.html"),
+    (NEWTON, "NEWTON", "Newton_Apple_and_Moon_Interactive_Story.html"),
 ]
 plans = {}
-for story, fname in jobs:
-    plan = build(story, OUT + fname)
+for story, key, fname in jobs:
+    figs.attach(story, key)
+    plan = build(story, OUT + fname, media_dir=MEDIA)
     plans[fname] = plan
     print(fname, "->", len(plan), "checkpoints")
 with open(os.path.join(os.path.dirname(__file__), "tests", "test_plans.json"), "w") as f:
