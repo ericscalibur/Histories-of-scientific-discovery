@@ -1,6 +1,35 @@
 #!/usr/bin/env python3
 """Shared engine: builds a self-contained interactive story HTML from a story dict."""
-import json
+import base64, io, json, os
+
+# ---- margin figure embedding (requires Pillow only when a story uses figs) ----
+def _encode_img(img, max_w, quality):
+    from PIL import Image
+    if img.mode in ("RGBA", "P", "LA"):
+        img = img.convert("RGB")
+    w, h = img.size
+    if w > max_w:
+        img = img.resize((max_w, int(h * max_w / w)), Image.LANCZOS)
+    buf = io.BytesIO()
+    img.save(buf, "JPEG", quality=quality, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
+def _data_urls(path, disp_w=480, disp_q=82, full_w=1600, full_q=85):
+    from PIL import Image
+    img = Image.open(path)
+    return (_encode_img(img.copy(), disp_w, disp_q),
+            _encode_img(img.copy(), full_w, full_q))
+
+def fig_html(fig, media_dir):
+    """fig: {img, side ('left'|'right'), top (px), alt, title, scroll}"""
+    disp, full = _data_urls(os.path.join(media_dir, fig["img"]))
+    return (
+        '<aside class="margin-note mn-%s" style="top:%dpx">\n'
+        '    <div class="mn-fig" tabindex="0"><img src="%s" data-full="%s" alt="%s">'
+        '<div class="scroll-pop"><div class="scroll-body"><div class="scroll-paper">%s</div>'
+        '<div class="scroll-rod"></div></div></div></div>'
+        '<div class="mn-title">%s &middot; hover to unroll &middot; click to enlarge</div>\n'
+        '  </aside>' % (fig["side"], fig["top"], disp, full, fig["alt"], fig["scroll"], fig["title"]))
 
 CSS = """
   :root{
@@ -54,6 +83,57 @@ CSS = """
     padding:12px 16px; margin:16px 0; color:#22304f; font-size:1rem;}
   .bigidea b{color:var(--accent);}
   .illus{display:block; margin:16px auto; max-width:100%;}
+  /* ---- margin notes: photos live in the margins, never in the story column ---- */
+  .card{position:relative;}
+  .margin-note{display:none;}
+  .margin-note .mn-cap{font-size:.78rem; color:#4a5878; line-height:1.5; margin-top:7px; padding:0 3px 2px;}
+  .mn-fig{position:relative; cursor:help;}
+  .mn-fig img{display:block; width:100%; height:auto; border-radius:6px;}
+  .mn-title{font-size:.72rem; color:#4a5878; text-align:center; margin-top:5px; font-style:italic;
+    line-height:1.35; padding:0 2px 2px;}
+  @media (min-width:1120px){
+    .margin-note{display:block; position:absolute; z-index:3; margin:0; width:210px;
+      background:var(--parchment); border:1px solid #d9c9a3; border-radius:10px;
+      padding:8px 8px 6px; box-shadow:0 6px 20px rgba(0,0,0,.4); color:var(--ink);}
+    .mn-right{left:calc(100% + 18px);}
+    .mn-left{right:calc(100% + 18px); left:auto;}
+    .scroll-pop{position:absolute; top:-12px; opacity:0; pointer-events:none; z-index:20;
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));
+      transition:transform .25s ease .5s, opacity .2s ease .55s;}
+    .mn-right .scroll-pop{right:calc(100% - 12px); transform:translateX(30px);}
+    .mn-left .scroll-pop{left:calc(100% - 12px); transform:translateX(-30px);}
+    .scroll-body{width:0; height:auto; overflow:hidden;
+      transition:width .45s cubic-bezier(.6,.05,.4,1) .05s;}
+    .mn-right .scroll-body{direction:rtl;}
+    .scroll-paper{position:relative; direction:ltr; width:440px;
+      background:linear-gradient(180deg,#f8f0da 0%,#f3e8c8 55%,#eaddb6 100%);
+      color:#3d3320; font-size:.85rem; line-height:1.55;
+      border:1px solid #c9b57e; border-radius:10px;
+      box-shadow:0 14px 40px rgba(0,0,0,.55);}
+    .mn-right .scroll-paper{padding:16px 26px 16px 42px;}
+    .mn-left .scroll-paper{padding:16px 42px 16px 26px;}
+    .mn-right .scroll-paper::after{content:""; position:absolute; top:0; bottom:0; right:0; width:14px;
+      border-radius:0 10px 10px 0; background:linear-gradient(270deg, rgba(90,70,30,.35), rgba(90,70,30,0));}
+    .mn-left .scroll-paper::after{content:""; position:absolute; top:0; bottom:0; left:0; width:14px;
+      border-radius:10px 0 0 10px; background:linear-gradient(90deg, rgba(90,70,30,.35), rgba(90,70,30,0));}
+    .scroll-rod{display:block; position:absolute; top:-10px; bottom:-10px; width:22px; border-radius:11px;
+      background:linear-gradient(90deg,#5c3d15 0%, #c9a24a 45%, #8a6400 80%, #5c3d15 100%);
+      box-shadow:0 3px 10px rgba(0,0,0,.5); z-index:2;}
+    .mn-right .scroll-rod{left:-2px;}
+    .mn-left .scroll-rod{right:-2px;}
+    .scroll-rod::before, .scroll-rod::after{content:""; position:absolute; left:4px; width:14px; height:14px;
+      border-radius:50%; background:radial-gradient(circle at 35% 35%, #e8c97a, #6b4a1f);}
+    .scroll-rod::before{top:-7px;} .scroll-rod::after{bottom:-7px;}
+    .mn-fig:hover .scroll-pop, .mn-fig:focus .scroll-pop{opacity:1; transform:translateX(0);
+      pointer-events:auto; transition:transform .28s ease 0s, opacity .18s ease 0s;}
+    .mn-fig:hover .scroll-body, .mn-fig:focus .scroll-body{width:440px;
+      transition:width .6s cubic-bezier(.25,.8,.3,1) .26s;}
+  }
+  /* mid widths: slim the story column so the margins stay alive */
+  @media (min-width:1120px) and (max-width:1399px){
+    .wrap{max-width:760px;}
+    .margin-note{width:160px;}
+  }
   .checkpoint{background:linear-gradient(180deg,#1b2450,#141c42); color:#eef1fb;
     border-radius:12px; padding:20px 22px; margin:20px -8px -6px; border:1.5px solid #3a4a86;}
   .checkpoint + .checkpoint{margin-top:16px;}
@@ -193,6 +273,19 @@ JS = """
     var nm = (document.getElementById('playerName').value || '').trim();
     document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
   }
+  function blobUrl(d){
+    var p = d.indexOf(','), meta = d.slice(5, p), b64 = d.slice(p + 1);
+    var mime = meta.split(';')[0] || 'image/jpeg';
+    var bin = atob(b64), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([arr], {type: mime}));
+  }
+  document.querySelectorAll('.mn-fig img[data-full]').forEach(function(img){
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function(){
+      window.open(blobUrl(img.dataset.full), '_blank');
+    });
+  });
 })();
 """
 
@@ -256,7 +349,7 @@ def cp_html(cp, first_in_chapter):
     out.append('</div>')
     return "\n".join(out)
 
-def build(story, outpath):
+def build(story, outpath, media_dir=None):
     # assign checkpoint numbers and unlock chain
     cps = []
     for ch_i, ch in enumerate(story["chapters"]):
@@ -279,6 +372,8 @@ def build(story, outpath):
     for ch_i, ch in enumerate(story["chapters"]):
         lock = "" if ch_i == 0 else " locked"
         body.append('<section class="card%s" id="ch%d">' % (lock, ch_i + 1))
+        for fig in ch.get("figs", []):
+            body.append(fig_html(fig, media_dir))
         body.append('<div class="chap-kicker">%s</div>' % ch["kicker"])
         body.append('<h2>%s</h2>' % ch["title"])
         body.append(ch["html"])
