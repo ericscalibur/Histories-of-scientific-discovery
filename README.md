@@ -17,7 +17,7 @@ certificate in the student's name.
 | Lesson | Era | Checkpoints | Math highlights |
 |---|---|---|---|
 | **The Treasure of the Sky** — Tycho Brahe & Johannes Kepler | 1546–1627 | 17 | Parallax calculations, arcminutes, Kepler's three laws, the Cassini–Richer "measure the solar system" capstone |
-| **The Apple and the Moon** — Isaac Newton | 1642–1727 | 10 | The 60² Moon test, inverse-square law, Newton's three laws with problems |
+| **The Apple and the Moon** — Isaac Newton | 1642–1727 | 12 | The 60² Moon test, Galileo's Δy = ½at², Kepler's T² = a³, inverse-square law, Newton's three laws with problems |
 | **The Man Who Measured the World** — Eratosthenes | ~240 BC | 5 | Angles, proportions, measuring Earth with a stick and a shadow |
 | **The Day the Stars Moved** — Einstein & the 1919 eclipse | 1915–1919 | 6 | Arcseconds, predicted vs. measured, fractions |
 | **The Unluckiest Astronomer** — Le Gentil & the transit of Venus | 1761–1769 | 6 | Parallax at planetary scale, elapsed time, the first global science project |

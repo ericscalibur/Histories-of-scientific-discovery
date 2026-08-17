@@ -39,7 +39,7 @@ NEWTON_FIGS = [
                 "re-rooted itself and kept growing sideways, which is why it looks so "
                 "strange. It still makes apples. You can visit it &mdash; scientists' "
                 "pilgrimage to this tree has been going on for two centuries."))),
-    (4, dict(
+    (5, dict(
         img="Newton's_Principia_title_page.png",
         side="right", top=70,
         alt="Title page of the first edition of Newton's Principia, 1687",
@@ -51,7 +51,7 @@ NEWTON_FIGS = [
                 "of the Royal Society (and history's most famous diary-keeper). The Society "
                 "had no money to print it, so Edmond Halley &mdash; the comet Halley &mdash; "
                 "paid for it out of his own pocket."))),
-    (4, dict(
+    (5, dict(
         img="reflecting-telescope.jpg",
         side="left", top=420,
         alt="Newton's reflecting telescope, preserved at the Royal Society",
