@@ -32,7 +32,8 @@ catalog positions — answer keys included.
 
 ## Using the lessons
 
-Download any file from `lessons/` and open it in a browser. That's it. Progress lives
+Open **`index.html`** in a browser for a menu of every lesson — or open any file
+from `lessons/` directly. That's it. Progress lives
 in the page (refreshing restarts the lesson — by design, for classroom re-use).
 
 On a wide screen, every lesson's margins hold real historical artifacts — Tycho's own

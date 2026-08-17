@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histories of Scientific Discovery — Interactive Lessons</title>
+<style>
+  :root{
+    --night:#0b1230; --parchment:#f9f3e4; --ink:#22304f; --ink-soft:#4a5878;
+    --gold:#e8a90c; --gold-dark:#8a6400; --accent:#3a5da8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:linear-gradient(180deg,#070c22 0%, #0b1230 40%, #10173a 100%);
+    color:var(--parchment); font-family:Georgia,'Times New Roman',serif; min-height:100vh; overflow-x:hidden;}
+  .stars{position:fixed; inset:0; pointer-events:none; z-index:0;
+    box-shadow:8vw 12vh 0 0 #fff,22vw 6vh 0 1px #ffe9b0,35vw 18vh 0 0 #fff,48vw 9vh 0 0 #cfe0ff,
+    61vw 14vh 0 1px #fff,74vw 5vh 0 0 #ffe9b0,88vw 11vh 0 0 #fff,15vw 28vh 0 0 #cfe0ff,
+    29vw 33vh 0 1px #fff,55vw 27vh 0 0 #fff,69vw 31vh 0 0 #ffe9b0,83vw 26vh 0 0 #fff,
+    5vw 45vh 0 0 #fff,42vw 41vh 0 1px #cfe0ff,78vw 44vh 0 0 #fff,93vw 39vh 0 0 #ffe9b0,
+    12vw 58vh 0 0 #fff,33vw 62vh 0 0 #fff,52vw 55vh 0 1px #ffe9b0,66vw 60vh 0 0 #cfe0ff,
+    81vw 57vh 0 0 #fff,96vw 63vh 0 0 #fff,9vw 74vh 0 1px #fff,27vw 79vh 0 0 #ffe9b0,
+    45vw 72vh 0 0 #fff,63vw 77vh 0 0 #cfe0ff,87vw 74vh 0 1px #fff,18vw 90vh 0 0 #fff,
+    38vw 87vh 0 0 #ffe9b0,58vw 92vh 0 0 #fff,76vw 88vh 0 0 #fff,94vw 91vh 0 1px #cfe0ff;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.8;}
+  .wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:24px 18px 60px;}
+  header{text-align:center; padding:44px 8px 8px;}
+  header h1{font-size:clamp(1.8rem,4.5vw,2.7rem); color:var(--gold); letter-spacing:.5px;
+    text-shadow:0 2px 12px rgba(232,169,12,.35);}
+  header .sub{font-style:italic; color:#cdd6ee; margin-top:10px; font-size:1.08rem; line-height:1.6;}
+  header .note{color:#8f9cc4; font-size:.9rem; margin-top:10px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:20px; margin-top:30px;}
+  a.card{display:flex; flex-direction:column; text-decoration:none; background:var(--parchment);
+    color:var(--ink); border-radius:14px; padding:20px 22px 16px; border:1px solid #d9c9a3;
+    box-shadow:0 10px 30px rgba(0,0,0,.45), inset 0 0 60px rgba(180,140,60,.08);
+    transition:transform .18s ease, box-shadow .18s ease;}
+  a.card:hover{transform:translateY(-4px);
+    box-shadow:0 16px 40px rgba(0,0,0,.55), 0 0 26px rgba(232,169,12,.35), inset 0 0 60px rgba(180,140,60,.08);}
+  .era{font-size:.74rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dark); font-weight:bold;}
+  .card h2{font-size:1.22rem; margin:5px 0 2px; color:var(--ink); line-height:1.3;}
+  .who{font-style:italic; color:var(--ink-soft); font-size:.95rem; margin-bottom:9px;}
+  .teaser{font-size:.94rem; line-height:1.55; color:#33405f; flex:1;}
+  .meta{display:flex; justify-content:space-between; align-items:center; margin-top:13px;
+    border-top:1px dashed #c9b57e; padding-top:9px;}
+  .cps{font-size:.82rem; color:var(--gold-dark); font-weight:bold;}
+  .go{font-size:.9rem; color:var(--accent); font-weight:bold;}
+  a.card:hover .go{color:var(--gold-dark);}
+  .flag{display:inline-block; background:#fff3d0; border:1px solid var(--gold); color:#6b5200;
+    font-size:.7rem; letter-spacing:1.5px; text-transform:uppercase; border-radius:20px;
+    padding:2px 9px; margin-left:8px; vertical-align:2px;}
+  footer{color:#8f9cc4; text-align:center; font-size:.88rem; margin-top:44px; line-height:1.7;}
+  footer b{color:#cdd6ee;}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+<header>
+  <h1>✦ Histories of Scientific Discovery ✦</h1>
+  <div class="sub">True stories of comets that broke the sky, plague-year breakthroughs, heartbreak expeditions,<br>
+  and pigeon-related Nobel Prizes — with the real math locked inside.</div>
+  <div class="note">Pick any story. Solve the checkpoints to unlock each chapter. No internet needed once the page is open.</div>
+</header>
+
+<div class="grid">
+
+  <a class="card" href="lessons/Plato_and_Aristotle_Interactive_Story.html">
+    <div class="era">Athens · 427–322 BC</div>
+    <h2>The School of Athens</h2>
+    <div class="who">Plato &amp; Aristotle</div>
+    <div class="teaser">An execution, a cave full of shadows, five perfect shapes, and a machine made of words — the birth of thinking about thinking.</div>
+    <div class="meta"><span class="cps">★ 8 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Eratosthenes_Measures_the_World_Interactive_Story.html">
+    <div class="era">Alexandria · about 240 BC</div>
+    <h2>The Man Who Measured the World</h2>
+    <div class="who">Eratosthenes</div>
+    <div class="teaser">A librarian nicknamed "Second Place" measures the entire planet with a stick, a shadow, and a very well-counted walk.</div>
+    <div class="meta"><span class="cps">★ 5 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Tycho_and_Kepler_Interactive_Story.html">
+    <div class="era">Denmark &amp; Prague · 1546–1630</div>
+    <h2>The Treasure of the Sky<span class="flag">The Big One</span></h2>
+    <div class="who">Tycho Brahe &amp; Johannes Kepler</div>
+    <div class="teaser">A golden-nosed noble hoards the finest sky-data ever taken; a half-blind theorist breaks the heavens open with it. Real artifacts wait in the margins.</div>
+    <div class="meta"><span class="cps">★ 17 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Galileo_Starry_Messenger_Interactive_Story.html">
+    <div class="era">Italy · 1564–1642</div>
+    <h2>The Starry Messenger</h2>
+    <div class="who">Galileo Galilei</div>
+    <div class="teaser">A swinging lamp, a spyglass aimed upward, four new moons — and a trial that the Earth, moving all the while, declined to attend.</div>
+    <div class="meta"><span class="cps">★ 10 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Newton_Apple_and_Moon_Interactive_Story.html">
+    <div class="era">England · 1642–1727</div>
+    <h2>The Apple and the Moon</h2>
+    <div class="who">Isaac Newton</div>
+    <div class="teaser">A plague year, an orchard, an apple that really fell — and one law of gravity running everything from the orchard to the farthest planet.</div>
+    <div class="meta"><span class="cps">★ 12 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Le_Gentil_Transit_of_Venus_Interactive_Story.html">
+    <div class="era">France &amp; India · 1760–1771</div>
+    <h2>The Unluckiest Astronomer</h2>
+    <div class="who">Guillaume Le Gentil</div>
+    <div class="teaser">Eleven years from home, two transits of Venus, a war, a fortress built around a telescope — and one single, unforgivable cloud.</div>
+    <div class="meta"><span class="cps">★ 6 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Henrietta_Leavitt_Interactive_Story.html">
+    <div class="era">Harvard · 1893–1923</div>
+    <h2>The Yardstick of the Universe</h2>
+    <div class="who">Henrietta Swan Leavitt</div>
+    <div class="teaser">A quiet room of women "computers," half a million glass photographs of the sky — and the 30-cents-an-hour discovery that measures the cosmos.</div>
+    <div class="meta"><span class="cps">★ 6 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Einstein_Eclipse_1919_Interactive_Story.html">
+    <div class="era">Berlin, Príncipe &amp; Brazil · 1915–1919</div>
+    <h2>The Day the Stars Moved</h2>
+    <div class="who">Einstein &amp; Eddington</div>
+    <div class="teaser">Two ships, seven minutes of darkness, and glass photographs of stars sitting slightly out of place — the measurement that made Einstein famous overnight.</div>
+    <div class="meta"><span class="cps">★ 6 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+  <a class="card" href="lessons/Pigeon_Poop_Big_Bang_Interactive_Story.html">
+    <div class="era">New Jersey · 1964</div>
+    <h2>The Hiss from the Beginning of Time</h2>
+    <div class="who">Penzias &amp; Wilson</div>
+    <div class="teaser">Two radio astronomers, one giant horn antenna, a stubborn unexplainable hiss — and the pigeons that nearly stole a Nobel Prize.</div>
+    <div class="meta"><span class="cps">★ 5 checkpoints</span><span class="go">Begin →</span></div>
+  </a>
+
+</div>
+
+<footer>
+  The stories can be taken in any order — each one stands alone.<br>
+  Companion <b>constellation plotting worksheets</b> (printable PDFs) live in the <b>worksheets</b> folder.<br>
+  Every date, quote, and number is checked; where a famous story is myth, the lesson says so.
+</footer>
+</div>
+</body>
+</html>
