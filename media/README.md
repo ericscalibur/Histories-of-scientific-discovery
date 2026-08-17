@@ -36,6 +36,18 @@ redistribution:
   Penzias & Wilson, Planck CMB map (ESA).
 - **Leavitt:** her portrait, the Harvard computers workroom (~1891), a glass plate of
   Andromeda, Harvard Circular 173 p.3 (the 1912 period–luminosity figures).
+- **Plato & Aristotle:** Kepler's 1596 nested-solids engraving (shared with the Tycho
+  lesson — captioned honestly as Kepler's drawing of Plato's shapes).
+
+## Wish list — Plato & Aristotle lesson
+
+- Raphael's *School of Athens* (1511), the central detail: Plato pointing up,
+  Aristotle palm down. Public domain; Wikimedia Commons has high-res scans.
+- Roman marble bust of Plato (copy after Silanion) and bust of Aristotle (copy after
+  Lysippos) — both on Commons from museum photography.
+- The "Plato's Academy" mosaic from Pompeii (Naples Archaeological Museum).
+- A lunar-eclipse sequence photo showing Earth's round shadow (for the
+  round-Earth-proof chapter).
 
 ## Not embedded (kept for reference only)
 

@@ -23,6 +23,7 @@ certificate in the student's name.
 | **The Unluckiest Astronomer** — Le Gentil & the transit of Venus | 1761–1769 | 6 | Parallax at planetary scale, elapsed time, the first global science project |
 | **The Hiss from the Beginning of Time** — the "pigeon poop" Nobel | 1964 | 5 | Negative temperatures, unit conversion, big numbers |
 | **The Yardstick of the Universe** — Henrietta Leavitt | 1893–1923 | 6 | Reading patterns in data, rates, the cosmic distance ladder |
+| **The School of Athens** — Plato & Aristotle | 427–322 BC | 8 | BC arithmetic, squares & doubling, corners − edges + faces, the logic of valid arguments |
 
 Plus **constellation plotting worksheets** (`worksheets/`): 12 real constellations as
 (x, y) coordinate connect-the-dots on a four-quadrant grid, built from J2000 star
