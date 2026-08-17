@@ -168,7 +168,7 @@ ECLIPSE_1919 = dict(
             html="""
 <p>Here's what makes this story bigger than physics. Britain and Germany had just spent four years in the most terrible war the world had seen. Millions were dead. British newspapers wouldn't even print German music reviews. And now a British team was preparing to spend a fortune to test — maybe to <i>prove</i> — the theory of a <b>German</b> scientist.</p>
 <p>The man leading the charge was <b>Arthur Eddington</b>, one of Britain's best astronomers and a <b>Quaker</b> — his faith forbade him from fighting. He nearly went to a work camp for refusing the army; the Astronomer Royal, Frank Dyson, saved him by telling the government Eddington was needed for a scientific mission. Eddington believed science should heal what war had broken: if a British expedition confirmed a German's theory, it would prove that <b>truth is loyal to no nation</b>.</p>
-<p>And the measurement itself? Brutally hard. The predicted shift — 1.75 arcseconds — is a <i>tiny</i> angle. You know this ladder by now: a circle has 360 <b>degrees</b>; each degree has 60 <b>arcminutes</b> (Tycho's units, Kepler's famous 8); and each arcminute splits into 60 <b>arcseconds</b>. They were hunting a shift about a thousand times smaller than the width of the full Moon — on glass photographs, with 1919 telescopes, in the field, in a hurry.</p>""",
+<p>And the measurement itself? Brutally hard. The predicted shift — 1.75 arcseconds — is a <i>tiny</i> angle. Climb the ladder of sky-angles: a circle has 360 <b>degrees</b>; each degree has 60 <b>arcminutes</b>; and each arcminute splits into 60 <b>arcseconds</b>. They were hunting a shift about a thousand times smaller than the width of the full Moon — on glass photographs, with 1919 telescopes, in the field, in a hurry.</p>""",
             cps=[dict(
                 type="num",
                 kicker="Climbing down the angle ladder",
@@ -184,7 +184,7 @@ ECLIPSE_1919 = dict(
 <p>Dyson and Eddington knew one golden rule of great measurements (Tycho's rule, really): <b>never trust a single observation</b>. Clouds, broken instruments, bad luck — any one site could fail. So they sent <b>two expeditions</b> to stand in the Moon's shadow on May 29, 1919:</p>
 <p>• <b>Eddington</b> sailed to <b>Príncipe</b>, a tiny island off the coast of West Africa.<br>
 • <b>Crommelin and Davidson</b> sailed to <b>Sobral</b>, in the dry backlands of Brazil.</p>
-<p>Fate had dealt them a lucky card: on eclipse day the Sun would sit right in front of the <b>Hyades</b> — a bright star cluster (it forms the face of Taurus the Bull — a constellation your class can plot!). Plenty of measurable stars right beside the blocked-out Sun. And this eclipse was a monster — near its peak, totality lasted almost <b>7 minutes</b>, one of the longest of the century.</p>
+<p>Fate had dealt them a lucky card: on eclipse day the Sun would sit right in front of the <b>Hyades</b> — a bright star cluster. Plenty of measurable stars right beside the blocked-out Sun. And this eclipse was a monster — near its peak, totality lasted almost <b>7 minutes</b>, one of the longest of the century.</p>
 <p>The plan: photograph the star field during totality, then photograph the <i>same stars</i> months later at night, when the Sun was elsewhere. Lay the glass plates side by side, measure with microscopes. If Einstein was right, the stars near the Sun's edge would sit <i>visibly out of place</i> — pushed outward by the Sun's dent in space.</p>""",
             cps=[dict(
                 type="num",
