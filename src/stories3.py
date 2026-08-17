@@ -160,7 +160,7 @@ NEWTON = dict(
             title="Push, Mass, and Push-Back",
             html="""
 <div class="bigidea">⚖️ <b>SECOND LAW:</b> Force = mass × acceleration (<b>F = m × a</b>). The harder you push, the faster something speeds up; the heavier it is, the more force the same speed-up costs. Force is measured in <b>newtons</b> — yes, they named the unit after him.</div>
-<p>One law, three knobs: know any two of force, mass, and acceleration, and the third has nowhere to hide. This is the equation NASA uses to size rocket engines — literally this one.</p>""",
+<p>One law, three knobs: know any two of force, mass, and acceleration, and the third has nowhere to hide. This is the equation NASA uses for launching satellites into orbit.</p>""",
             cps=[dict(
                 type="num",
                 kicker="Use the Second Law",
