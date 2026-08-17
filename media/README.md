@@ -39,6 +39,15 @@ redistribution:
 - **Plato & Aristotle:** Kepler's 1596 nested-solids engraving (shared with the Tycho
   lesson — captioned honestly as Kepler's drawing of Plato's shapes).
 
+## Wish list — Galileo lesson
+
+- Justus Sustermans' portrait of Galileo (1636) — Uffizi; high-res on Wikimedia Commons.
+- Galileo's two surviving telescopes (Museo Galileo, Florence).
+- His wash drawings of the Moon from *Sidereus Nuncius* (1610), and the notebook
+  pages tracking Jupiter's moons night by night (little stars beside a circle).
+- The frontispiece of the *Dialogue* (1632) — the three philosophers arguing.
+- His middle finger, preserved in a glass reliquary at the Museo Galileo (really).
+
 ## Wish list — Plato & Aristotle lesson
 
 - Raphael's *School of Athens* (1511), the central detail: Plato pointing up,
