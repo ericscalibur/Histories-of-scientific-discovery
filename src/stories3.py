@@ -94,11 +94,11 @@ NEWTON = dict(
 <p>Read it out loud: the distance fallen (Δy) is one-half, times the acceleration (a), times the time multiplied by itself. The "9.8 m/s²" means gravity adds <b>9.8 meters per second OF SPEED, every second</b> — that's what acceleration is. Try the formula: after 1 second, Δy = ½ × 9.8 × 1² = <b>4.9 m</b>. There's the "about 5 meters" from the Moon test — and now you know the honest number is 4.9. After 2 seconds: ½ × 9.8 × 2² = <b>19.6 m</b>. Twice the time, <i>four</i> times the fall — the square does that.</p>
 <p>Newton didn't just believe the giants — he <b>checked them</b>, the way you'd check a friend's math. Years later he hung identical boxes from pendulums and filled them with gold, silver, glass, sand, salt, wood, water, and wheat, to test whether gravity treats every material exactly alike. (It does: the pendulums swung in perfect step, no matter what was inside.)</p>
 <p>From <b>Kepler</b> he took the three planet laws — especially the strange, beautiful third one: <b>T² = a³</b>. Take any planet's orbit time in years (T) and square it; take its distance from the Sun in Earth-distances (a) and cube it; you get the same number. Kepler had found that pattern hiding in Tycho's data but could never say <i>why</i> it was true. Newton reran the numbers, believed them — and years later <b>proved</b> that T² = a³ is exactly what must happen if gravity weakens with the square of distance. The pattern became a consequence.</p>
-<p>And underneath it all sat the master recipe he would one day carve into law — <b>F = ma</b>: force equals mass times acceleration. Gravity supplies the force F; the formula turns it into acceleration a; and Δy = ½at² tells you where the falling thing ends up. You'll meet F = ma properly in a few chapters, with problems of your own.</p>""",
+<p>And underneath it all sat the master recipe he would one day carve into law: <b>F = ma</b> (force equals mass times acceleration). Gravity supplies the force F; the formula turns it into acceleration a; and Δy = ½at² tells you where the falling thing ends up. You'll meet F = ma properly in a few chapters, with problems of your own.</p>""",
             cps=[dict(
                 type="num",
                 kicker="Use Galileo's law like Newton did",
-                q="""Use Δy = ½ a t² with a = 9.8 m/s². How many meters does a dropped stone fall in <b>4 seconds</b>? (That's ½ × 9.8 × 4².)""",
+                q="""Use Δy = ½ a t² with a = 9.8 m/s². How many meters does a dropped stone fall in <b>4 seconds</b>?""",
                 answers=[78.4, 78], unit="meters",
                 hint="4² = 16. Half of 9.8 is 4.9. Then 4.9 × 16.",
             ), dict(
