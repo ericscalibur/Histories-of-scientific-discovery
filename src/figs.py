@@ -271,8 +271,25 @@ LEAVITT_FIGS = [
                 "ask who really did the work."))),
 ]
 
+PLATO_ARISTOTLE_FIGS = [
+    (1, dict(
+        img="keplers-nested-solids.png",
+        side="right", top=70,
+        alt="Kepler's 1596 model of the solar system built from the five Platonic solids",
+        title="Plato's five solids, still casting spells in 1596",
+        scroll=("The five Platonic solids &mdash; drawn not by Plato, but by <b>Johannes "
+                "Kepler in 1596</b>, two thousand years later. Kepler was so enchanted by "
+                "Plato's perfect shapes that he tried to build the entire solar system out "
+                "of them, nesting the five solids between the orbits of the six known "
+                "planets like Russian dolls. The model was beautiful &mdash; and wrong &mdash; "
+                "and discovering <i>exactly how</i> it was wrong drove Kepler to the true "
+                "laws of the planets. That is the reach of an idea born in an Athenian "
+                "olive grove."))),
+]
+
 FIGS = {
     "NEWTON": NEWTON_FIGS,
+    "PLATO_ARISTOTLE": PLATO_ARISTOTLE_FIGS,
     "ERATOSTHENES": ERATOSTHENES_FIGS,
     "ECLIPSE_1919": ECLIPSE_FIGS,
     "LE_GENTIL": LE_GENTIL_FIGS,
