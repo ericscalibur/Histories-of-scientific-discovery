@@ -218,15 +218,114 @@
 <p>Fate had dealt them a lucky card: on eclipse day the Sun would sit right in front of the <b>Hyades</b> — a bright star cluster. Plenty of measurable stars right beside the blocked-out Sun. And this eclipse was a monster — near its peak, totality lasted almost <b>7 minutes</b>, one of the longest of the century.</p>
 <p>The plan: photograph the star field during totality, then photograph the <i>same stars</i> months later at night, when the Sun was elsewhere. Lay the glass plates side by side, measure with microscopes. If Einstein was right, the stars near the Sun's edge would sit <i>visibly out of place</i> — pushed outward by the Sun's dent in space.</p>
 <div class="checkpoint" id="cp3">
-<div class="cp-kicker">&#9733; Checkpoint 3 &middot; Every second counts</div>
-<div class="question">At its longest, totality lasted <b>6 minutes 51 seconds</b>. How many <b>seconds</b> is that?</div>
+<div class="cp-kicker">&#9733; Checkpoint 3 &middot; You are the measuring machine</div>
+<div class="question">Try the astronomers' job yourself (shifts exaggerated about 1,000&times; so your eyes can do what their microscopes did). The night plate's star positions are laid over the eclipse plate as small <b>gray crosses</b>. An honest star sits exactly on its cross. <b>Click every star on the eclipse plate that has shifted</b>, then press <i>Compare plates</i> &mdash; or count the culprits and type the number.</div>
+<div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin:10px 0;">
+  <div style="text-align:center;">
+    <svg id="es-night" width="300" height="212" viewBox="0 0 340 240" style="background:#04070f; border:1px solid #3a4a86; border-radius:8px; max-width:100%;">
+      <circle cx="55" cy="45" r="4" fill="#fff"/><circle cx="285" cy="55" r="4" fill="#fff"/>
+      <circle cx="125" cy="95" r="4" fill="#fff"/><circle cx="215" cy="150" r="4" fill="#fff"/>
+      <circle cx="160" cy="185" r="4" fill="#fff"/><circle cx="45" cy="190" r="4" fill="#fff"/>
+      <circle cx="295" cy="205" r="4" fill="#fff"/>
+    </svg>
+    <div style="font-size:.78rem; color:#aebadf; margin-top:4px;">NIGHT PLATE &middot; same stars, months earlier</div>
+  </div>
+  <div style="text-align:center;">
+    <svg id="es-day" width="300" height="212" viewBox="0 0 340 240" style="background:#04070f; border:1px solid #3a4a86; border-radius:8px; max-width:100%;">
+      <circle cx="170" cy="118" r="40" fill="#e8a90c" opacity="0.13"/>
+      <circle cx="170" cy="118" r="32" fill="#e8a90c" opacity="0.2"/>
+      <circle cx="170" cy="118" r="26" fill="#0a0d14" stroke="#ffe9b0" stroke-width="1.5"/>
+      <text x="170" y="122" text-anchor="middle" font-size="9" fill="#8f9cc4">eclipsed sun</text>
+      <g stroke="#5a6a9a" stroke-width="1.2">
+        <path d="M48 45h14M55 38v14"/><path d="M278 55h14M285 48v14"/>
+        <path d="M118 95h14M125 88v14"/><path d="M208 150h14M215 143v14"/>
+        <path d="M153 185h14M160 178v14"/><path d="M38 190h14M45 183v14"/>
+        <path d="M288 205h14M295 198v14"/>
+      </g>
+      <g id="es-stars">
+        <circle data-star="A" data-shift="0" cx="55" cy="45" r="4" fill="#fff"/>
+        <circle data-star="B" data-shift="0" cx="285" cy="55" r="4" fill="#fff"/>
+        <circle data-star="C" data-shift="1" cx="118" cy="91" r="4" fill="#fff"/>
+        <circle data-star="D" data-shift="1" cx="221" cy="154" r="4" fill="#fff"/>
+        <circle data-star="E" data-shift="1" cx="159" cy="191" r="4" fill="#fff"/>
+        <circle data-star="F" data-shift="0" cx="45" cy="190" r="4" fill="#fff"/>
+        <circle data-star="G" data-shift="0" cx="295" cy="205" r="4" fill="#fff"/>
+      </g>
+      <g id="es-hits"></g>
+    </svg>
+    <div style="font-size:.78rem; color:#aebadf; margin-top:4px;">ECLIPSE PLATE &middot; May 29, 1919 &middot; gray crosses = night positions laid on top</div>
+  </div>
+</div>
+<div style="text-align:center; margin:4px 0 10px;">
+  <button type="button" id="es-compare" style="background:#e8a90c; color:#2a2005; font-weight:bold; font-size:1rem; border:none; border-radius:8px; padding:10px 20px; font-family:Georgia,serif; cursor:pointer;">Compare plates &#128269;</button>
+  <div id="es-msg" style="margin-top:8px; font-size:.95rem; min-height:1.2em; color:#ffd97a;"></div>
+</div>
+<script>
+(function(){
+  var sel = {};
+  var svg = document.getElementById('es-day');
+  if (!svg) return;
+  var stars = svg.querySelectorAll('#es-stars circle');
+  var hits = document.getElementById('es-hits');
+  stars.forEach(function(st){
+    var pad = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    pad.setAttribute('cx', st.getAttribute('cx'));
+    pad.setAttribute('cy', st.getAttribute('cy'));
+    pad.setAttribute('r', '13');
+    pad.setAttribute('fill', 'transparent');
+    pad.style.cursor = 'pointer';
+    var ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ring.setAttribute('cx', st.getAttribute('cx'));
+    ring.setAttribute('cy', st.getAttribute('cy'));
+    ring.setAttribute('r', '9');
+    ring.setAttribute('fill', 'none');
+    ring.setAttribute('stroke', '#e8a90c');
+    ring.setAttribute('stroke-width', '2');
+    ring.setAttribute('visibility', 'hidden');
+    hits.appendChild(ring);
+    hits.appendChild(pad);
+    var id = st.getAttribute('data-star');
+    pad.addEventListener('click', function(){
+      if (svg.dataset.done) return;
+      sel[id] = !sel[id];
+      ring.setAttribute('visibility', sel[id] ? 'visible' : 'hidden');
+    });
+  });
+  document.getElementById('es-compare').addEventListener('click', function(){
+    if (svg.dataset.done) return;
+    var msg = document.getElementById('es-msg');
+    var right = 0, wrong = 0, missed = 0;
+    stars.forEach(function(st){
+      var id = st.getAttribute('data-star'), shifted = st.getAttribute('data-shift') === '1';
+      if (sel[id] && shifted) right++;
+      else if (sel[id] && !shifted) wrong++;
+      else if (!sel[id] && shifted) missed++;
+    });
+    if (wrong === 0 && missed === 0 && right > 0){
+      svg.dataset.done = '1';
+      msg.style.color = '#7fe0a7';
+      msg.textContent = '\u2713 All three found \u2014 the stars nearest the Sun, pushed outward. You just did what the measuring machines did.';
+      var input = document.getElementById('a3');
+      if (input && window.check){ input.value = String(right); window.check(3); }
+    } else if (right === 0 && wrong === 0) {
+      msg.style.color = '#ffd97a';
+      msg.textContent = 'Click the suspicious stars on the eclipse plate first \u2014 a shifted star sits OFF its gray cross.';
+    } else {
+      msg.style.color = '#ff9d9d';
+      msg.textContent = '\u2717 Not quite \u2014 ' + (wrong ? wrong + ' innocent star(s) accused' : '') +
+        (wrong && missed ? ', ' : '') + (missed ? missed + ' shifted star(s) still hiding' : '') +
+        '. Compare each star with its gray cross, and watch the neighborhood of the Sun.';
+    }
+  });
+})();
+</script>
 <div class="answer-row">
 <input type="text" inputmode="numeric" id="a3" aria-label="answer 3">
-<span class="unit">seconds</span>
+<span class="unit">shifted stars</span>
 <button class="check-btn" onclick="check(3)">Check &#10022;</button>
 <button class="hint-btn" onclick="document.getElementById('h3').style.display='block'">Hint?</button>
 </div>
-<div class="hint" id="h3">6 × 60 = 360, then add the 51.</div>
+<div class="hint" id="h3">A shifted star sits noticeably OFF its gray cross &mdash; and the culprits huddle near the Sun, where the dent in space is deepest. (The real shifts were about 1/2000 of a degree; no wonder they needed microscopes.)</div>
 <div class="feedback" id="f3" aria-live="polite"></div>
 </div>
 </section>
@@ -316,7 +415,7 @@
 (function(){
   var TOTAL = 6;
   var solved = 0;
-  var answers = {"1": [4], "2": [1800], "3": [411], "4": [8], "6": [36]};
+  var answers = {"1": [4], "2": [1800], "3": [3], "4": [8], "6": [36]};
   var unlocks = {"1": "ch2", "2": "ch3", "3": "ch4", "4": "cp5", "5": "ch5", "6": "finale"};
   var praise = ["Perfectly measured, {name}!", "Eddington would trust you with the plates, {name}!", "Exactly right, astronomer!", "Precise as a brass micrometer!", "{name}, the Royal Society approves!"];
   var path = document.getElementById('cometPath');
