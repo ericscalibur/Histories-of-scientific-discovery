@@ -164,9 +164,9 @@ NEWTON = dict(
             cps=[dict(
                 type="num",
                 kicker="Use the Second Law",
-                q="""A go-kart with a mass of <b>6</b> (in mass units, kilograms) needs to accelerate at <b>5</b> (meters per second, every second) to win the race. How many <b>newtons</b> of force must its motor push with? (F = m × a)""",
-                answers=[30], unit="newtons",
-                hint="6 × 5.",
+                q="""A golfer's driver smacks a golf ball of mass <b>0.046 kg</b> (46 grams — the real regulation weight). The clubface touches the ball for only <b>0.0005 seconds</b> — half a thousandth of a second — and in that blink the ball accelerates from rest to <b>60 m/s</b>. Find the acceleration first (a = speed gained ÷ contact time), then use F = m × a. How many newtons did the club hit with? The answer will look impossible — trust the equation.""",
+                answers=[5520], unit="newtons",
+                hint="Step 1: how many 0.0005-second slices fit into one second? 2,000. So a = 60 × 2,000 = 120,000 m/s². Step 2: F = 0.046 × 120,000 — same as 46 × 120. (Your answer is roughly the weight of a small CAR, pressing on a golf ball for half a millisecond. That's why the ball needs a hard shell.)",
             ), dict(
                 type="num",
                 kicker="Use the Third Law",
@@ -179,7 +179,7 @@ NEWTON = dict(
             kicker="Chapter Eight · The punchline of the whole series",
             title="One Law to Rule the Sky",
             html="""
-<p>Now the finale of the argument that began with Tycho's shattered crystal spheres. Newton's gravity is <b>universal</b>: the same force, following the same rule, everywhere. The apple. The Moon. Every planet Kepler mapped. The comet of 1577. Halley used these very laws to predict his comet's return, 53 years ahead — dead on time. There is no separate physics for the heavens. There is just physics.</p>
+<p>Now the finale of the argument that began with Tycho's shattered crystal spheres. Newton's gravity is <b>universal</b>: the same force, following the same rule, everywhere. The apple. The Moon. Every planet Kepler mapped. The comet of 1577. In 1705, Halley used these very laws to predict that the comet of 1682 would return in 1758 — 53 years ahead. It arrived dead on time, on Christmas night. There is no separate physics for the heavens. There is just physics.</p>
 <p>And the rule is the one you tested in the orchard: gravity weakens with the <b>square</b> of the distance. Twice as far → 2 × 2 = 4 times weaker. The Moon, 60 times farther → 3,600 times weaker. It never reaches zero — the apple pulls on the Moon, and you, right now, are very gently tugging on Jupiter.</p>
 <div class="bigidea">🌟 <b>Big Idea #4:</b> "Universal" is the most radical word in science. One set of rules for palace and farmhouse, Earth and heaven, apple and galaxy — no exceptions, no permission slips, and anyone with mathematics can check the rules for themselves.</div>""",
             cps=[dict(
