@@ -85,24 +85,47 @@ NEWTON = dict(
             )],
         ),
         dict(
-            kicker="Chapter Four · Also 1666, same farmhouse",
+            kicker="Chapter Four · Cambridge & Woolsthorpe · standing on shoulders",
+            title="The Giants' Homework",
+            html="""
+<p>Hold on, though. How did a farm boy know that a falling apple covers about 5 meters in its first second? Where do numbers like that come from? Answer: Newton had done his homework. At Cambridge he had devoured the books of the two dead giants of this series — <b>Galileo</b>, who had actually measured how things fall, and <b>Kepler</b>, whose three laws describe how the planets move. In a student notebook, Newton wrote himself a motto: <i>"Plato is my friend, Aristotle is my friend — but my best friend is truth."</i></p>
+<p>Galileo's problem had been that falling happens <i>fast</i> — far too fast for the clocks of the 1600s. His famous trick was to <b>slow gravity down</b>: roll a bronze ball down a gentle ramp, and it's still gravity doing the work, just diluted. Timing roll after roll — with a water clock, sometimes even singing to keep a steady beat — he uncovered the law of falling. In modern symbols:</p>
+<p style="text-align:center; font-size:1.18rem;">Δy = ½ a t² &nbsp;&nbsp;&nbsp;&nbsp; where a = g = 9.8 m/s², pointing down</p>
+<p>Read it out loud: the distance fallen (Δy) is one-half, times the acceleration (a), times the time multiplied by itself. The "9.8 m/s²" means gravity adds <b>9.8 meters per second of speed, every second</b> — that's what acceleration is. Try the formula: after 1 second, Δy = ½ × 9.8 × 1² = <b>4.9 m</b>. There's the "about 5 meters" from the Moon test — and now you know the honest number is 4.9. After 2 seconds: ½ × 9.8 × 2² = <b>19.6 m</b>. Twice the time, <i>four</i> times the fall — the square does that.</p>
+<p>Newton didn't just believe the giants — he <b>checked them</b>, the way you'd check a friend's math. Years later he hung identical boxes from pendulums and filled them with gold, silver, glass, sand, salt, wood, water, and wheat, to test whether gravity treats every material exactly alike. (It does: the pendulums swung in perfect step, no matter what was inside.)</p>
+<p>From <b>Kepler</b> he took the three planet laws — especially the strange, beautiful third one: <b>T² = a³</b>. Take any planet's orbit time in years (T) and square it; take its distance from the Sun in Earth-distances (a) and cube it; you get the same number. Kepler had found that pattern hiding in Tycho's data but could never say <i>why</i> it was true. Newton reran the numbers, believed them — and years later <b>proved</b> that T² = a³ is exactly what must happen if gravity weakens with the square of distance. The pattern became a consequence.</p>
+<p>And underneath it all sat the master recipe he would one day carve into law — <b>F = ma</b>: force equals mass times acceleration. Gravity supplies the force F; the formula turns it into acceleration a; and Δy = ½at² tells you where the falling thing ends up. You'll meet F = ma properly in a few chapters, with problems of your own.</p>""",
+            cps=[dict(
+                type="num",
+                kicker="Use Galileo's law like Newton did",
+                q="""Use Δy = ½ a t² with a = 9.8 m/s². How many meters does a dropped stone fall in <b>4 seconds</b>? (That's ½ × 9.8 × 4².)""",
+                answers=[78.4, 78], unit="meters",
+                hint="4² = 16. Half of 9.8 is 4.9. Then 4.9 × 16.",
+            ), dict(
+                type="num",
+                kicker="Repeat Kepler's homework",
+                q="""Kepler's third law: T² = a³. An asteroid orbits the Sun at a = <b>4</b> (four times Earth's distance). Then a³ = 4 × 4 × 4 = 64, so T² = 64. How many <b>years</b> is its orbit time T?""",
+                answers=[8], unit="years",
+                hint="What number, multiplied by itself, gives 64?",
+            )],
+        ),
+        dict(
+            kicker="Chapter Five · Also 1666, same farmhouse",
             title="“Guess I'll Invent Calculus”",
             html="""
 <p>There was a problem with checking the apple-Moon idea properly: <b>the mathematics he needed did not exist.</b> A falling apple doesn't move at one constant speed — it keeps speeding up the whole way down. The Moon's direction changes every instant. All the math of the day handled frozen, unchanging things: triangles, circles, fixed distances. Nobody had math for <i>things in the middle of changing</i>.</p>
 <p>So — pause and appreciate the audacity of a 23-year-old alone at a farm — he invented it. He called it the method of <b>fluxions</b>, because it handled things in flux; today we call it <b>calculus</b>, and it is the mathematics of change itself: every rocket launch, every weather forecast, every curve of every bridge runs on it. He scribbled it into notebooks and then, being Newton, <b>told almost no one for decades</b> — which later ignited a lifelong feud with the German mathematician Leibniz, who invented calculus independently. (Historians' verdict: both invented it; Newton was first; Leibniz published first.)</p>
-<p>Calculus grew from patterns like this one, which Galileo had spotted by rolling balls down ramps. A falling object covers more distance each second, and the total falls into a beautiful rhythm — the running total is always <b>5 × (seconds × seconds)</b>:</p>
-<p style="text-align:center; font-size:1.1rem;">after 1 second: <b>5 m</b> · after 2 seconds: <b>20 m</b> · after 3 seconds: <b>45 m</b> · after 4 seconds: <b>?</b></p>
 <div class="bigidea">🌟 <b>Big Idea #2:</b> When the tool you need doesn't exist, a scientist's move is to build the tool. Tycho built instruments. Kepler built new astronomy. Newton built new <i>mathematics</i>.</div>""",
             cps=[dict(
                 type="num",
-                kicker="Think in Galileo's pattern",
-                q="""A dropped stone has fallen <b>5 m</b> after 1 second, <b>20 m</b> after 2 seconds, <b>45 m</b> after 3 seconds — always 5 × (seconds × seconds). How many meters has it fallen after <b>4 seconds</b>?""",
-                answers=[80], unit="meters",
-                hint="5 × (4 × 4). Check the pattern: 5×1=5 ✓, 5×4=20 ✓, 5×9=45 ✓…",
+                kicker="The longest secret in math",
+                q="""Newton worked out fluxions in <b>1665–1666</b> — and didn't fully publish them until <b>1704</b>. For how many years did the mathematics of change sit hidden in his drawers?""",
+                answers=[38, 39], unit="years",
+                hint="1704 − 1666. (If you counted from 1665 and got 39, that's fair too — both count.)",
             )],
         ),
         dict(
-            kicker="Chapter Five · London & Cambridge · 1684–1687",
+            kicker="Chapter Six · London & Cambridge · 1684–1687",
             title="Halley Knocks",
             html="""
 <p>Newton went back to Cambridge, became a professor at 26, built the world's first working <b>reflecting telescope</b> (astronomers still use his design), got into a bruising fight about light with a scientist named Robert Hooke, and retreated into his rooms like a hermit — gravity unpublished, calculus unpublished, the greatest discoveries in history sitting in a drawer for <b>eighteen years</b>.</p>
@@ -119,7 +142,7 @@ NEWTON = dict(
             )],
         ),
         dict(
-            kicker="Chapter Six · From the Principia · The rules of all motion",
+            kicker="Chapter Seven · From the Principia · The rules of all motion",
             title="Newton's Three Laws",
             html="""
 <p>The <i>Principia</i> opens with three laws — not about planets or apples, but about <b>everything that moves</b>. Skateboards, cannonballs, comets, you. Astronomers memorize Kepler's three; the whole rest of physics memorizes these:</p>
@@ -133,7 +156,7 @@ NEWTON = dict(
             )],
         ),
         dict(
-            kicker="Chapter Six & a half · The second and third laws",
+            kicker="Chapter Seven & a half · The second and third laws",
             title="Push, Mass, and Push-Back",
             html="""
 <div class="bigidea">⚖️ <b>SECOND LAW:</b> Force = mass × acceleration (<b>F = m × a</b>). The harder you push, the faster something speeds up; the heavier it is, the more force the same speed-up costs. Force is measured in <b>newtons</b> — yes, they named the unit after him.</div>
@@ -153,7 +176,7 @@ NEWTON = dict(
             )],
         ),
         dict(
-            kicker="Chapter Seven · The punchline of the whole series",
+            kicker="Chapter Eight · The punchline of the whole series",
             title="One Law to Rule the Sky",
             html="""
 <p>Now the finale of the argument that began with Tycho's shattered crystal spheres. Newton's gravity is <b>universal</b>: the same force, following the same rule, everywhere. The apple. The Moon. Every planet Kepler mapped. The comet of 1577. Halley used these very laws to predict his comet's return, 53 years ahead — dead on time. There is no separate physics for the heavens. There is just physics.</p>
