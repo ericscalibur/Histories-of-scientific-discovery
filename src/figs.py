@@ -287,9 +287,12 @@ PLATO_ARISTOTLE_FIGS = [
                 "olive grove."))),
 ]
 
+GALILEO_FIGS = []  # margin art pending — see media/README.md wish list
+
 FIGS = {
     "NEWTON": NEWTON_FIGS,
     "PLATO_ARISTOTLE": PLATO_ARISTOTLE_FIGS,
+    "GALILEO": GALILEO_FIGS,
     "ERATOSTHENES": ERATOSTHENES_FIGS,
     "ECLIPSE_1919": ECLIPSE_FIGS,
     "LE_GENTIL": LE_GENTIL_FIGS,

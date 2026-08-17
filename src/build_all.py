@@ -14,6 +14,7 @@ from stories1 import ERATOSTHENES, ECLIPSE_1919, LE_GENTIL
 from stories2 import PIGEON, LEAVITT
 from stories3 import NEWTON
 from stories4 import PLATO_ARISTOTLE
+from stories5 import GALILEO
 import figs
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "lessons") + os.sep
@@ -27,6 +28,7 @@ jobs = [
     (LEAVITT, "LEAVITT", "Henrietta_Leavitt_Interactive_Story.html"),
     (NEWTON, "NEWTON", "Newton_Apple_and_Moon_Interactive_Story.html"),
     (PLATO_ARISTOTLE, "PLATO_ARISTOTLE", "Plato_and_Aristotle_Interactive_Story.html"),
+    (GALILEO, "GALILEO", "Galileo_Starry_Messenger_Interactive_Story.html"),
 ]
 plans = {}
 for story, key, fname in jobs:
