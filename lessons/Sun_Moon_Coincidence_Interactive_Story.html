@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Great Coincidence — The Sun, the Moon, and Half a Degree</title>
+<style>
+  :root{
+    --night:#0b1230; --night2:#141c42; --parchment:#f9f3e4; --parchment2:#f1e7cf;
+    --ink:#22304f; --ink-soft:#4a5878; --gold:#e8a90c; --gold-dark:#8a6400;
+    --accent:#3a5da8; --good:#1e7d43; --bad:#b03030; --locked:#2a3560;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:linear-gradient(180deg,#070c22 0%, #0b1230 40%, #10173a 100%);
+    color:var(--parchment); font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh; overflow-x:hidden;}
+  .stars,.stars2{position:fixed; inset:0; pointer-events:none; z-index:0;}
+  .stars{box-shadow:8vw 12vh 0 0 #fff,22vw 6vh 0 1px #ffe9b0,35vw 18vh 0 0 #fff,48vw 9vh 0 0 #cfe0ff,
+    61vw 14vh 0 1px #fff,74vw 5vh 0 0 #ffe9b0,88vw 11vh 0 0 #fff,15vw 28vh 0 0 #cfe0ff,
+    29vw 33vh 0 1px #fff,55vw 27vh 0 0 #fff,69vw 31vh 0 0 #ffe9b0,83vw 26vh 0 0 #fff,
+    5vw 45vh 0 0 #fff,42vw 41vh 0 1px #cfe0ff,78vw 44vh 0 0 #fff,93vw 39vh 0 0 #ffe9b0,
+    12vw 58vh 0 0 #fff,33vw 62vh 0 0 #fff,52vw 55vh 0 1px #ffe9b0,66vw 60vh 0 0 #cfe0ff,
+    81vw 57vh 0 0 #fff,96vw 63vh 0 0 #fff,9vw 74vh 0 1px #fff,27vw 79vh 0 0 #ffe9b0,
+    45vw 72vh 0 0 #fff,63vw 77vh 0 0 #cfe0ff,87vw 74vh 0 1px #fff,18vw 90vh 0 0 #fff,
+    38vw 87vh 0 0 #ffe9b0,58vw 92vh 0 0 #fff,76vw 88vh 0 0 #fff,94vw 91vh 0 1px #cfe0ff;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.8;}
+  .stars2{box-shadow:4vw 20vh 0 0 #fff8,19vw 15vh 0 0 #fff6,44vw 23vh 0 0 #fff7,71vw 19vh 0 0 #fff6,
+    91vw 16vh 0 0 #fff8,25vw 48vh 0 0 #fff6,49vw 46vh 0 0 #fff7,73vw 50vh 0 0 #fff5,
+    7vw 66vh 0 0 #fff7,36vw 69vh 0 0 #fff6,60vw 66vh 0 0 #fff8,85vw 68vh 0 0 #fff6,
+    14vw 83vh 0 0 #fff7,47vw 82vh 0 0 #fff5,69vw 84vh 0 0 #fff7,90vw 81vh 0 0 #fff6;
+    width:1px; height:1px; border-radius:50%; background:#fff; opacity:.6;}
+  .wrap{position:relative; z-index:1; max-width:860px; margin:0 auto; padding:24px 16px 80px;}
+  header{text-align:center; padding:36px 8px 10px;}
+  header h1{font-size:clamp(1.6rem,4.2vw,2.4rem); color:var(--gold); letter-spacing:.5px;
+    text-shadow:0 2px 12px rgba(232,169,12,.35);}
+  header .sub{font-style:italic; color:#cdd6ee; margin-top:8px; font-size:1.05rem;}
+  header .byline{color:#8f9cc4; font-size:.85rem; margin-top:6px;}
+  #tracker{position:sticky; top:0; z-index:5; background:rgba(7,12,34,.92);
+    backdrop-filter:blur(4px); border-bottom:1px solid #2a3560; padding:6px 0 2px; margin:18px -16px 8px;}
+  #tracker svg{display:block; margin:0 auto;}
+  #tracker .tlabel{fill:#8f9cc4; font-size:10px; font-family:Georgia,serif;}
+  .card{background:var(--parchment); color:var(--ink); border-radius:14px; padding:28px 30px;
+    margin:26px 0; box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 0 60px rgba(180,140,60,.08);
+    border:1px solid #d9c9a3;}
+  .card, .checkpoint{scroll-margin-top:88px;}
+  .card.locked{display:none;}
+  .checkpoint.locked{display:none;}
+  .chap-kicker{font-size:.8rem; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--gold-dark); font-weight:bold;}
+  .card h2{font-size:1.55rem; margin:6px 0 14px; color:var(--ink);}
+  .card p{line-height:1.65; margin:0 0 13px; font-size:1.04rem;}
+  .card .funfact{background:#fff8e6; border-left:4px solid var(--gold);
+    padding:10px 14px; border-radius:0 8px 8px 0; font-size:.95rem; margin:14px 0; color:#5a4a1a;}
+  .bigidea{background:#eef2fb; border:1.5px solid #b9c7e8; border-radius:10px;
+    padding:12px 16px; margin:16px 0; color:#22304f; font-size:1rem;}
+  .bigidea b{color:var(--accent);}
+  .illus{display:block; margin:16px auto; max-width:100%;}
+  /* ---- margin notes: photos live in the margins, never in the story column ---- */
+  .card{position:relative;}
+  .margin-note{display:none;}
+  .margin-note .mn-cap{font-size:.78rem; color:#4a5878; line-height:1.5; margin-top:7px; padding:0 3px 2px;}
+  .mn-fig{position:relative; cursor:help;}
+  .mn-fig img{display:block; width:100%; height:auto; border-radius:6px;}
+  .mn-title{font-size:.72rem; color:#4a5878; text-align:center; margin-top:5px; font-style:italic;
+    line-height:1.35; padding:0 2px 2px;}
+  @media (min-width:1120px){
+    .margin-note{display:block; position:absolute; z-index:3; margin:0; width:210px;
+      background:var(--parchment); border:1px solid #d9c9a3; border-radius:10px;
+      padding:8px 8px 6px; box-shadow:0 6px 20px rgba(0,0,0,.4); color:var(--ink);}
+    .mn-right{left:calc(100% + 18px);}
+    .mn-left{right:calc(100% + 18px); left:auto;}
+    .scroll-pop{position:absolute; top:-12px; opacity:0; pointer-events:none; z-index:20;
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));
+      transition:transform .25s ease .5s, opacity .2s ease .55s;}
+    .mn-right .scroll-pop{right:calc(100% - 12px); transform:translateX(30px);}
+    .mn-left .scroll-pop{left:calc(100% - 12px); transform:translateX(-30px);}
+    .scroll-body{width:0; height:auto; overflow:hidden;
+      transition:width .45s cubic-bezier(.6,.05,.4,1) .05s;}
+    .mn-right .scroll-body{direction:rtl;}
+    .scroll-paper{position:relative; direction:ltr; width:440px;
+      background:linear-gradient(180deg,#f8f0da 0%,#f3e8c8 55%,#eaddb6 100%);
+      color:#3d3320; font-size:.85rem; line-height:1.55;
+      border:1px solid #c9b57e; border-radius:10px;
+      box-shadow:0 14px 40px rgba(0,0,0,.55);}
+    .mn-right .scroll-paper{padding:16px 26px 16px 42px;}
+    .mn-left .scroll-paper{padding:16px 42px 16px 26px;}
+    .mn-right .scroll-paper::after{content:""; position:absolute; top:0; bottom:0; right:0; width:14px;
+      border-radius:0 10px 10px 0; background:linear-gradient(270deg, rgba(90,70,30,.35), rgba(90,70,30,0));}
+    .mn-left .scroll-paper::after{content:""; position:absolute; top:0; bottom:0; left:0; width:14px;
+      border-radius:10px 0 0 10px; background:linear-gradient(90deg, rgba(90,70,30,.35), rgba(90,70,30,0));}
+    .scroll-rod{display:block; position:absolute; top:-10px; bottom:-10px; width:22px; border-radius:11px;
+      background:linear-gradient(90deg,#5c3d15 0%, #c9a24a 45%, #8a6400 80%, #5c3d15 100%);
+      box-shadow:0 3px 10px rgba(0,0,0,.5); z-index:2;}
+    .mn-right .scroll-rod{left:-2px;}
+    .mn-left .scroll-rod{right:-2px;}
+    .scroll-rod::before, .scroll-rod::after{content:""; position:absolute; left:4px; width:14px; height:14px;
+      border-radius:50%; background:radial-gradient(circle at 35% 35%, #e8c97a, #6b4a1f);}
+    .scroll-rod::before{top:-7px;} .scroll-rod::after{bottom:-7px;}
+    .mn-fig:hover .scroll-pop, .mn-fig:focus .scroll-pop{opacity:1; transform:translateX(0);
+      pointer-events:auto; transition:transform .28s ease 0s, opacity .18s ease 0s;}
+    .mn-fig:hover .scroll-body, .mn-fig:focus .scroll-body{width:440px;
+      transition:width .6s cubic-bezier(.25,.8,.3,1) .26s;}
+  }
+  /* mid widths: slim the story column so the margins stay alive */
+  @media (min-width:1120px) and (max-width:1399px){
+    .wrap{max-width:760px;}
+    .margin-note{width:160px;}
+  }
+  .checkpoint{background:linear-gradient(180deg,#1b2450,#141c42); color:#eef1fb;
+    border-radius:12px; padding:20px 22px; margin:20px -8px -6px; border:1.5px solid #3a4a86;}
+  .checkpoint + .checkpoint{margin-top:16px;}
+  .checkpoint .cp-kicker{color:var(--gold); font-weight:bold; letter-spacing:1.5px;
+    font-size:.8rem; text-transform:uppercase;}
+  .checkpoint .question{font-size:1.08rem; line-height:1.55; margin:8px 0 14px;}
+  .answer-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .answer-row input[type=text]{font-size:1.15rem; padding:9px 13px; border-radius:8px;
+    border:2px solid #3a4a86; width:140px; background:#0d1330; color:#ffe9b0;
+    font-family:Georgia,serif; text-align:center;}
+  .answer-row input[type=text]:focus{outline:2px solid var(--gold);}
+  button{font-family:Georgia,serif; cursor:pointer;}
+  .check-btn{background:var(--gold); color:#2a2005; font-weight:bold; font-size:1rem;
+    border:none; border-radius:8px; padding:10px 20px;}
+  .check-btn:hover{background:#f7bb2b;}
+  .hint-btn{background:transparent; color:#aebadf; border:1.5px dashed #4a5a9a;
+    border-radius:8px; padding:9px 14px; font-size:.9rem;}
+  .hint-btn:hover{color:#fff;}
+  .mc-btn{background:#0d1330; color:#eef1fb; border:2px solid #3a4a86; border-radius:8px;
+    padding:10px 16px; font-size:.98rem;}
+  .mc-btn:hover{border-color:var(--gold);}
+  .hint{display:none; margin-top:10px; color:#ffd97a; font-size:.95rem;}
+  .feedback{margin-top:12px; font-size:1rem; min-height:1.2em;}
+  .feedback.good{color:#7fe0a7;}
+  .feedback.bad{color:#ff9d9d;}
+  .unit{color:#aebadf; font-size:.95rem;}
+  .shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}}
+  .solved-glow{animation:glow 1.2s;}
+  @keyframes glow{0%{box-shadow:0 0 0 rgba(232,169,12,0)} 40%{box-shadow:0 0 40px rgba(232,169,12,.8)} 100%{box-shadow:0 0 0 rgba(232,169,12,0)}}
+  #finale{text-align:center;}
+  #finale h2{color:var(--gold-dark);}
+  #finale p{text-align:left;}
+  .cert{border:3px double var(--gold-dark); border-radius:12px; padding:22px; margin:18px 0; background:#fffdf4;}
+  .cert .cname{font-size:1.4rem; color:var(--accent); font-weight:bold;}
+  .laws{text-align:left; background:#eef2fb; border-radius:10px; padding:14px 18px; margin:14px 0;}
+  .laws p{margin:8px 0;}
+  .name-row{margin:14px 0 4px;}
+  .name-row input{font-size:1.05rem; padding:8px 12px; border-radius:8px;
+    border:2px solid #b9c7e8; font-family:Georgia,serif; width:240px;}
+  footer{color:#8f9cc4; text-align:center; font-size:.85rem; margin-top:40px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="stars"></div><div class="stars2"></div>
+<div class="wrap">
+<header>
+  <h1>✦ The Great Coincidence ✦</h1>
+  <div class="sub">Why the Moon fits the Sun so perfectly in our sky — the luckiest accident in the solar system</div>
+  <div class="byline">An interactive adventure &middot; solve each problem to unlock the next chapter</div>
+  <div class="name-row"><input id="playerName" type="text" placeholder="Write your name, astronomer&hellip;" aria-label="Your name"></div>
+</header>
+<div id="tracker" aria-label="progress">
+  <svg width="760" height="64" viewBox="0 0 760 64" preserveAspectRatio="xMidYMid meet" style="max-width:100%">
+    <path id="cometPath" d="M 30 48 C 160 14, 300 56, 420 30 S 660 40, 730 18" fill="none" stroke="#2a3560" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g id="trackStars"></g>
+    <text class="tlabel" x="30" y="62" text-anchor="middle">start</text>
+    <text class="tlabel" x="730" y="34" text-anchor="middle">&#9732;</text>
+  </svg>
+</div>
+<section class="card" id="ch1">
+<div class="chap-kicker">Chapter One · A battlefield in Anatolia · May 28, 585 BC</div>
+<h2>The Day the War Stopped</h2>
+
+<p>Two armies — the Medes and the Lydians — had been at war for five brutal years. On this afternoon they were locked in battle yet again when, without warning, <b>the day turned into night</b>. The Sun was devoured, a black disc where it should have been, stars snapping out in the afternoon sky. The ancient historian Herodotus tells us what happened next: both armies stopped fighting on the spot, took it as a message no general could overrule, and made peace — sealed with a double wedding between the royal families.</p>
+<p>That afternoon was a <b>total eclipse of the Sun</b>, and it hides a question so obvious that almost nobody thinks to ask it. For the Moon to blot out the Sun <i>exactly</i> — not too small, leaving blinding fire around the edges, and not so large that it swallows the spectacle — the two discs must appear <b>almost precisely the same size</b> in our sky. And they do. Hold a small coin at arm's length: it neatly covers the full Moon. The <i>same coin</i>, at the same arm's length, neatly covers the Sun.</p>
+<p>Both discs span about <b>half a degree</b> of sky. Ancient people could be forgiven for assuming they were two similar objects — two lamps of roughly equal size, wheeling overhead. The truth, as you're about to calculate, is so lopsided it sounds like a misprint.</p>
+<div class="checkpoint" id="cp1">
+<div class="cp-kicker">&#9733; Checkpoint 1 &middot; Half a degree, in astronomer's units</div>
+<div class="question">Astronomers slice each degree into 60 <b>arcminutes</b>. The Sun and Moon each span about <b>half a degree</b> of sky. How many arcminutes is that?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a1" aria-label="answer 1">
+<span class="unit">arcminutes</span>
+<button class="check-btn" onclick="check(1)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h1').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h1">Half of 60.</div>
+<div class="feedback" id="f1" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch2">
+<div class="chap-kicker">Chapter Two · The numbers behind the trick</div>
+<h2>The Two 400s</h2>
+
+<p>Here are the real measurements. The Moon is a rock about <b>3,500 km</b> across — you could drive around it in a long summer. The Sun is a fusion furnace about <b>1,400,000 km</b> across — more than a million Earths would fit inside it. These two objects could not be less alike. So how can they possibly look identical in our sky?</p>
+<p>Because of the oldest rule of seeing there is: <b>apparent size = true size ÷ distance</b>. Your thumb is tiny, but held close to your eye it can blot out a mountain. Every child who has ever "squished" a distant friend's head between two fingers has used the rule. Distance shrinks everything, in exact mathematical proportion.</p>
+<p>Now watch the miracle happen. Work out how many times wider the Sun is than the Moon (first checkpoint). Then, in the next chapter, you'll find how many times <i>farther</i> the Sun is than the Moon. The punchline of this entire lesson is that the two answers are <b>the same number</b> — one 400 shrinks the Sun exactly as much as the other 400 magnifies it. The giant furnace and the little rock arrive at your eye wearing the same disguise: a half-degree disc.</p>
+<div class="funfact">🌗 It didn't have to be this way — and elsewhere, it isn't. From Mars, the little moon Phobos covers barely a third of the Sun: its "eclipses" are a fast, unimpressive potato-shaped shadow. Of all the hundreds of moons in the solar system, ours is the one that fits.</div>
+<div class="checkpoint" id="cp2">
+<div class="cp-kicker">&#9733; Checkpoint 2 &middot; How much wider?</div>
+<div class="question">Sun: about <b>1,400,000 km</b> across. Moon: about <b>3,500 km</b> across. How many times wider is the Sun?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a2" aria-label="answer 2">
+<span class="unit">times wider</span>
+<button class="check-btn" onclick="check(2)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h2').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h2">1,400,000 ÷ 3,500. Try covering matching zeros: 1,400,000 ÷ 3,500 is the same as 1,400 ÷ 3.5.</div>
+<div class="feedback" id="f2" aria-live="polite"></div>
+</div>
+<div class="checkpoint locked" id="cp3">
+<div class="cp-kicker">&#9733; Checkpoint 3 &middot; Shrink the Sun by its head start</div>
+<div class="question">Now run the seeing-rule backwards. Take the Sun's width, 1,400,000 km, and divide it by 400 (its distance head start). What number do you get — and what object have you just rebuilt?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a3" aria-label="answer 3">
+<span class="unit">km</span>
+<button class="check-btn" onclick="check(3)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h3').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h3">1,400,000 ÷ 400. Cover two zeros on each side: 14,000 ÷ 4. (Look familiar? You just turned the Sun into the Moon.)</div>
+<div class="feedback" id="f3" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch3">
+<div class="chap-kicker">Chapter Three · Both orbits are ovals</div>
+<h2>Your Own Sky Simulator</h2>
+
+<p>"About the same size" hides one more layer of the story — because <b>nothing in the sky moves in a perfect circle</b>. The Earth's path around the Sun is a slight oval: in early January we're at <b>perihelion</b> (closest, 147.1 million km) and in early July at <b>aphelion</b> (farthest, 152.1 million km) — so the Sun's disc quietly swells and shrinks by a few percent over the year. The Moon's orbit is a stronger oval: at <b>perigee</b> it comes within about 356,500 km, and at <b>apogee</b> it drifts out to about 406,700 km — a difference you can actually photograph.</p>
+<p>So the two half-degree discs are forever wobbling past each other in size — sometimes the Moon's disc is a whisker bigger than the Sun's, sometimes a whisker smaller. Play with the real numbers below. Drag both sliders to their extremes and watch what kind of eclipse each combination would produce.</p>
+<div style="background:#fdf9ee; border:1.5px solid #c9b57e; border-radius:12px; padding:14px 16px; margin:14px 0;">
+  <div style="text-align:center; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:#8a6400; font-weight:bold; margin-bottom:8px;">Your sky simulator &middot; discs drawn to true relative scale, magnified together</div>
+  <div style="text-align:center;">
+    <svg id="ss-sky" width="340" height="230" viewBox="0 0 340 230" style="background:#04070f; border-radius:10px; max-width:100%;">
+      <circle id="ss-glow" cx="170" cy="115" r="70" fill="#ffe9b0" opacity="0.12"/>
+      <circle id="ss-sun" cx="170" cy="115" r="58" fill="#e8a90c" stroke="#ffe9b0" stroke-width="1"/>
+      <circle id="ss-moon" cx="170" cy="115" r="55" fill="#0d1016" stroke="#3a4460" stroke-width="1"/>
+    </svg>
+  </div>
+  <div style="display:flex; justify-content:center; gap:26px; margin:10px 0 2px; font-size:1.02rem; color:#3d3320;">
+    <span>Sun in the sky: <b id="ss-sunout">–</b></span>
+    <span>Moon in the sky: <b id="ss-moonout">–</b></span>
+  </div>
+  <div id="ss-verdict" style="text-align:center; font-weight:bold; font-size:1.05rem; margin:6px 0 12px;">&nbsp;</div>
+  <div style="max-width:480px; margin:0 auto;">
+    <label style="display:block; font-size:.92rem; color:#3d3320; margin-bottom:2px;">Earth &rarr; Sun distance: <b id="ss-sund">149.6 million km</b></label>
+    <input id="ss-sunslider" type="range" min="1471" max="1521" value="1496" style="width:100%;">
+    <div style="display:flex; justify-content:space-between; font-size:.76rem; color:#8a6400; margin-bottom:10px;"><span>147.1 million km &middot; perihelion (early January)</span><span>aphelion (early July) &middot; 152.1 million km</span></div>
+    <label style="display:block; font-size:.92rem; color:#3d3320; margin-bottom:2px;">Earth &rarr; Moon distance: <b id="ss-moond">384,400 km</b></label>
+    <input id="ss-moonslider" type="range" min="3565" max="4067" value="3844" style="width:100%;">
+    <div style="display:flex; justify-content:space-between; font-size:.76rem; color:#8a6400;"><span>356,500 km &middot; perigee (closest)</span><span>apogee (farthest) &middot; 406,700 km</span></div>
+  </div>
+  <div style="text-align:center; margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+    <button type="button" class="ss-preset" data-sun="1471" data-moon="3565" style="font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.85rem; color:#5a4a1a;">Biggest of both</button>
+    <button type="button" class="ss-preset" data-sun="1521" data-moon="3565" style="font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.85rem; color:#5a4a1a;">Big Moon, small Sun</button>
+    <button type="button" class="ss-preset" data-sun="1471" data-moon="4067" style="font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.85rem; color:#5a4a1a;">Small Moon, big Sun</button>
+    <button type="button" class="ss-preset" data-sun="1496" data-moon="3844" style="font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.85rem; color:#5a4a1a;">Average day</button>
+  </div>
+</div>
+<script>
+(function(){
+  var SUN_D = 1392700, MOON_D = 3474.8, PX = 3.55;
+  var sunS = document.getElementById('ss-sunslider');
+  var moonS = document.getElementById('ss-moonslider');
+  if (!sunS) return;
+  function arcmin(diam, dist){ return (diam / dist) * 3437.75; }
+  function update(){
+    var dSun = sunS.value * 100000;             // slider is in 0.1-million-km units
+    var dMoon = moonS.value * 100;              // slider is in 100-km units
+    var aSun = arcmin(SUN_D, dSun), aMoon = arcmin(MOON_D, dMoon);
+    document.getElementById('ss-sunout').textContent = aSun.toFixed(1) + '\u2032 across';
+    document.getElementById('ss-moonout').textContent = aMoon.toFixed(1) + '\u2032 across';
+    document.getElementById('ss-sund').textContent = (sunS.value/10).toFixed(1) + ' million km';
+    document.getElementById('ss-moond').textContent = Number(dMoon).toLocaleString('en-US') + ' km';
+    document.getElementById('ss-sun').setAttribute('r', (aSun * PX / 2).toFixed(1));
+    document.getElementById('ss-moon').setAttribute('r', (aMoon * PX / 2).toFixed(1));
+    document.getElementById('ss-glow').setAttribute('r', (aSun * PX / 2 + 11).toFixed(1));
+    var v = document.getElementById('ss-verdict');
+    if (aMoon >= aSun){
+      v.textContent = '\u2600 Eclipse today would be TOTAL \u2014 the Moon covers the whole Sun (corona time!)';
+      v.style.color = '#1e7d43';
+    } else {
+      v.textContent = '\u26AA Eclipse today would be ANNULAR \u2014 the Moon is too small; a blazing ring is left';
+      v.style.color = '#b03030';
+    }
+  }
+  sunS.addEventListener('input', update);
+  moonS.addEventListener('input', update);
+  document.querySelectorAll('.ss-preset').forEach(function(b){
+    b.addEventListener('click', function(){
+      sunS.value = b.dataset.sun; moonS.value = b.dataset.moon; update();
+    });
+  });
+  update();
+})();
+</script>
+<p>Notice how <i>close</i> the contest always is — the discs never differ by more than a few arcminutes. That knife-edge is the whole coincidence, live on your screen.</p>
+<div class="checkpoint" id="cp4">
+<div class="cp-kicker">&#9733; Checkpoint 4 &middot; Read your simulator like an astronomer</div>
+<div class="question">An <b>annular</b> eclipse — the "ring of fire," where the Moon sits inside the Sun's disc leaving a blazing circle — is <i>guaranteed</i> by which combination of extremes?</div>
+<div class="answer-row">
+<button class="mc-btn" onclick="checkMC(4,this,true)">Moon at apogee (farthest) + Earth at perihelion (Sun closest): smallest Moon against the biggest Sun</button>
+<button class="mc-btn" onclick="checkMC(4,this,false)">Moon at perigee (closest) + Earth at aphelion (Sun farthest): biggest Moon against the smallest Sun</button>
+<button class="mc-btn" onclick="checkMC(4,this,false)">The combination doesn't matter — eclipses are all alike</button>
+</div>
+<div class="feedback" id="f4" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch4">
+<div class="chap-kicker">Chapter Four · The knife-edge shadow</div>
+<h2>Just Barely Reaching</h2>
+
+<p>Here's another way to feel how absurdly fine the balance is. The Moon casts a cone of darkness — its <b>umbra</b> — stretching away behind it like a wizard's hat, about <b>375,000 km</b> long. For a total eclipse, the <i>tip of that cone</i> has to physically touch the Earth's surface. Compare that to the Moon's distance and you'll see the truth: the shadow of the Moon <b>just barely reaches us</b>. When the Moon is near apogee, the cone runs out of length in empty space, the tip never lands — and watchers below see a ring instead of darkness.</p>
+<p>When the tip <i>does</i> land, you get the greatest free show in nature. The sky goes purple-black in the middle of the day. Stars come out. The temperature drops. Animals fall silent, birds go to roost. And around the black disc blazes the <b>corona</b> — the Sun's outer atmosphere, a ghostly white crown of streamers — which is <i>only visible from Earth during totality</i>, because the coincidence trims the Sun's blinding face away exactly, and not one arcminute more. Astronomers spent centuries scheduling expeditions around those few minutes: the corona, the Sun's chemistry, and — in 1919 — a famous test of how much the Sun's gravity bends starlight, were all captured inside the Moon's knife-edge shadow.</p>
+<div class="checkpoint" id="cp5">
+<div class="cp-kicker">&#9733; Checkpoint 5 &middot; Does the shadow land?</div>
+<div class="question">The Moon's shadow-cone is about <b>375,000 km</b> long. At perigee the Moon is about <b>357,000 km</b> away. The tip reaches Earth with how many kilometers to spare?</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a5" aria-label="answer 5">
+<span class="unit">km</span>
+<button class="check-btn" onclick="check(5)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h5').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h5">375,000 − 357,000. (Only about 18,000 km of slack — that's barely more than the Earth itself is wide. A knife-edge in cosmic terms.)</div>
+<div class="feedback" id="f5" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="ch5">
+<div class="chap-kicker">Chapter Five · The clock is running</div>
+<h2>Enjoy It While It Lasts</h2>
+
+<p>One more twist: the coincidence has an <b>expiration date</b>. When the Apollo astronauts visited the Moon, they left behind racks of special mirrors. Ever since, observatories on Earth have fired lasers at those mirrors and timed the reflection — measuring the Moon's distance to within millimeters. The verdict is unambiguous: <b>the Moon is drifting away from us at about 3.8 centimeters per year</b> — roughly the speed your fingernails grow.</p>
+<p>It sounds like nothing. But the sky plays long games. Run the clock backwards and the Moon looms larger: in the deep past, eclipses were longer and blacker, with no ring of fire possible at all. Run it forward, and the Moon's disc keeps shrinking until — around <b>600 million years</b> from now — even a perigee Moon at aphelion Sun won't cover the disc. On that day the last total solar eclipse in Earth's history will end, the corona will take its final bow, and every eclipse afterward, forever, will be a ring.</p>
+<p>Think about what that means. This perfect fit isn't a permanent feature of the sky. It's a <b>moment</b> — a few hundred million years wide, in a story billions of years long — and intelligent eyes opened on this planet just in time to catch it.</p>
+<div class="checkpoint" id="cp6">
+<div class="cp-kicker">&#9733; Checkpoint 6 &middot; The long goodbye — a real astronomer's conversion</div>
+<div class="question">The Moon retreats about <b>3.8 cm per year</b>. In <b>100 million years</b>, how many <b>kilometers</b> farther away will it be? (Work in steps: centimeters first, then convert — 100,000 cm make 1 km.)</div>
+<div class="answer-row">
+<input type="text" inputmode="numeric" id="a6" aria-label="answer 6">
+<span class="unit">km</span>
+<button class="check-btn" onclick="check(6)">Check &#10022;</button>
+<button class="hint-btn" onclick="document.getElementById('h6').style.display='block'">Hint?</button>
+</div>
+<div class="hint" id="h6">3.8 cm × 100,000,000 years = 380,000,000 cm. Now divide by 100,000 to reach kilometers.</div>
+<div class="feedback" id="f6" aria-live="polite"></div>
+</div>
+</section>
+<section class="card locked" id="finale">
+<div class="chap-kicker">Epilogue</div>
+<h2>&#10022; Twice Lucky &#10022;</h2>
+
+<p>Here is what makes this story different from every law of nature ever discovered. Kepler's third law has a <i>reason</i> — gravity forces it to be true. Galileo's falling law has a reason. But the two 400s? As far as anyone knows, <b>there is no reason at all</b>. The Moon didn't have to be that size. It didn't have to sit at that distance. Astronomers have searched the solar system's hundreds of moons, and no other moon-planet pairing produces such a perfect match. It's not a law. It's not a plan. It's a <b>coincidence</b> — and learning to tell laws from coincidences is one of the sharpest tools a thinking person ever owns.</p>
+<p>And we are lucky twice. Because the fit isn't just perfect in space — it's perfect in <i>time</i>. The Moon is drifting away, so the match only works for a cosmic moment. A few hundred million years ago the Moon hung bigger and blotted the Sun out completely, corona and all hidden. A few hundred million years from now, every eclipse will be a ring. We happen to live in the narrow age when the fit is exact — <b>and</b> we happen to be the first species on this planet able to look up, notice, measure it, and predict the next one to the minute.</p>
+<p>So the next time totality sweeps across some lucky stripe of the Earth, and day becomes night, and the corona blazes out around a black circle in the sky — remember what you're really seeing. A furnace 400 times wider than a rock, parked 400 times farther away, lining up to the arcminute. Nobody arranged it. Nothing requires it. The universe simply dealt us a perfect hand, and we — measurers that we are — noticed.</p>
+<div class="cert">
+    <div style="font-size:.85rem; letter-spacing:2px; color:#8a6400; text-transform:uppercase;">The Fellowship of the Corona</div>
+    <div style="margin:10px 0 4px;">certifies that</div>
+    <div class="cname" id="certName">Astronomer</div>
+    <div style="margin:6px 0 10px;">has completed all 6 checkpoints of the tale of the great coincidence<br>and is hereby granted the rank of</div>
+    <div style="font-size:1.25rem; color:#8a6400; font-weight:bold;">&#11088; Master of the Half-Degree &#11088;</div>
+  </div>
+<div class="laws">
+<p><b>What you now know that most adults don't:</b></p>
+<p>① <b>Apparent size = true size ÷ distance.</b> A coin at arm's length can cover a mountain — or the Sun.</p>
+<p>② The Sun is ~400× wider than the Moon AND ~400× farther away. The two 400s cancel — so both discs span about <b>half a degree (30 arcminutes)</b> of sky.</p>
+<p>③ Both orbits are ovals, so the fit wobbles: big Moon + small Sun = <b>total</b> eclipse; small Moon + big Sun = <b>annular</b> "ring of fire."</p>
+<p>④ Laws have reasons; coincidences don't. Knowing the difference is a scientific superpower.</p>
+</div>
+</section>
+<footer>Companion lesson to the Constellation Plotting Worksheets · All numbers are real<br>(and so is the luck)</footer>
+</div>
+<script>
+(function(){
+  var TOTAL = 6;
+  var solved = 0;
+  var answers = {"1": [30], "2": [400], "3": [3500], "5": [18000], "6": [3800]};
+  var unlocks = {"1": "ch2", "2": "cp3", "3": "ch3", "4": "ch4", "5": "ch5", "6": "finale"};
+  var praise = ["Measured to the arcminute, {name}!", "The corona salutes you, {name}!", "Exactly right, eclipse chaser!", "{name}, the shadow falls where you said it would!", "Perfect fit, {name} \u2014 just like the Moon!"];
+  var path = document.getElementById('cometPath');
+  var g = document.getElementById('trackStars');
+  var L = path.getTotalLength();
+  for (var i=0;i<TOTAL;i++){
+    var p = path.getPointAtLength(L*(i+0.5)/TOTAL);
+    var s = document.createElementNS('http://www.w3.org/2000/svg','path');
+    var r1=8, r2=3.4, d='';
+    for (var k=0;k<10;k++){
+      var rr = (k%2===0)?r1:r2, an = -Math.PI/2 + k*Math.PI/5;
+      d += (k===0?'M':'L') + (p.x+rr*Math.cos(an)).toFixed(1) + ' ' + (p.y+rr*Math.sin(an)).toFixed(1) + ' ';
+    }
+    s.setAttribute('d', d+'Z');
+    s.setAttribute('fill', '#2a3560');
+    s.setAttribute('stroke', '#3a4a86');
+    s.setAttribute('id', 'tstar'+(i+1));
+    g.appendChild(s);
+  }
+  var starOrder = [1, 2, 3, 4, 5, 6];
+  function lightStar(cpid){
+    var s = document.getElementById('tstar'+(starOrder.indexOf(cpid)+1));
+    if(s){ s.setAttribute('fill','#e8a90c'); s.setAttribute('stroke','#ffe9b0'); }
+  }
+  function reveal(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('locked');
+    el.classList.add('solved-glow');
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 250);
+  }
+  function parseNum(v){
+    v = (v||'').replace(/[,\s]/g,'').replace(/[^0-9.\-]/g,'');
+    return v === '' ? NaN : Number(v);
+  }
+  function pname(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    return nm !== '' ? nm : 'astronomer';
+  }
+  function withName(msg){ return msg.replace(/\{name\}/g, pname()); }
+  function solve(cpid){
+    solved++; lightStar(cpid); reveal(unlocks[cpid]);
+    if (solved >= TOTAL) finish();
+  }
+  var tries = {};
+  window.check = function(n){
+    var input = document.getElementById('a'+n);
+    var fb = document.getElementById('f'+n);
+    var val = parseNum(input.value);
+    var ok = answers[n].indexOf(val) !== -1;
+    if (ok){
+      if (!input.dataset.done){
+        input.dataset.done = '1';
+        fb.className = 'feedback good';
+        fb.textContent = '\u2713 ' + withName(praise[Math.floor(Math.random()*praise.length)]);
+        input.disabled = true;
+        solve(n);
+      }
+    } else {
+      tries[n] = (tries[n]||0)+1;
+      fb.className = 'feedback bad';
+      fb.textContent = isNaN(val) ? withName('\u2717 Type a number first, {name}!') :
+        (tries[n] >= 2 ? withName('\u2717 Not yet, {name} \u2014 try the Hint button. Real scientists redo their math all the time.') :
+         withName('\u2717 Not quite, {name} \u2014 measure again!'));
+      input.classList.add('shake');
+      setTimeout(function(){input.classList.remove('shake');}, 450);
+      if (tries[n] >= 2) { var h=document.getElementById('h'+n); if(h) h.style.display='block'; }
+    }
+  };
+  var mcMsgs = {"4": {"good": "Exactly, {name}. Farthest Moon = smallest Moon-disc; closest Sun = biggest Sun-disc; the Moon can't cover it, and a ring of fire remains. Flip both extremes and you get the longest, darkest total eclipses instead.", "bad": "Go back to the sliders and push them to the extremes \u2014 which combination makes the dark disc SMALLER than the bright one?"}};
+  var mcDone = {};
+  window.checkMC = function(n, btn, correct){
+    var fb = document.getElementById('f'+n);
+    if (mcDone[n]) return;
+    if (correct){
+      mcDone[n] = true;
+      btn.style.borderColor = '#7fe0a7'; btn.style.color = '#7fe0a7';
+      fb.className = 'feedback good';
+      fb.textContent = '\u2713 ' + withName(mcMsgs[n].good);
+      solve(n);
+    } else {
+      fb.className = 'feedback bad';
+      fb.textContent = '\u2717 ' + withName(mcMsgs[n].bad);
+      btn.classList.add('shake');
+      setTimeout(function(){btn.classList.remove('shake');}, 450);
+    }
+  };
+  function finish(){
+    var nm = (document.getElementById('playerName').value || '').trim();
+    document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
+  }
+  function blobUrl(d){
+    var p = d.indexOf(','), meta = d.slice(5, p), b64 = d.slice(p + 1);
+    var mime = meta.split(';')[0] || 'image/jpeg';
+    var bin = atob(b64), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([arr], {type: mime}));
+  }
+  document.querySelectorAll('.mn-fig img[data-full]').forEach(function(img){
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function(){
+      window.open(blobUrl(img.dataset.full), '_blank');
+    });
+  });
+})();
+</script>
+</body>
+</html>

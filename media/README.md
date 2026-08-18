@@ -39,6 +39,14 @@ redistribution:
 - **Plato & Aristotle:** Kepler's 1596 nested-solids engraving (shared with the Tycho
   lesson — captioned honestly as Kepler's drawing of Plato's shapes).
 
+## Wish list — Great Coincidence (Sun/Moon) lesson
+
+- A total-eclipse corona photograph (NASA's are public domain).
+- An annular "ring of fire" photograph.
+- The "diamond ring" moment.
+- An Apollo lunar retroreflector on the surface (NASA, public domain) — for the
+  laser-ranging / 3.8 cm-per-year chapter.
+
 ## Wish list — Galileo lesson
 
 - Justus Sustermans' portrait of Galileo (1636) — Uffizi; high-res on Wikimedia Commons.
