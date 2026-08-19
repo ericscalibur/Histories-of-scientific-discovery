@@ -249,9 +249,13 @@
       <circle id="ss-moon" cx="170" cy="115" r="55" fill="#0d1016" stroke="#3a4460" stroke-width="1"/>
     </svg>
   </div>
-  <div style="display:flex; justify-content:center; gap:26px; margin:10px 0 2px; font-size:1.02rem; color:#3d3320;">
+  <div style="display:flex; justify-content:center; gap:26px; margin:10px 0 0; font-size:1.02rem; color:#3d3320;">
     <span>Sun in the sky: <b id="ss-sunout">–</b></span>
     <span>Moon in the sky: <b id="ss-moonout">–</b></span>
+  </div>
+  <div style="display:flex; justify-content:center; gap:22px; margin:3px 0 2px; font-size:.93rem; color:#8a6400;">
+    <span>distance &divide; width = <b id="ss-sunratio">–</b> Sun-widths away</span>
+    <span>distance &divide; width = <b id="ss-moonratio">–</b> Moon-widths away</span>
   </div>
   <div id="ss-verdict" style="text-align:center; font-weight:bold; font-size:1.05rem; margin:6px 0 12px;">&nbsp;</div>
   <div style="max-width:480px; margin:0 auto;">
@@ -282,6 +286,8 @@
     var aSun = arcmin(SUN_D, dSun), aMoon = arcmin(MOON_D, dMoon);
     document.getElementById('ss-sunout').textContent = aSun.toFixed(1) + '\u2032 across';
     document.getElementById('ss-moonout').textContent = aMoon.toFixed(1) + '\u2032 across';
+    document.getElementById('ss-sunratio').textContent = Math.round(dSun / SUN_D);
+    document.getElementById('ss-moonratio').textContent = Math.round(dMoon / MOON_D);
     document.getElementById('ss-sund').textContent = (sunS.value/10).toFixed(1) + ' million km';
     document.getElementById('ss-moond').textContent = Number(dMoon).toLocaleString('en-US') + ' km';
     document.getElementById('ss-sun').setAttribute('r', (aSun * PX / 2).toFixed(1));
