@@ -87,7 +87,7 @@ SUN_MOON = dict(
     takeaways="""<div class="laws">
 <p><b>What you now know that most adults don't:</b></p>
 <p>① <b>Apparent size = true size ÷ distance.</b> A coin at arm's length can cover a mountain — or the Sun.</p>
-<p>② The Sun is ~400× wider than the Moon AND ~400× farther away. The two 400s cancel — so both discs span about <b>half a degree (30 arcminutes)</b> of sky.</p>
+<p>② The Sun is ~400× wider than the Moon AND ~400× farther away — the two 400s cancel. Said most sharply: <b>each sits about 109 of its own widths from your eye</b>, so both discs span about half a degree (30 arcminutes).</p>
 <p>③ Both orbits are ovals, so the fit wobbles: big Moon + small Sun = <b>total</b> eclipse; small Moon + big Sun = <b>annular</b> "ring of fire."</p>
 <p>④ Laws have reasons; coincidences don't. Knowing the difference is a scientific superpower.</p>
 </div>""",
@@ -113,8 +113,10 @@ SUN_MOON = dict(
             html="""
 <p>Here are the real measurements. The Moon is a rock about <b>3,500 km</b> across — you could drive around it in a long summer. The Sun is a fusion furnace about <b>1,400,000 km</b> across — more than a million Earths would fit inside it. These two objects could not be less alike. So how can they possibly look identical in our sky?</p>
 <p>Because of the oldest rule of seeing there is: <b>apparent size = true size ÷ distance</b>. Your thumb is tiny, but held close to your eye it can blot out a mountain. Every child who has ever "squished" a distant friend's head between two fingers has used the rule. Distance shrinks everything, in exact mathematical proportion.</p>
-<p>Now watch the miracle happen. Work out how many times wider the Sun is than the Moon (first checkpoint). Then, in the next chapter, you'll find how many times <i>farther</i> the Sun is than the Moon. The punchline of this entire lesson is that the two answers are <b>the same number</b> — one 400 shrinks the Sun exactly as much as the other 400 magnifies it. The giant furnace and the little rock arrive at your eye wearing the same disguise: a half-degree disc.</p>
-<div class="funfact">🌗 It didn't have to be this way — and elsewhere, it isn't. From Mars, the little moon Phobos covers barely a third of the Sun: its "eclipses" are a fast, unimpressive potato-shaped shadow. Of all the hundreds of moons in the solar system, ours is the one that fits.</div>""",
+<p>Now watch the miracle happen — it comes in two halves. First: the Sun is about <b>400 times wider</b> than the Moon (check it yourself below). Second: the Sun is also about <b>400 times farther away</b>. One 400 makes the Sun's disc enormous; the other 400 shrinks it right back down. The two 400s <b>cancel</b>, and the furnace and the rock arrive at your eye wearing the same disguise.</p>
+<p>And here is the coincidence in its purest, sharpest form. Forget kilometers — measure each object's distance <b>in its own widths</b>. How many Moon-widths away is the Moon? How many Sun-widths away is the Sun? Two completely different divisions, dividing numbers thousands of times apart — work them both below and watch <b>the same answer</b> fall out of each: roughly <b>109 of its own widths</b>. That is all "looking the same size" ever means. Any object, of any size anywhere, parked about 109 of its own widths from your eye, shows exactly a half-degree disc. A one-centimeter button held 110 centimeters away covers the full Moon. Try it tonight — you'll be holding the great coincidence between your fingers.</p>
+<div class="funfact">🌗 It didn't have to be this way — and elsewhere, it isn't. From Mars, the little moon Phobos covers barely a third of the Sun: its "eclipses" are a fast, unimpressive potato-shaped shadow. Of all the hundreds of moons in the solar system, ours is the one that fits.</div>
+<div class="funfact">🎲 Bonus coincidence, completely unrelated: the Sun also happens to be about <b>109 Earths</b> wide. Different measurement, same number. The universe apparently likes 109 — and no, nobody knows why. Coincidences don't need reasons.</div>""",
             cps=[dict(
                 type="num",
                 kicker="How much wider?",
@@ -123,10 +125,16 @@ SUN_MOON = dict(
                 hint="1,400,000 ÷ 3,500. Try covering matching zeros: 1,400,000 ÷ 3,500 is the same as 1,400 ÷ 3.5.",
             ), dict(
                 type="num",
-                kicker="Shrink the Sun by its head start",
-                q="""Now run the seeing-rule backwards. Take the Sun's width, 1,400,000 km, and divide it by 400 (its distance head start). What number do you get — and what object have you just rebuilt?""",
-                answers=[3500], unit="km",
-                hint="1,400,000 ÷ 400. Cover two zeros on each side: 14,000 ÷ 4. (Look familiar? You just turned the Sun into the Moon.)",
+                kicker="Measure the Moon in Moons",
+                q="""The Moon sits about <b>385,000 km</b> away and is <b>3,500 km</b> wide. How many of its own widths away is the Moon?""",
+                answers=[110], unit="Moon-widths",
+                hint="385,000 ÷ 3,500. Drop matching zeros: 385 ÷ 3.5 — same as 770 ÷ 7.",
+            ), dict(
+                type="num",
+                kicker="Measure the Sun in Suns",
+                q="""The Sun sits about <b>150,000,000 km</b> away and is <b>1,400,000 km</b> wide. How many of its own widths away is the Sun? (Round to a whole number — then compare with your Moon answer.)""",
+                answers=[107, 108], unit="Sun-widths",
+                hint="150,000,000 ÷ 1,400,000. Drop five zeros from each: 1,500 ÷ 14 ≈ 107. Practically the same as the Moon's 110 — THAT is the great coincidence, in one number.",
             )],
         ),
         dict(
