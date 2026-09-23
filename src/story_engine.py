@@ -175,6 +175,22 @@ CSS = """
   .name-row input{font-size:1.05rem; padding:8px 12px; border-radius:8px;
     border:2px solid #b9c7e8; font-family:Georgia,serif; width:240px;}
   footer{color:#8f9cc4; text-align:center; font-size:.85rem; margin-top:40px; line-height:1.6;}
+  /* ---- review quiz (scored, one attempt per question, does not gate anything) ---- */
+  #quiz .quiz-intro{font-size:1rem; color:var(--ink-soft); margin-bottom:6px;}
+  .quiz-score{position:sticky; top:72px; z-index:4; display:flex; justify-content:space-between; align-items:center;
+    background:#fff8e6; border:1.5px solid var(--gold); border-radius:10px; padding:8px 14px; margin:12px 0 4px;
+    font-weight:bold; color:#5a4a1a;}
+  .quiz-score span{font-size:1.15rem; color:var(--gold-dark);}
+  .quiz-q .cp-kicker{color:#ffd97a;}
+  .quiz-q .mc-btn[disabled]{opacity:.55; cursor:default;}
+  .quiz-q .mc-btn.picked-right{border-color:#7fe0a7; color:#7fe0a7; opacity:1;}
+  .quiz-q .mc-btn.picked-wrong{border-color:#ff9d9d; color:#ff9d9d; opacity:1;}
+  .quiz-q .mc-btn.was-right{border-color:#7fe0a7; opacity:.9;}
+  .quiz-result{display:none; background:#eef2fb; border:1.5px solid #b9c7e8; border-radius:10px;
+    padding:14px 18px; margin:18px 0 4px; text-align:left;}
+  .quiz-result .verdict{font-size:1.25rem; color:var(--accent); font-weight:bold; margin-bottom:6px;}
+  .quiz-reset{background:transparent; color:var(--accent); border:1.5px dashed #b9c7e8; border-radius:8px;
+    padding:8px 14px; font-size:.9rem; margin-top:8px;}
 """
 
 JS = """
@@ -210,6 +226,7 @@ JS = """
     var el = document.getElementById(id);
     if(!el) return;
     el.classList.remove('locked');
+    if (id === 'finale'){ var q = document.getElementById('quiz'); if (q) q.classList.remove('locked'); }
     el.classList.add('solved-glow');
     setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 250);
   }
@@ -273,6 +290,68 @@ JS = """
     var nm = (document.getElementById('playerName').value || '').trim();
     document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
   }
+  // ---- review quiz ----
+  var QUIZ = @@QUIZ@@;
+  var qAnswered = 0, qScore = 0;
+  function quizMark(i, ok){
+    var fb = document.getElementById('qf'+i), item = QUIZ.items[i];
+    fb.className = 'feedback ' + (ok ? 'good' : 'bad');
+    fb.innerHTML = (ok ? '\u2713 Correct. ' : '\u2717 Not this time. ') + withName(item.why);
+    qAnswered++; if (ok) qScore++;
+    document.getElementById('qScore').textContent = qScore + ' / ' + QUIZ.n;
+    document.getElementById('qLeft').textContent = (QUIZ.n - qAnswered) + ' to go';
+    if (qAnswered >= QUIZ.n){
+      var v = QUIZ.verdicts, msg = v[v.length-1];
+      for (var k = 0; k < v.length; k++){ if (qScore >= v[k].min){ msg = v[k]; break; } }
+      var box = document.getElementById('qResult');
+      box.querySelector('.verdict').innerHTML = withName(msg.title).replace(/\{score\}/g, qScore + ' out of ' + QUIZ.n);
+      box.querySelector('.qtext').innerHTML = withName(msg.text);
+      box.style.display = 'block';
+      document.getElementById('qLeft').textContent = 'finished';
+      setTimeout(function(){ box.scrollIntoView({behavior:'smooth', block:'center'}); }, 200);
+    }
+  }
+  window.quizNum = function(i){
+    var input = document.getElementById('qa'+i);
+    if (input.disabled) return;
+    var val = parseNum(input.value);
+    if (isNaN(val)){
+      var fb = document.getElementById('qf'+i);
+      fb.className = 'feedback bad'; fb.textContent = withName('\u2717 Type a number first, {name}!');
+      input.classList.add('shake'); setTimeout(function(){input.classList.remove('shake');}, 450);
+      return;
+    }
+    input.disabled = true;
+    document.getElementById('qb'+i).disabled = true;
+    quizMark(i, QUIZ.items[i].answers.indexOf(val) !== -1);
+  };
+  window.quizMC = function(i, btn, correct){
+    var row = btn.parentNode;
+    if (row.dataset.done) return;
+    row.dataset.done = '1';
+    var btns = row.querySelectorAll('.mc-btn');
+    for (var k = 0; k < btns.length; k++){
+      btns[k].disabled = true;
+      if (btns[k].dataset.correct === '1' && btns[k] !== btn) btns[k].classList.add('was-right');
+    }
+    btn.classList.add(correct ? 'picked-right' : 'picked-wrong');
+    quizMark(i, correct);
+  };
+  window.quizReset = function(){
+    qAnswered = 0; qScore = 0;
+    document.getElementById('qScore').textContent = '0 / ' + QUIZ.n;
+    document.getElementById('qLeft').textContent = QUIZ.n + ' to go';
+    document.getElementById('qResult').style.display = 'none';
+    var qs = document.querySelectorAll('#quiz .quiz-q');
+    for (var k = 0; k < qs.length; k++){
+      var q = qs[k];
+      q.querySelector('.feedback').textContent = '';
+      var row = q.querySelector('.answer-row'); delete row.dataset.done;
+      var bs = q.querySelectorAll('button'); for (var j = 0; j < bs.length; j++){ bs[j].disabled = false; bs[j].className = bs[j].className.replace(/ ?(picked-right|picked-wrong|was-right)/g, ''); }
+      var inp = q.querySelector('input'); if (inp){ inp.disabled = false; inp.value = ''; }
+    }
+    document.getElementById('quiz').scrollIntoView({behavior:'smooth', block:'start'});
+  };
   function blobUrl(d){
     var p = d.indexOf(','), meta = d.slice(5, p), b64 = d.slice(p + 1);
     var mime = meta.split(';')[0] || 'image/jpeg';
@@ -349,6 +428,44 @@ def cp_html(cp, first_in_chapter):
     out.append('</div>')
     return "\n".join(out)
 
+def quiz_html(quiz):
+    """Optional review quiz: scored, one attempt per question, unlocked with the finale."""
+    out = ['<section class="card locked" id="quiz">',
+           '<div class="chap-kicker">Review</div>',
+           '<h2>%s</h2>' % quiz["title"],
+           '<div class="quiz-intro">%s</div>' % quiz.get("intro", ""),
+           '<div class="quiz-score"><div>Score: <span id="qScore">0 / %d</span></div><div id="qLeft">%d to go</div></div>'
+           % (len(quiz["questions"]), len(quiz["questions"]))]
+    for i, q in enumerate(quiz["questions"], 1):
+        out.append('<div class="checkpoint quiz-q" id="q%d">' % i)
+        out.append('<div class="cp-kicker">Question %d of %d &middot; %s</div>' % (i, len(quiz["questions"]), q["kicker"]))
+        out.append('<div class="question">%s</div>' % q["q"])
+        out.append('<div class="answer-row">')
+        if q["type"] == "num":
+            out.append('<input type="text" inputmode="numeric" id="qa%d" aria-label="quiz answer %d">' % (i, i))
+            out.append('<span class="unit">%s</span>' % q.get("unit", ""))
+            out.append('<button class="check-btn" id="qb%d" onclick="quizNum(%d)">Lock it in &#10022;</button>' % (i, i))
+        else:
+            for label, correct in q["mc"]:
+                out.append('<button class="mc-btn" data-correct="%s" onclick="quizMC(%d,this,%s)">%s</button>'
+                           % ("1" if correct else "0", i, "true" if correct else "false", label))
+        out.append('</div>')
+        out.append('<div class="feedback" id="qf%d" aria-live="polite"></div>' % i)
+        out.append('</div>')
+    out.append('<div class="quiz-result" id="qResult"><div class="verdict"></div><div class="qtext"></div>'
+               '<button class="quiz-reset" onclick="quizReset()">Wipe the slate and try again</button></div>')
+    out.append('</section>')
+    return "\n".join(out)
+
+def quiz_data(quiz):
+    items = {}
+    for i, q in enumerate(quiz["questions"], 1):
+        d = {"type": q["type"], "why": q["why"]}
+        if q["type"] == "num":
+            d["answers"] = q["answers"]
+        items[str(i)] = d
+    return {"n": len(quiz["questions"]), "items": items, "verdicts": quiz["verdicts"]}
+
 def build(story, outpath, media_dir=None):
     # assign checkpoint numbers and unlock chain
     cps = []
@@ -393,13 +510,16 @@ def build(story, outpath, media_dir=None):
   </div>""" % (story["cert_org"], len(cps), story["cert_of"], story["cert_rank"]))
     body.append(story.get("takeaways", ""))
     body.append('</section>')
+    if story.get("quiz"):
+        body.append(quiz_html(story["quiz"]))
 
     js = (JS.replace("@@TOTAL@@", str(len(cps)))
             .replace("@@ANSWERS@@", json.dumps(answers))
             .replace("@@UNLOCKS@@", json.dumps({str(k): v for k, v in unlocks.items()}))
             .replace("@@PRAISE@@", json.dumps(story["praise"]))
             .replace("@@MCMSGS@@", json.dumps(mcmsgs))
-            .replace("@@STARORDER@@", json.dumps([cp["n"] for _, _, cp in cps])))
+            .replace("@@STARORDER@@", json.dumps([cp["n"] for _, _, cp in cps]))
+            .replace("@@QUIZ@@", json.dumps(quiz_data(story["quiz"])) if story.get("quiz") else "null"))
     # unlocks keys are numbers in JS lookups; JSON string keys work with JS obj[n] coercion
     html = (PAGE.replace("@@TITLE@@", story["title"])
                 .replace("@@CSS@@", CSS)

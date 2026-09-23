@@ -34,7 +34,7 @@ jobs = [
 ]
 plans = {}
 for story, key, fname in jobs:
-    figs.attach(story, key)
+    figs.attach(story, key, media_dir=MEDIA)
     plan = build(story, OUT + fname, media_dir=MEDIA)
     plans[fname] = plan
     print(fname, "->", len(plan), "checkpoints")

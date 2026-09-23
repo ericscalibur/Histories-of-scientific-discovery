@@ -36,8 +36,13 @@ redistribution:
   Penzias & Wilson, Planck CMB map (ESA).
 - **Leavitt:** her portrait, the Harvard computers workroom (~1891), a glass plate of
   Andromeda, Harvard Circular 173 p.3 (the 1912 period–luminosity figures).
-- **Plato & Aristotle:** Kepler's 1596 nested-solids engraving (shared with the Tycho
-  lesson — captioned honestly as Kepler's drawing of Plato's shapes).
+- **Socrates, Plato & Aristotle:** Socrates bust (Louvre Ma 59), bronze Athenian juror
+  ballots, David's *Death of Socrates* (Met original), Plato bust (Capitoline MC1377),
+  the Pompeii Academy mosaic, Kepler's 1596 nested solids (shared with the Tycho
+  lesson), nine of Leonardo's 1498 polyhedron plates, Saenredam's 1604 cave engraving,
+  Raphael's *School of Athens*, Aristotle bust (Palazzo Altemps), the Pompeii marine
+  mosaic, and a four-frame lunar eclipse. Twelve of thirteen slots filled; Chapter
+  Seven's is deliberately empty (see below).
 
 ## Wish list — Great Coincidence (Sun/Moon) lesson
 
@@ -56,19 +61,53 @@ redistribution:
 - The frontispiece of the *Dialogue* (1632) — the three philosophers arguing.
 - His middle finger, preserved in a glass reliquary at the Museo Galileo (really).
 
-## Wish list — Plato & Aristotle lesson
+## Wish list — Socrates, Plato & Aristotle lesson
 
-- Raphael's *School of Athens* (1511), the central detail: Plato pointing up,
-  Aristotle palm down. Public domain; Wikimedia Commons has high-res scans.
-- Roman marble bust of Plato (copy after Silanion) and bust of Aristotle (copy after
-  Lysippos) — both on Commons from museum photography.
-- The "Plato's Academy" mosaic from Pompeii (Naples Archaeological Museum).
-- A lunar-eclipse sequence photo showing Earth's round shadow (for the
-  round-Earth-proof chapter).
+Slots are already wired in `src/figs.py`; drop a file in with the exact name and
+rebuild. Missing files are skipped with a printed warning, so partial sets build
+fine. Captions in `figs.py` are drafted for the canonical artifact — **verify each
+against the file you actually pull** before shipping.
+
+| Save as | What to find |
+|---|---|
+| `socrates-bust.jpg` | Roman marble bust of Socrates (Louvre Ma 59, or the British Museum / Naples copy) |
+| `juror-ballots.jpg` | Bronze Athenian juror ballots, 4th c. BC, Ancient Agora Museum (hollow vs. solid axle) |
+| `death-of-socrates-david.jpg` | Jacques-Louis David, *The Death of Socrates*, 1787 (Met, open access) |
+| `plato-bust.jpg` | Roman bust of Plato after Silanion (Capitoline MC1377, or Vatican / Munich copy) |
+| `academy-mosaic-pompeii.jpg` | "Plato's Academy" mosaic from Pompeii, 1st c. BC (Naples Archaeological Museum) |
+| `pacioli-polyhedra.jpg` | Leonardo's polyhedra plates from Pacioli, *De divina proportione*, 1509 |
+| `saenredam-plato-cave-1604.jpg` | Jan Saenredam's 1604 engraving of the cave, after Cornelis van Haarlem |
+| `school-of-athens-detail.jpg` | Raphael, *School of Athens* (1511) — central detail, Plato up / Aristotle down |
+| `aristotle-bust.jpg` | Roman bust of Aristotle after Lysippos (Palazzo Altemps / Ludovisi) |
+| `roman-marine-mosaic.jpg` | Roman marine-life mosaic from Pompeii (octopus, moray, lobster), Naples |
+| `lunar-eclipse-sequence.jpg` | Composite/sequence photo of a lunar eclipse showing Earth's curved shadow |
+| ~~`square-of-opposition.jpg`~~ | **Dropped on purpose.** The square of opposition is about contradiction among *all/none/some* statements — not about syllogisms, which is what Chapter Seven actually teaches. It is also not Aristotle's diagram (Apuleius, Boethius, then medieval scribes), and at margin width it is four Latin words and some lines. If Ch7 ever wants art: the Lyceum excavation site in Athens, or a page of the Aldine Greek Aristotle (Venice, 1495–98). |
+| `galileo-dialogo-1632-frontispiece.jpg` | Frontispiece of Galileo's *Dialogo* (1632) — the three philosophers |
+| `alexander-mosaic-pompeii.jpg` | The Alexander Mosaic, House of the Faun, Pompeii, c. 100 BC (Naples Archaeological Museum) — Alexander charging at Darius; full mosaic or the Alexander detail |
+
+Attribution notes: the bust and mosaic photographs are museum photography of
+public-domain objects — credit the photographer where Commons names one. The
+lunar-eclipse composite is the one item likely to be a modern copyrighted
+photograph; prefer a NASA/APOD public-domain image or a Commons CC file and
+credit it.
+
+Already embedded: Kepler's 1596 nested-solids engraving (`keplers-nested-solids.png`,
+shared with the Tycho lesson — captioned honestly as Kepler's drawing of Plato's shapes).
 
 ## Not embedded (kept for reference only)
 
 These files sit in this folder but are deliberately **not** used in any lesson:
+
+- `lunar-eclipses.webp` — stock composite; the shadow edges do not run in one
+  consistent direction, so it cannot carry the round-shadow claim
+- `partial-lunar-eclipse.jpg` — signed, copyrighted astrophotograph, and half the
+  frame is deliberately blown out (replaced by `partial-lunar-eclipse-nasa.jpg`)
+- `pacioli-polyhedra.jpg` — labelled *Ycocedron Abscisus Vacuus*: the truncated
+  icosahedron, an Archimedean solid, **not** one of Plato's five
+- `Part-of-a-Roman-mosaic...webp` supersedes `roman-marine-mosaic.jpeg` (larger,
+  and the filename carries the full findspot)
+- `David_and_studio,_...The_Death_of_Socrates,_after_1787.jpg` — workshop version;
+  replaced by `The_Death_of_Socrates.jpg`, the Metropolitan Museum original
 
 - `obelisk.jpg` — 19th-c. engraving, stock-agency watermark (replaced by
   `Obelisk_Hatschepsut.JPG`)
