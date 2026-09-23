@@ -23,7 +23,7 @@ certificate in the student's name.
 | **The Unluckiest Astronomer** — Le Gentil & the transit of Venus | 1761–1769 | 6 | Parallax at planetary scale, elapsed time, the first global science project |
 | **The Hiss from the Beginning of Time** — the "pigeon poop" Nobel | 1964 | 5 | Negative temperatures, unit conversion, big numbers |
 | **The Yardstick of the Universe** — Henrietta Leavitt | 1893–1923 | 6 | Reading patterns in data, rates, the cosmic distance ladder |
-| **The School of Athens** — Plato & Aristotle | 427–322 BC | 8 | BC arithmetic, squares & doubling, corners − edges + faces, the logic of valid arguments |
+| **The School of Athens** — Socrates, Plato, Aristotle & Alexander | 470–322 BC | 12 | BC arithmetic, squares & doubling (why doubling a side quadruples the area), the reality of perfect shapes, the logic of valid arguments, the four-man chain from the agora to Alexandria — plus a scored 10-question review quiz at the end |
 | **The Starry Messenger** — Galileo Galilei | 1564–1642 | 10 | Pendulum timing, the odd-number ramp law (1, 3, 5, 7 → squares), telescope magnification, orbital laps |
 | **The Great Coincidence** — the Sun, the Moon & half a degree | timeless | 7 | Apparent size = size ÷ distance, the two 400s, unit conversion — with a live eclipse simulator (perihelion/aphelion + perigee/apogee sliders) |
 

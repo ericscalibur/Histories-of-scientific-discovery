@@ -272,7 +272,84 @@ LEAVITT_FIGS = [
 ]
 
 PLATO_ARISTOTLE_FIGS = [
+    # Chapter indices are 0-based. With Socrates now at chapter one:
+    #   0 Socrates · 1 Plato & the Academy · 2 Forms & solids · 3 The Cave
+    #   4 Aristotle arrives · 5 Lesbos & the round Earth · 6 Logic · 7 The spell
+    #   8 Alexander
+    # Entries whose image file is not in ../media/ yet are skipped by attach()
+    # with a printed warning — drop the file in, rebuild, and it appears.
+    # Captions below are written for the canonical artifact; verify each one
+    # against the file you actually pull before shipping (project rule #1).
+
+    # ---- Chapter One · Socrates ----
+    (0, dict(
+        img="Socrates_Louvre.jpg",
+        side="left", top=80,
+        alt="Roman marble bust of Socrates, a copy after a lost Greek original",
+        title="Socrates — a Roman copy of a lost Greek portrait",
+        scroll=("No portrait made from life survives. This is a <b>Roman marble copy</b> "
+                "of a Greek original carved generations after his death &mdash; a copy "
+                "of a copy of a memory. Look at the face anyway: snub nose, wide flat "
+                "features, heavy brow. Ancient writers teased him for looking like a "
+                "satyr off a garden fountain, and the sculptors kept the joke instead of "
+                "prettifying him. Even the portrait is an argument: the ugliest man in "
+                "Athens was the one worth listening to."))),
+    (0, dict(
+        img="Athenian_Secret_Ballot.jpg",
+        side="right", top=620,
+        alt="Six bronze Athenian juror ballots, 4th century BC, Ancient Agora Museum",
+        title="The actual ballots an Athenian jury used",
+        scroll=("Bronze voting disks from the Athenian Agora, the same century as the "
+                "trial. Each juror got <b>two</b>: one with a <b>hollow</b> axle "
+                "(guilty) and one with a <b>solid</b> axle (not guilty). Find the disk "
+                "at the lower left &mdash; you can see straight down the hole through "
+                "the middle of it, and then compare the solid pegs on the others. You "
+                "pinched the ends between thumb and finger so nobody could see which "
+                "one you were dropping. The Greek scratched around the rims reads "
+                "<i>PSEPHOS DEMOSIA</i> &mdash; &ldquo;public ballot.&rdquo; About 501 "
+                "men held these on the day they voted on Socrates: roughly 280 hollow, "
+                "221 solid, and a swing of 30 would have sent him home."))),
+    (0, dict(
+        img="The_Death_of_Socrates.jpg",
+        side="left", top=1150,
+        alt="Jacques-Louis David, The Death of Socrates, 1787",
+        title="The Death of Socrates — David, 1787",
+        scroll=("Painted in <b>1787</b> by Jacques-Louis David &mdash; twenty-one "
+                "centuries after the event, so this is a painter's imagining, not a "
+                "record. Socrates reaches for the poison cup without looking at it; his "
+                "other hand is still in mid-argument. The man handing it over turns his "
+                "face away. And that old man sitting at the foot of the bed is labelled "
+                "Plato &mdash; who was 28 at the time and, by his own account, not even "
+                "in the room. A masterpiece <i>and</i> not evidence. Check every "
+                "caption."))),
+
+    # ---- Chapter Two · Plato & the Academy ----
     (1, dict(
+        img="Plato_Silanion_Musei_Capitolini_MC1377.jpg",
+        side="right", top=70,
+        alt="Roman marble bust of Plato, a copy after the Greek sculptor Silanion",
+        title="Plato — Roman copy after Silanion",
+        scroll=("A <b>Roman marble copy</b> after a lost bronze by Silanion, who is said "
+                "to have made the original for the Academy itself, from life. If that is "
+                "true, this heavy-browed face is roughly what his students saw at the "
+                "front of the olive grove. The name on it is a nickname: ancient sources "
+                "say his given name was Aristocles, and that <i>Plato</i> &mdash; "
+                "&ldquo;broad&rdquo; &mdash; came from his wrestler's shoulders."))),
+    (1, dict(
+        img="plato's_academy_mosaic.jpg",
+        side="left", top=520,
+        alt="Roman mosaic of Plato's Academy from Pompeii, 1st century BC",
+        title="Plato's Academy, in a Pompeii floor",
+        scroll=("A mosaic pulled out of a villa at <b>Pompeii</b>, made in the first "
+                "century BC &mdash; three hundred years after Plato, and buried by "
+                "Vesuvius a century after it was laid. Seven men sit under a tree with a "
+                "sundial and a walled city behind them, arguing over a globe on the "
+                "ground. Nobody can prove which figure is meant to be Plato. What it does "
+                "prove is stranger: three centuries on, a rich Roman wanted a picture of "
+                "<i>people thinking</i> on his floor."))),
+
+    # ---- Chapter Three · Forms & the five solids ----
+    (2, dict(
         img="keplers-nested-solids.png",
         side="right", top=70,
         alt="Kepler's 1596 model of the solar system built from the five Platonic solids",
@@ -285,6 +362,144 @@ PLATO_ARISTOTLE_FIGS = [
                 "and discovering <i>exactly how</i> it was wrong drove Kepler to the true "
                 "laws of the planets. That is the reach of an idea born in an Athenian "
                 "olive grove."))),
+    (2, dict(
+        img="Leonardo davinci dodecahedron.jpg",
+        side="left", top=520,
+        alt="Nine of Leonardo da Vinci's polyhedron plates for Pacioli's De divina proportione",
+        title="Leonardo's plates — now count carefully",
+        scroll=("Nine plates from Luca Pacioli's <i>De divina proportione</i>, laid side "
+                "by side. The designs are <b>Leonardo da Vinci's</b>, made around "
+                "<b>1498</b> while he and Pacioli were living in the same household in "
+                "Milan; these coloured versions come from the handwritten copies, and "
+                "the printed edition of 1509 reduced them to plain black woodcuts. "
+                "Leonardo invented something in order to draw these: the <b>skeletal "
+                "solid</b>, all struts and holes, so you can see the back faces straight "
+                "through the front. Nobody had drawn a solid that way before. Now read "
+                "the Latin labels, because only <b>four of these nine</b> are Plato's "
+                "shapes at all. <i>Duodecedron</i> is the twelve-pentagon dodecahedron "
+                "and <i>Ycocedron</i> the twenty-triangle icosahedron &mdash; those "
+                "count. The ones labelled <i>Vigintisex Basium</i> (twenty-six faces) "
+                "and <i>Septuaginta Duarum Basium</i> (seventy-two) are something else "
+                "entirely. Even a book about perfect shapes mixes them in with the rest. "
+                "Check every label."))),
+
+    # ---- Chapter Four · The Cave ----
+    (3, dict(
+        img="Platon_Cave_Sanraedam.jpg",
+        side="right", top=70,
+        alt="Jan Saenredam's 1604 engraving of Plato's allegory of the cave",
+        title="The cave, engraved in 1604",
+        scroll=("Engraved by <b>Jan Saenredam in 1604</b> after a design by Cornelis van "
+                "Haarlem &mdash; the picture most people have in their heads when they "
+                "hear &ldquo;Plato's cave,&rdquo; and it is Dutch, not Greek, and two "
+                "thousand years late. Find the crowd staring at the lit wall, the figures "
+                "casting the shapes, and the small bright opening with the world outside. "
+                "An illustration of a thought experiment is itself a kind of shadow on a "
+                "wall &mdash; a copy of something that only ever existed in a mind."))),
+
+    # ---- Chapter Five · Aristotle arrives ----
+    (4, dict(
+        img="_The_School_of_Athens__by_Raffaello_Sanzio_da_Urbino.jpg",
+        side="right", top=70,
+        alt="Detail of Raphael's School of Athens: Plato pointing up, Aristotle palm down",
+        title="Two hands, two roads to truth — Raphael, 1511",
+        scroll=("Raphael's <i>School of Athens</i>, painted on a Vatican wall in "
+                "<b>1511</b> &mdash; click it and go straight to the two men walking "
+                "out of the archway at the centre. On the left, <b>Plato</b> points "
+                "<b>up</b>, to the Forms, the perfect world behind this one, carrying "
+                "his <i>Timaeus</i>. On the right, <b>Aristotle</b> holds his palm "
+                "<b>down</b> toward the ground: <i>here</i>, look at <i>this</i>, and "
+                "his book is the <i>Ethics</i>. Everyone else in that crowded hall is "
+                "arguing about something. Those two are arguing about where to look."))),
+    (4, dict(
+        img="Aristotle_Bust.jpg",
+        side="left", top=520,
+        alt="Roman marble bust of Aristotle at Palazzo Altemps, with a modern alabaster mantle",
+        title="Aristotle — ancient head, modern robe",
+        scroll=("Palazzo Altemps in Rome, inventory 8575: a <b>Roman marble copy</b> of "
+                "a lost Greek bronze credited to Lysippos &mdash; the same sculptor "
+                "Alexander the Great used for his own portraits, which is a small clue "
+                "about how close the tutor and the pupil stayed. Now look where the "
+                "white stops. The head is ancient; that <b>golden-brown alabaster robe "
+                "is modern</b>, added centuries later by a restorer who wanted a tidy "
+                "bust. Half of what you are looking at is a guess. Check every "
+                "caption &mdash; including the ones carved in stone."))),
+
+    # ---- Chapter Six · Lesbos & the round Earth ----
+    (5, dict(
+        img="Part-of-a-Roman-mosaic-from-Pompeii-house-n-16-insula-2-Regio-VIII-first-century-CE.webp",
+        side="right", top=70,
+        alt="Roman marine-life mosaic from Pompeii, first century AD, with octopus, lobster and moray eel",
+        title="The lagoon, in Roman tile",
+        scroll=("A floor mosaic from a house in <b>Pompeii</b>, first century AD, buried "
+                "by Vesuvius. Count what the tile-setter knew: an <b>octopus</b> in the "
+                "middle with a spiny lobster locked in its arms, a <b>moray eel</b> "
+                "twisting in from the right, a squid, a ray, a sea bass, red mullet, "
+                "sea bream. It is nearly a checklist of the animals Aristotle hauled out "
+                "of the water at Lesbos three hundred years earlier and described so "
+                "exactly that modern zoologists can still put names to his species. He "
+                "is the reason the octopus in this picture has a name at all &mdash; and "
+                "he is the one who noticed it changes colour to vanish against the "
+                "rocks."))),
+    (5, dict(
+        img="partial-lunar-eclipse-nasa.jpg",
+        side="left", top=520,
+        alt="Four frames of a lunar eclipse showing Earth's round shadow advancing across the Moon",
+        title="Aristotle's proof, photographed",
+        scroll=("One eclipse, four moments. That dark edge creeping across the Moon is "
+                "the <b>shadow of the Earth</b> &mdash; and look at it: a clean, smooth "
+                "<b>curve</b>, the same curve in every frame, advancing steadily from "
+                "one side. It is the same curve in every eclipse, at every hour of the "
+                "night, from every place on Earth, year after year. Only a ball manages "
+                "that. A flat disc would throw an oval as it tilted, and a thin line "
+                "when it turned edge-on. Aristotle worked this out around 350 BC with no "
+                "camera and no telescope &mdash; he simply kept watching, and noticed "
+                "that the shadow never changed its mind. (And the red in the last frame? "
+                "That is sunlight bent around the edge of the Earth and through our air: "
+                "every sunrise and every sunset happening at that moment, all of them at "
+                "once, falling on the Moon.)"))),
+
+    # ---- Chapter Seven · The logic machine ----
+    (6, dict(
+        img="square-of-opposition.jpg",
+        side="right", top=70,
+        alt="Medieval manuscript diagram of the square of opposition",
+        title="The machine, drawn as a diagram",
+        scroll=("Aristotle's logic, drawn by medieval scribes as the <b>square of "
+                "opposition</b>: <i>all are</i>, <i>none are</i>, <i>some are</i>, "
+                "<i>some are not</i>, wired corner to corner by which statements can be "
+                "true together and which cannot. It is a circuit diagram &mdash; drawn "
+                "with a quill, a thousand years before electricity, for a machine made "
+                "entirely of words."))),
+
+    # ---- Chapter Eight · The spell of authority ----
+    (7, dict(
+        img="Galileos_Dialogue.png",
+        side="right", top=70,
+        alt="Frontispiece of Galileo's Dialogue Concerning the Two Chief World Systems, 1632",
+        title="The spell breaking — Galileo's Dialogo, 1632",
+        scroll=("The frontispiece of Galileo's <i>Dialogo</i>, printed in <b>1632</b>: "
+                "three men in conversation, labelled <b>Aristotle</b>, <b>Ptolemy</b> and "
+                "<b>Copernicus</b> &mdash; two of them dead for eighteen centuries, "
+                "arguing anyway. That is the whole trick of the book, and of this chapter: "
+                "the greatest minds get invited into the room and then <i>questioned</i>, "
+                "not obeyed. It cost Galileo the rest of his freedom."))),
+
+    # ---- Chapter Nine · Alexander ----
+    (8, dict(
+        img="alexander-mosaic-pompeii.jpg",
+        side="right", top=70,
+        alt="The Alexander Mosaic from the House of the Faun, Pompeii: Alexander on horseback charging at Darius",
+        title="Alexander at the charge — a Roman floor, about 100 BC",
+        scroll=("The <b>Alexander Mosaic</b>, laid into a floor of the House of the Faun "
+                "at Pompeii around <b>100 BC</b> and buried by Vesuvius in AD 79 &mdash; "
+                "more than a million tiny stones, thought to copy a lost Greek painting "
+                "made within living memory of the battle. Alexander is the bare-headed "
+                "rider on the left, driving straight at the Persian king Darius, who "
+                "turns in his chariot on the right. Click it and look at Alexander's "
+                "eye: whoever painted the original had been told it was large and "
+                "unsettling, and did not soften it. The pupil of Aristotle, portrayed "
+                "the way his teacher would have wanted: as he actually looked."))),
 ]
 
 GALILEO_FIGS = []  # margin art pending — see media/README.md wish list
@@ -303,9 +518,18 @@ FIGS = {
     "LEAVITT": LEAVITT_FIGS,
 }
 
-def attach(story, key):
-    """Attach margin figures to a story dict (idempotent)."""
+def attach(story, key, media_dir=None):
+    """Attach margin figures to a story dict (idempotent).
+
+    If media_dir is given, figures whose image file is not present are skipped
+    with a warning — so a planned figure can sit in this file waiting for its
+    artwork, and start appearing the moment the file lands in media/.
+    """
+    import os as _os
     for ch_i, fig in FIGS[key]:
+        if media_dir and not _os.path.exists(_os.path.join(media_dir, fig["img"])):
+            print("  ..skipping %s ch%d: media/%s not found yet" % (key, ch_i, fig["img"]))
+            continue
         figs = story["chapters"][ch_i].setdefault("figs", [])
         if fig not in figs:
             figs.append(fig)

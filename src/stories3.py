@@ -160,7 +160,8 @@ NEWTON = dict(
             title="Push, Mass, and Push-Back",
             html="""
 <div class="bigidea">⚖️ <b>SECOND LAW:</b> Force = mass × acceleration (<b>F = m × a</b>). The harder you push, the faster something speeds up; the heavier it is, the more force the same speed-up costs. Force is measured in <b>newtons</b> — yes, they named the unit after him.</div>
-<p>One law, three knobs: know any two of force, mass, and acceleration, and the third has nowhere to hide. This is the equation NASA uses for launching satellites into orbit.</p>""",
+<p>One law, three knobs: know any two of force, mass, and acceleration, and the third has nowhere to hide. This is the equation NASA uses for launching satellites into orbit.</p>
+<div class="funfact">🍎 <b>So how big is one newton?</b> It is the push it takes to make a <b>1 kg</b> mass speed up by <b>1 m/s every second</b> — and that is not a fact <i>about</i> newtons, it is the definition of one. Hold it in your hand and one newton feels like the weight of a small apple. Nobody arranged that. It just happened to land on the right man's unit.<br>One catch worth remembering: F = m × a uses the <b>total</b> force. Shove a crate with 10 newtons while friction drags back with 10, and the crate sits there — the pushes cancel, so a = 0. That is the First Law and the Second Law shaking hands.</div>""",
             cps=[dict(
                 type="num",
                 kicker="Use the Second Law",
