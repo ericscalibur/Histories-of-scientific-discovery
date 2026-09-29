@@ -44,6 +44,22 @@ redistribution:
   mosaic, and a four-frame lunar eclipse. Twelve of thirteen slots filled; Chapter
   Seven's is deliberately empty (see below).
 
+- **Pythagoras:** the Capitoline "Pythagoras" bust, the Pythagoras group cropped from
+  Raphael's *School of Athens* (`Pythagoras_School_of_Athens_detail.jpg`, cut from
+  the full painting already in this folder), the four-panel woodcut from Gaffurio's
+  *Theorica musicae* (1492), Caravaggio's *Lute Player* (Hermitage, about 1596),
+  Plimpton 322, YBC 7289 (obverse, cropped from the Yale
+  Peabody obverse/reverse photograph), the *xian tu* from a printed *Zhoubi
+  Suanjing*, Euclid I.47 in Vatican MS gr. 190, Garfield (Brady-Handy, Library of
+  Congress), and Einstein at about fourteen. All ten came from Wikimedia Commons as
+  public domain or CC0; the YBC 7289 photograph is CC0 by A. Urcia / Yale Peabody
+  Museum and deserves a credit line on redistribution.
+  Caption checks worth remembering: the woodcut's forge panel is labelled **IUBAL**
+  (Jubal), not Pythagoras; the Commons description of the Capitoline bust file has
+  been vandalised (the image itself is fine); and Commons' `Byrne-47.png` is *page*
+  47 of Byrne's 1847 Euclid — Proposition **46**, constructing a square — so it was
+  not used.
+
 ## Wish list — Great Coincidence (Sun/Moon) lesson
 
 - A total-eclipse corona photograph (NASA's are public domain).
@@ -97,6 +113,10 @@ shared with the Tycho lesson — captioned honestly as Kepler's drawing of Plato
 ## Not embedded (kept for reference only)
 
 These files sit in this folder but are deliberately **not** used in any lesson:
+
+- `Lute_Tieffenbrucker_Padua_Met_1989.13.jpg` (Met open access, CC0): a real Padua
+  lute of the late 1500s, but the photograph shows only the back, and the pegbox
+  looks like a later alteration. The Caravaggio shows a lute being played instead.
 
 - `lunar-eclipses.webp` — stock composite; the shadow edges do not run in one
   consistent direction, so it cannot carry the round-shadow claim

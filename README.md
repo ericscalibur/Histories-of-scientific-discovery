@@ -26,6 +26,7 @@ certificate in the student's name.
 | **The School of Athens** — Socrates, Plato, Aristotle & Alexander | 470–322 BC | 12 | BC arithmetic, squares & doubling (why doubling a side quadruples the area), the reality of perfect shapes, the logic of valid arguments, the four-man chain from the agora to Alexandria — plus a scored 10-question review quiz at the end |
 | **The Starry Messenger** — Galileo Galilei | 1564–1642 | 10 | Pendulum timing, the odd-number ramp law (1, 3, 5, 7 → squares), telescope magnification, orbital laps |
 | **The Great Coincidence** — the Sun, the Moon & half a degree | timeless | 7 | Apparent size = size ÷ distance, the two 400s, unit conversion — with a live eclipse simulator (perihelion/aphelion + perigee/apogee sliders) |
+| **The Secret in the Squares** — Pythagoras & the most-proved theorem in the world | 1800 BC–AD 2023 | 23 | a² + b² = c² and five proofs of it (sliding triangles, the Chinese bowstring diagram, Euclid's windmill, Garfield's trapezoid, Einstein's similar triangles), string ratios, √2 and the off-by-one fractions, applied problems (ladder, baseball diamond, star-chart distance, the horizon from orbit), with a playable monochord, a live theorem machine, an animated proof, and a scored 10-question problem set |
 
 Plus **constellation plotting worksheets** (`worksheets/`): 12 real constellations as
 (x, y) coordinate connect-the-dots on a four-quadrant grid, built from J2000 star

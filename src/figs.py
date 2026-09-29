@@ -506,7 +506,150 @@ GALILEO_FIGS = []  # margin art pending — see media/README.md wish list
 
 SUN_MOON_FIGS = []  # margin art pending — see media/README.md wish list
 
+PYTHAGORAS_FIGS = [
+    # ---- Chapter One · the man behind the curtain ----
+    (0, dict(
+        img="Pythagoras_Bust_Capitoline.jpg",
+        side="left", top=80,
+        alt="Roman marble bust of a bearded man in a wrapped headcloth, labelled as Pythagoras, Capitoline Museums",
+        title="&ldquo;Pythagoras&rdquo;, carved centuries too late",
+        scroll=("A marble bust in the Capitoline Museums in Rome, traditionally called "
+                "<b>Pythagoras</b> because of the wrapped headcloth that ancient artists gave "
+                "him. Now do the arithmetic: it is a <b>Roman</b> carving, made some six "
+                "hundred years after he died, by a sculptor who had never seen him and had no "
+                "portrait to work from. Nobody knows what Pythagoras looked like. What you are "
+                "looking at is what later centuries thought a wise man <i>ought</i> to look "
+                "like: a portrait of a reputation."))),
+    # ---- Chapter Two · all is number ----
+    (1, dict(
+        img="Pythagoras_School_of_Athens_detail.jpg",
+        side="left", top=70,
+        alt="Detail of Raphael's School of Athens: a man writing in a large book while a boy holds up a slate with a diagram",
+        title="Raphael's Pythagoras, and the slate at his feet",
+        scroll=("A corner of Raphael's <i>School of Athens</i>, painted on a Vatican wall in "
+                "<b>1511</b>. The man writing in the big book has been identified as "
+                "Pythagoras for centuries, and the reason is the <b>slate</b> the boy is "
+                "holding up. Click to enlarge and look at it: the looping curves at the "
+                "top tie together the numbers of the musical intervals, and underneath sits "
+                "a small triangle of strokes (one, two, three, four) with an "
+                "<b>X</b>, the Roman ten, below it. That is the <b>tetractys</b>. Raphael painted this two "
+                "thousand years after the man died. It is a picture of the ideas, not the face."))),
+    (1, dict(
+        img="Gaffurio_Theorica_musicae_1492.png",
+        side="right", top=520,
+        alt="Woodcut in four panels: smiths hammering at a forge, and a robed man testing bells, water glasses, weighted strings and pipes, all marked with numbers",
+        title="The hammer story, printed in 1492",
+        scroll=("A woodcut from Franchino Gaffurio's <i>Theorica musicae</i>, printed in Milan "
+                "in <b>1492</b>. Read the labels. Three panels say <b>PYTAGORA</b> or "
+                "<b>PITAGORAS</b>: he strikes bells, taps glasses of water, plucks strings "
+                "stretched by weights, and tries pipes with a partner labelled "
+                "<b>PHYLOLAUS</b>. Everything carries the same numbers: 4, 6, 8, 9, 12, "
+                "16. But the forge, top left, is labelled <b>IUBAL</b>: Jubal, the Bible's "
+                "first musician. By 1492 the hammer story had been told so often that it had "
+                "two heroes. And here is the catch: apart from the pipes, <b>none of these "
+                "experiments works</b> as drawn. Weights in those ratios do not tune strings "
+                "to those notes. For two thousand years it was easier to copy the picture "
+                "than to pick up a hammer."))),
+    (1, dict(
+        img="Caravaggio_Lute_Player_Hermitage.jpg",
+        side="left", top=1000,
+        alt="Painting of a young musician in a white shirt playing a lute, with a violin, music books, fruit and flowers on the table",
+        title="A lute in Italy, painted about 1596",
+        scroll=("<i>The Lute Player</i>, painted by <b>Caravaggio</b> in Rome around "
+                "<b>1596</b> and now in the Hermitage Museum in St Petersburg. This is the "
+                "instrument Vincenzo Galilei played and wrote books about. Look at how the "
+                "head of the lute bends sharply backwards, with a row of pegs down each "
+                "side. The strings run in pairs, and each pair is tuned by stretching it "
+                "tighter or looser with its peg. That is why a lute player was the right "
+                "person to ask how much pull it takes to raise a string by an octave: he "
+                "did it by hand every time he tuned up."))),
+    # ---- Chapter Four · a thousand years too early ----
+    (3, dict(
+        img="Plimpton_322.jpg",
+        side="right", top=70,
+        alt="The clay tablet Plimpton 322, covered in rows and columns of cuneiform numbers, with a corner broken away",
+        title="Plimpton 322, Babylon, about 1800 BC",
+        scroll=("<b>Plimpton 322</b>, now at Columbia University in New York: clay, about 13 "
+                "centimeters wide, written around <b>1800 BC</b>. The scribe ruled it into "
+                "columns with a straight edge (you can still see the lines) and "
+                "filled fifteen rows with numbers in base 60, pressed in with the corner of a "
+                "reed. The left edge is broken off, and traces of glue suggest the missing "
+                "piece was lost in modern times. Scholars still argue about what it was "
+                "<i>for</i>. One strong suggestion: a teacher's list, for setting "
+                "right-triangle problems that were certain to come out in whole numbers."))),
+    (3, dict(
+        img="YBC_7289_obverse.jpg",
+        side="left", top=470,
+        alt="A small round clay tablet showing a square with both diagonals drawn and cuneiform numbers written along them",
+        title="A student's tablet: the diagonal of a square",
+        scroll=("<b>YBC 7289</b>, in the Yale Babylonian Collection, about 8 centimeters "
+                "across, small enough to sit in a palm, and round like the practice tablets "
+                "Babylonian students used. The square is drawn tilted, standing on one corner, "
+                "with both diagonals. Near the top-left edge are three wedges: <b>30</b>, the "
+                "length of the side. Along the level diagonal run the numbers <b>1, 24, 51, "
+                "10</b>, the square root of 2 in base 60, and beneath them "
+                "<b>42, 25, 35</b>: the diagonal itself, 30 times as long. A value that "
+                "good was not worked out on the spot: it was copied from a table, the way "
+                "you might look a number up today."))),
+    # ---- Chapter Six · the bowstring diagram ----
+    (5, dict(
+        img="Zhoubi_Suanjing_xian_tu.jpg",
+        side="right", top=70,
+        alt="Chinese woodblock print: a tilted square inside a seven by seven grid, divided into four triangles around a small central square, with a line of Chinese characters beside it",
+        title="The bowstring diagram, from the Zhoubi Suanjing",
+        scroll=("The <i>xian tu</i> as printed in a later edition of the <i>Zhoubi "
+                "Suanjing</i>. Count the grid: it is <b>7 by 7</b>, and the tilted square "
+                "inside it is the square on the hypotenuse of a 3-4-5 triangle. The column "
+                "of writing on the left reads, roughly: <i>&ldquo;the squares on gou and gu, "
+                "joined together, make the square on xian.&rdquo;</i> The labels inside "
+                "follow Zhao Shuang's instructions: &#26417; (<i>zhu</i>, red) on the "
+                "triangles, &#40643; (<i>huang</i>, yellow) on the little square in the "
+                "middle. Look closely and you will find <b>both</b> of this lesson's picture "
+                "proofs in the one drawing."))),
+    # ---- Chapter Seven · Euclid's windmill ----
+    (6, dict(
+        img="Euclid_Vat_gr_190_I_47.jpg",
+        side="left", top=70,
+        alt="Two facing pages of a Greek manuscript, with the windmill diagram of a triangle and three squares drawn in the middle of the right-hand page",
+        title="Proposition 47, copied by hand about 1,100 years ago",
+        scroll=("Two pages of <b>Vatican manuscript Greek 190</b>, written out by hand in "
+                "the 800s or 900s AD, one of the oldest complete copies of Euclid's "
+                "<i>Elements</i> on Earth. Find the <b>windmill</b> in the middle of the "
+                "right-hand page. Then look in the margins and along the bottom: later "
+                "readers, over centuries, squeezed in their own notes and their own little "
+                "diagrams. Nothing in Euclid's handwriting survives; this copy was made more "
+                "than a thousand years after he died. The proof survived by being copied, "
+                "scribe after scribe, and because any reader, at any time, could check "
+                "every step without taking anybody's word for it."))),
+    # ---- Chapter Eight · the congressman and the schoolboy ----
+    (7, dict(
+        img="James_Garfield_Brady-Handy.jpg",
+        side="right", top=70,
+        alt="Photograph of James A. Garfield, a bearded man in a dark coat",
+        title="James A. Garfield: teacher, general, President",
+        scroll=("<b>James A. Garfield</b>, in a portrait from the Brady-Handy collection "
+                "at the Library of Congress. Born in a log cabin in Ohio in 1831, he worked his way through "
+                "school, taught Greek and Latin, and was running a college at twenty-six. His "
+                "trapezoid proof was printed on <b>April 1, 1876</b>, while he sat in "
+                "Congress. He became President in March 1881, was shot by an assassin that "
+                "July, and died in September, two hundred days after taking office. The "
+                "proof has lasted rather longer."))),
+    (7, dict(
+        img="Einstein_about_age_14.jpg",
+        side="left", top=520,
+        alt="Studio photograph of Albert Einstein as a boy of about fourteen, seated in front of a painted backdrop",
+        title="Albert Einstein at about fourteen",
+        scroll=("<b>Albert Einstein</b> at about fourteen, in a studio photograph taken "
+                "around 1893. The lake, the hills and the little sailing boat behind "
+                "him are a painted backdrop. This is roughly two years after he fought his "
+                "way to a proof of the theorem. He later wrote that at twelve he was given a "
+                "small geometry book and was astonished that statements could be proved "
+                "<i>&ldquo;with such certainty that any doubt appeared to be out of the "
+                "question.&rdquo;</i> He called it his &ldquo;holy geometry booklet.&rdquo;"))),
+]
+
 FIGS = {
+    "PYTHAGORAS": PYTHAGORAS_FIGS,
     "NEWTON": NEWTON_FIGS,
     "PLATO_ARISTOTLE": PLATO_ARISTOTLE_FIGS,
     "GALILEO": GALILEO_FIGS,
