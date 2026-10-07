@@ -401,6 +401,31 @@ PAGE = """<!DOCTYPE html>
 </html>
 """
 
+# Teacher shortcut, opt-in per story (dev_skip=True): each press of the backslash key solves the
+# next unsolved checkpoint, which unlocks the next checkpoint or chapter.
+# Ignored while typing in a text box.
+DEV_SKIP_JS = """
+  document.addEventListener('keydown', function(e){
+    if (e.key !== '\\\\') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target, tag = (t && t.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    for (var i = 0; i < starOrder.length; i++){
+      var n = starOrder[i], fb = document.getElementById('f' + n);
+      if (!fb || fb.classList.contains('good')) continue;
+      e.preventDefault();
+      if (answers[n]){
+        document.getElementById('a' + n).value = answers[n][0];
+        window.check(n);
+      } else {
+        var btn = document.querySelector('#cp' + n + ' .mc-btn[onclick$="true)"]');
+        if (btn) btn.click();
+      }
+      return;
+    }
+  });
+"""
+
 def cp_html(cp, first_in_chapter):
     n = cp["n"]
     lock = "" if first_in_chapter else " locked"
@@ -520,6 +545,8 @@ def build(story, outpath, media_dir=None):
             .replace("@@MCMSGS@@", json.dumps(mcmsgs))
             .replace("@@STARORDER@@", json.dumps([cp["n"] for _, _, cp in cps]))
             .replace("@@QUIZ@@", json.dumps(quiz_data(story["quiz"])) if story.get("quiz") else "null"))
+    if story.get("dev_skip"):
+        js = js.replace("  // ---- review quiz ----", DEV_SKIP_JS + "  // ---- review quiz ----")
     # unlocks keys are numbers in JS lookups; JSON string keys work with JS obj[n] coercion
     html = (PAGE.replace("@@TITLE@@", story["title"])
                 .replace("@@CSS@@", CSS)

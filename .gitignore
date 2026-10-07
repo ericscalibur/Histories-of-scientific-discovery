@@ -5,3 +5,4 @@ src/tests/test_plans.json
 src/tests/*.png
 .DS_Store
 out/
+.claude/
