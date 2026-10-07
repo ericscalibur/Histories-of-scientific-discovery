@@ -648,7 +648,131 @@ PYTHAGORAS_FIGS = [
                 "question.&rdquo;</i> He called it his &ldquo;holy geometry booklet.&rdquo;"))),
 ]
 
+EUCLID_FIGS = [
+    # ---- Chapter One · the man nobody knows ----
+    (0, dict(
+        img="Euclid_School_of_Athens_detail.jpg",
+        side="left", top=80,
+        alt="Detail of Raphael's School of Athens: a bald man in a red robe bends over a slate on the floor with a compass, while young students crowd round to watch",
+        title="Raphael's geometer, painted in 1511",
+        scroll=("A corner of Raphael's <i>School of Athens</i>, painted on a wall of the "
+                "Vatican in <b>1511</b>. A bald teacher bends almost double over a slate on "
+                "the floor, a compass in his hand, while his students crowd in: one kneels "
+                "close enough to touch it, one points, one turns to explain it to a friend. "
+                "For centuries this figure has been called <b>Euclid</b> (some say "
+                "Archimedes). Giorgio Vasari, who wrote about Raphael's life a few decades "
+                "later, said the painter gave him the face of his friend, the architect "
+                "<b>Bramante</b>. Nobody knows what Euclid looked like, so any face he wears "
+                "is borrowed. The students, though, look exactly like students."))),
+    (0, dict(
+        img="Euclid_Ratdolt_1482_first_page.gif",
+        side="right", top=760,
+        alt="First page of a printed Latin book with a decorated border, a red heading, a large ornamental initial, and small geometric diagrams in the right margin",
+        title="The first printed Elements, Venice, 1482",
+        scroll=("The first page of the first printed <i>Elements</i>, made by <b>Erhard "
+                "Ratdolt</b> in Venice in <b>1482</b>. The Latin text is the version by "
+                "Campanus of Novara from the 1200s. The red heading calls it "
+                "<i>&ldquo;the most excellent book of the Elements of Euclid.&rdquo;</i> "
+                "After the big ornamental initial, the text begins <i>Punctus est cuius pars "
+                "non est</i>: &ldquo;a point is that which has no part.&rdquo; Now look "
+                "down the right-hand margin: tiny printed diagrams for the definitions. Find "
+                "<i>linea</i> and <i>punctus</i>, the <i>circulus</i> with its "
+                "<i>diameter</i>, a <i>semicirculus</i>, and a row of triangles. Diagrams "
+                "were hard to print, which is one reason mathematics books came late to the "
+                "printing press."))),
+    # ---- Chapter Six · the end of Book One ----
+    (5, dict(
+        img="Euclid_Vat_gr_190_I_47.jpg",
+        side="left", top=70,
+        alt="Two facing pages of a Greek manuscript, with the windmill diagram of a triangle and three squares drawn in the middle of the right-hand page",
+        title="Proposition 47, copied by hand about 1,100 years ago",
+        scroll=("Two pages of <b>Vatican manuscript Greek 190</b>, written out by hand in "
+                "the 800s or 900s AD. Find the <b>diagram for Proposition 47</b> in the "
+                "middle of the right-hand page: a triangle with a square on each side. This "
+                "copy is special. Nearly every other Greek manuscript of the "
+                "<i>Elements</i> comes from Theon's edition of the 300s AD. In the early "
+                "1800s, when Napoleon's armies had carried the manuscript off to Paris, a "
+                "French scholar named <b>Fran&ccedil;ois Peyrard</b> noticed that this one "
+                "does not. It is our best window onto Euclid's text before Theon's "
+                "changes. Look in the margins too: readers over the centuries squeezed in "
+                "their own notes."))),
+    # ---- Chapter Seven · algebra made of squares ----
+    (6, dict(
+        img="P_Oxy_I_29_Euclid_II_5.jpg",
+        side="right", top=70,
+        alt="A torn, brown papyrus fragment with eight lines of Greek handwriting and, at the lower right, a small ink diagram of a rectangle beside a square",
+        title="Euclid on papyrus: P.Oxy. I 29",
+        scroll=("<b>P.Oxy. I 29</b>, a scrap of papyrus pulled from the ancient rubbish "
+                "heaps of Oxyrhynchus in Egypt by <b>Bernard Grenfell</b> and <b>Arthur "
+                "Hunt</b>, and published in <b>1898</b>. The Greek words are the statement "
+                "of <b>Book II, Proposition 5</b>, and the little drawing at the lower right "
+                "is its diagram: a long rectangle with a square beside it, cut by lines. The "
+                "red <b>29</b> is a modern catalogue number. Experts still argue over its "
+                "age, with dates from about AD 75 to about AD 300. Either way, someone was "
+                "studying Euclid in a small Egyptian town and threw the page away. It is "
+                "now in the <b>Penn Museum</b> in Philadelphia (E2748)."))),
+    # ---- Chapter Fourteen · six books by candlelight ----
+    (13, dict(
+        img="Woman_teaching_geometry_Burney_275.jpg",
+        side="left", top=70,
+        alt="Medieval painted initial: a woman holding dividers over a disc covered in triangles, squares and circles, with a set square in her other hand, teaching a crowd of students with shaved heads",
+        title="Geometry teaches, about 1310",
+        scroll=("A painted initial from British Library manuscript <b>Burney 275</b>, made "
+                "between <b>1309 and 1316</b>. It sits at the start of a Latin translation "
+                "of the <i>Elements</i> that is attributed to <b>Adelard of Bath</b>. A "
+                "woman holds a pair of dividers over a disc covered in triangles, squares "
+                "and circles, with a set square in her other hand, and a crowd of students "
+                "with shaved heads (the mark of churchmen) watches her work. The British "
+                "Library suggests she is not a real teacher but <b>Geometry</b> herself, "
+                "shown as a person. Either way, look at the students' faces: they would "
+                "have been reading this book."))),
+    (13, dict(
+        img="Lincoln_1858_Alschuler.png",
+        side="right", top=560,
+        alt="Black and white photograph of Abraham Lincoln without a beard, wearing a dark coat and a loosely tied bow tie",
+        title="Abraham Lincoln, April 1858",
+        scroll=("<b>Abraham Lincoln</b>, photographed by <b>Samuel Alschuler</b> on "
+                "<b>April 25, 1858</b> (Library of Congress). This is the year of his famous "
+                "debates with Stephen Douglas, nearly ten years after his single term in "
+                "Congress, and two years before he was elected President. No beard yet. "
+                "In 1860 he wrote, about himself and in the third person, that since being "
+                "a member of Congress he had <i>&ldquo;studied and nearly mastered the six "
+                "books of Euclid.&rdquo;</i> A man with almost no schooling taught himself "
+                "how a proof works, one proposition at a time."))),
+    (13, dict(
+        img="Byrne_Euclid_1847_title_page.png",
+        side="left", top=1060,
+        alt="Title page of Oliver Byrne's 1847 Elements, with the diagram for Proposition 47 printed in red, yellow, blue and black",
+        title="Oliver Byrne's colour Euclid, 1847",
+        scroll=("The title page of <b>Oliver Byrne</b>'s <i>The First Six Books of the "
+                "Elements of Euclid</i>, printed in London by William Pickering in "
+                "<b>1847</b>. Read the subtitle: <i>&ldquo;in which coloured diagrams and "
+                "symbols are used instead of letters for the greater ease of "
+                "learners.&rdquo;</i> The picture is <b>Proposition 47</b>: a black square "
+                "and a red square on the two short sides, and the big square below split "
+                "into blue and yellow pieces that match them. Notice the title says "
+                "<b>six</b> books, the same six that Lincoln studied. Colour printing was "
+                "slow and costly in 1847, and the book was no great success at the time. "
+                "Today it is famous."))),
+    # ---- Chapter Fifteen · the fifth postulate ----
+    (14, dict(
+        img="Euclid_Arabic_al-Tusi_Rome_1594.jpg",
+        side="right", top=70,
+        alt="A printed page of Arabic text with several geometric line diagrams down its left side",
+        title="An Arabic Elements, printed in Rome, 1594",
+        scroll=("A page of <b>Book I</b> from an Arabic version of the <i>Elements</i>, "
+                "printed in <b>Rome in 1594</b> under the name of the Persian astronomer "
+                "and mathematician <b>Nasir al-Din al-Tusi</b>, who lived in the 1200s "
+                "(some historians think this version was written by one of his followers). "
+                "The diagrams are labelled with Arabic letters instead of Greek ones, and "
+                "the text runs from right to left. Al-Tusi was one of the many scholars who "
+                "tried to prove the fifth postulate, and European mathematicians who took "
+                "up the same puzzle in the 1600s and 1700s read the arguments in this "
+                "printed book (Harvard, Houghton Library)."))),
+]
+
 FIGS = {
+    "EUCLID": EUCLID_FIGS,
     "PYTHAGORAS": PYTHAGORAS_FIGS,
     "NEWTON": NEWTON_FIGS,
     "PLATO_ARISTOTLE": PLATO_ARISTOTLE_FIGS,
