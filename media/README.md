@@ -60,6 +60,26 @@ redistribution:
   47 of Byrne's 1847 Euclid — Proposition **46**, constructing a square — so it was
   not used.
 
+- **Euclid (No Royal Road):** the bending geometer cropped from Raphael's *School of
+  Athens* (`Euclid_School_of_Athens_detail.jpg`; traditionally Euclid, sometimes
+  Archimedes; Vasari says the face is Bramante's, so the caption hedges both), the
+  first page of Ratdolt's 1482 Venice printing (Campanus's Latin, definitions with
+  margin diagrams), Vatican MS gr. 190 at I.47 (shared with the Pythagoras lesson),
+  the Oxyrhynchus papyrus P.Oxy. I 29 with Book II Prop. 5 and its diagram (Penn
+  Museum E2748; dating disputed, roughly AD 75 to 300), the woman teaching geometry
+  from British Library Burney 275 f.293r (1309 to 1316, opening a Latin Elements
+  attributed to Adelard of Bath; the BL suggests she personifies Geometry), Samuel
+  Alschuler's photograph of Lincoln (April 25, 1858, Library of Congress), the title
+  page of Oliver Byrne's 1847 colour Euclid (I.47), and a Book I page of the Arabic
+  version printed in Rome in 1594 under al-Tusi's name (Houghton Library *56-1235;
+  the caption claims nothing about what that particular page proves). All are public
+  domain reproductions of public-domain works.
+  Caption checks worth remembering: the Rome 1594 Arabic text is attributed by many
+  historians to a follower of al-Tusi rather than al-Tusi himself, so the caption
+  says "under the name of"; the Lincoln quotation ("studied and nearly mastered the
+  six books of Euclid") is from his 1860 autobiographical sketch, written in the
+  third person.
+
 ## Wish list — Great Coincidence (Sun/Moon) lesson
 
 - A total-eclipse corona photograph (NASA's are public domain).
