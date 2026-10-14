@@ -690,9 +690,9 @@ BOWSTRING = ('<div style="%s">\n  <div style="%s">Your bowstring diagram &middot
 })();
 </script>""".replace("@@BTN@@", _BTN)
 
-SHEAR = ('<div style="%s">\n  <div style="%s">Euclid&#8217;s moves &middot; slide, turn, slide</div>' % (_BOX, _CAP)) + r"""
+SHEAR = ('<div style="%s">\n  <div style="%s">Cut, slide, turn &middot; the pieces never change</div>' % (_BOX, _CAP)) + r"""
   <div style="text-align:center;">
-    <svg id="sh-svg" width="360" height="390" viewBox="0 0 360 390" font-family="Georgia,serif" style="background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;" role="img" aria-label="Animation: each small square slides into a slanted shape, turns a quarter-turn about a corner of the triangle, and slides into its rectangle inside the big square, keeping its area"></svg>
+    <svg id="sh-svg" width="360" height="390" viewBox="0 0 360 390" font-family="Georgia,serif" style="background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;" role="img" aria-label="Animation: each square on a leg is cut into three pieces, which slide and turn without changing shape until they fill the two rectangles inside the square on the hypotenuse"></svg>
   </div>
   <div id="sh-step" style="text-align:center; font-weight:bold; font-size:1.02rem; color:#22304f; margin:8px 0 2px; min-height:1.3em;"></div>
   <div id="sh-why" style="text-align:center; font-size:.95rem; color:#3d3320; margin:0 0 10px; min-height:2.6em; line-height:1.45;"></div>
@@ -700,108 +700,117 @@ SHEAR = ('<div style="%s">\n  <div style="%s">Euclid&#8217;s moves &middot; slid
     <button type="button" id="sh-play" style="background:#e8a90c; color:#2a2005; font-weight:bold; font-size:1rem; border:none; border-radius:8px; padding:10px 20px; font-family:Georgia,serif; cursor:pointer;">&#9654; Play</button>
   </div>
   <div style="max-width:480px; margin:0 auto;">
-    <input id="sh-t" type="range" min="0" max="600" value="0" style="width:100%;" aria-label="move through the animation by hand">
-    <div style="display:flex; justify-content:space-between; font-size:.76rem;"><span style="color:#8a6400;">start</span><span style="color:#3a5da8;">blue: slide &middot; turn &middot; slide</span><span style="color:#8a6400;">gold: slide &middot; turn &middot; slide</span></div>
+    <input id="sh-t" type="range" min="0" max="300" value="0" style="width:100%;" aria-label="move through the animation by hand">
+    <div style="display:flex; justify-content:space-between; font-size:.76rem;"><span style="color:#8a6400;">start</span><span style="color:#22304f;">cut</span><span style="color:#3a5da8;">move blue</span><span style="color:#8a6400;">move gold</span></div>
   </div>
 </div>
 <script>
 (function(){
   var svg = document.getElementById('sh-svg'), sl = document.getElementById('sh-t');
   if (!svg) return;
-  var S = 30, OX = 110, OY = 210;
+  var S = 30, OX = 110, OY = 210, MAX = 300;
   function X(x){ return OX + x * S; }
   function Y(y){ return OY - y * S; }
-  function poly(p, fill, stroke, sw, dash){
+  function poly(p, fill, stroke, sw, dash, op){
     return '<polygon points="' + p.map(function(q){ return X(q[0]).toFixed(1) + ',' + Y(q[1]).toFixed(1); }).join(' ') +
-      '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' stroke-linejoin="round"/>';
+      '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') +
+      (op !== undefined ? ' stroke-opacity="' + op + '"' : '') + ' stroke-linejoin="round"/>';
   }
   function txt(x, y, t, size, fill, halo){
     return '<text x="' + X(x).toFixed(1) + '" y="' + (Y(y) + size * 0.35).toFixed(1) + '" font-size="' + size + '" font-weight="bold" text-anchor="middle" fill="' + fill + '"' +
       (halo ? ' stroke="#fffdf4" stroke-width="4" paint-order="stroke" stroke-linejoin="round"' : '') + '>' + t + '</text>';
   }
-  function lerp(p, q, k){ return [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k]; }
-  function rot(p, c, ang){
-    var dx = p[0] - c[0], dy = p[1] - c[1], co = Math.cos(ang), si = Math.sin(ang);
-    return [c[0] + dx * co - dy * si, c[1] + dx * si + dy * co];
-  }
   function ease(k){ return k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; }
-  var A = [0, 0], B = [5, 0], C = [1.8, 2.4], F = [1.8, 0];
-  // Each shape: fixed corner, the two moving corners for each slide, and the turn.
-  // Left square on AC (area 9): slide keeps side A-D, top edge slides along its own line until it reaches B.
-  var L = { pivot: A, ang: -Math.PI / 2, fill: 'rgba(58,93,168,.32)', stroke: '#3a5da8', label: '9', lc: '#3a5da8',
-    sq: [A, C, [-0.6, 4.2], [-2.4, 1.8]],
-    s1: [A, B, [2.6, 1.8], [-2.4, 1.8]],
-    s3: [A, [0, -5], [1.8, -5], F] };
-  // Right square on CB (area 16): slide keeps side B-E, top edge slides until it reaches A.
-  var R = { pivot: B, ang: Math.PI / 2, fill: 'rgba(232,169,12,.40)', stroke: '#b8860b', label: '16', lc: '#8a6400',
-    sq: [B, C, [4.2, 5.6], [7.4, 3.2]],
-    s1: [B, A, [2.4, 3.2], [7.4, 3.2]],
-    s3: [B, [5, -5], [1.8, -5], F] };
-  function shape(o, t){
-    var k, i, out = [];
-    if (t <= 1){ k = ease(t); for (i = 0; i < 4; i++) out.push(lerp(o.sq[i], o.s1[i], k)); return out; }
-    var turned = o.s1.map(function(p){ return rot(p, o.pivot, o.ang); });
-    if (t <= 2){ k = ease(t - 1); return o.s1.map(function(p){ return rot(p, o.pivot, o.ang * k); }); }
-    k = ease(t - 2);
-    for (i = 0; i < 4; i++) out.push(lerp(turned[i], o.s3[i], k));
-    return out;
+  function cen(p){ var x = 0, y = 0; p.forEach(function(q){ x += q[0]; y += q[1]; }); return [x / p.length, y / p.length]; }
+  function rotAbout(p, c, ang){
+    var co = Math.cos(ang), si = Math.sin(ang);
+    return p.map(function(q){ var dx = q[0] - c[0], dy = q[1] - c[1]; return [c[0] + dx * co - dy * si, c[1] + dx * si + dy * co]; });
   }
-  var NAME = {L: ['blue', 'A'], R: ['gold', 'B']};
-  function steps(o, k){
-    var n = NAME[o];
-    return [
-      ['Step 1. Slide the ' + n[0] + ' square.', 'Its top edge slides along its own line, so the shape leans over. Same base, same height: the area stays the same.'],
-      ['Step 2. Turn it.', 'A quarter-turn around corner ' + n[1] + ' of the triangle. Turning never changes area.'],
-      ['Step 3. Slide again.', 'One more lean, straight down this time, and it fits exactly into its own part of the big square.']
-    ][k];
+  // One square on a leg (side s) is cut into three pieces that fill a w-by-5 rectangle.
+  // Piece shapes are written in the square's own coordinates (u, v) and in the rectangle's own coordinates;
+  // each piece moves from one to the other by a single slide plus a single turn, so its shape never changes.
+  function build(s, w, sqO, rectO){
+    var h = 5, xt = s - s * s / h, ym = h - h * w / s;
+    var pieces = [
+      { from: [[0,0],[w,0],[w,ym],[xt,s],[0,s]], to: [[0,0],[w,0],[w,ym],[xt,s],[0,s]] },
+      { from: [[w,0],[s,0],[w,ym]],              to: [[0,s],[s - w,s],[0,s + ym]] },
+      { from: [[xt,s],[s,s],[s,0]],              to: [[0,h],[s - xt,h],[s - xt,h - s]] }
+    ];
+    // square frame: u along (0.8, -0.6), v along (0.6, 0.8), from corner sqO; rectangle frame: plain x and y from rectO
+    function inSq(q){ return [sqO[0] + 0.8 * q[0] + 0.6 * q[1], sqO[1] - 0.6 * q[0] + 0.8 * q[1]]; }
+    function inRect(q){ return [rectO[0] + q[0], rectO[1] + q[1]]; }
+    pieces.forEach(function(pc){ pc.a = pc.from.map(inSq); pc.b = pc.to.map(inRect); pc.ca = cen(pc.a); pc.cb = cen(pc.b); });
+    return pieces;
+  }
+  var TURN = Math.atan2(0.6, 0.8);   // every piece turns by the same angle, about 37 degrees
+  var A = [0, 0], B = [5, 0], C = [1.8, 2.4];
+  var blue = { pieces: build(3, 1.8, [-2.4, 1.8], [0, -5]), fill: 'rgba(58,93,168,.34)', stroke: '#3a5da8', label: '9', lc: '#3a5da8' };
+  var gold = { pieces: build(4, 3.2, [1.8, 2.4], [1.8, -5]), fill: 'rgba(232,169,12,.42)', stroke: '#b8860b', label: '16', lc: '#8a6400' };
+  function place(pc, k){
+    var c = [pc.ca[0] + (pc.cb[0] - pc.ca[0]) * k, pc.ca[1] + (pc.cb[1] - pc.ca[1]) * k];
+    var turned = rotAbout(pc.a, pc.ca, TURN * k);
+    return turned.map(function(q){ return [q[0] - pc.ca[0] + c[0], q[1] - pc.ca[1] + c[1]]; });
   }
   function draw(t){
-    var tl = Math.min(3, Math.max(0, t)), tr = Math.min(3, Math.max(0, t - 3)), h = '';
+    var cut = Math.min(1, Math.max(0, t)), kb = Math.min(1, Math.max(0, t - 1)), kg = Math.min(1, Math.max(0, t - 2)), h = '';
     h += poly([A, B, [5, -5], [0, -5]], 'none', '#b03030', 2.5);
-    h += poly(L.sq, 'none', '#3a5da8', 1.2, '4 4') + poly(R.sq, 'none', '#b8860b', 1.2, '4 4');
     h += '<line x1="' + X(1.8) + '" y1="' + Y(0) + '" x2="' + X(1.8) + '" y2="' + Y(-5) + '" stroke="#22304f" stroke-width="1.2" stroke-dasharray="5 4"/>';
+    h += poly(blue.pieces[0].a.length ? [[-2.4,1.8],[0,0],[1.8,2.4],[-0.6,4.2]] : [], 'none', '#3a5da8', 1.2, '4 4');
+    h += poly([[1.8,2.4],[5,0],[7.4,3.2],[4.2,5.6]], 'none', '#b8860b', 1.2, '4 4');
     h += poly([A, B, C], '#e6d9b8', 'none', 0);
-    [[L, tl], [R, tr]].forEach(function(pair){
-      var o = pair[0], p = shape(o, pair[1]), cx = 0, cy = 0;
-      h += poly(p, o.fill, o.stroke, 2);
-      p.forEach(function(q){ cx += q[0] / 4; cy += q[1] / 4; });
-      o.c = [cx, cy];
+    var ORDER = [[0, 0.00, 0.40], [2, 0.33, 0.70], [1, 0.63, 1.00]];   // piece, start, finish within its square's turn
+    [[blue, kb], [gold, kg]].forEach(function(pair){
+      var o = pair[0], k = pair[1];
+      ORDER.forEach(function(r){
+        var pc = o.pieces[r[0]], kk = ease(Math.min(1, Math.max(0, (k - r[1]) / (r[2] - r[1]))));
+        var p = place(pc, kk);
+        h += poly(p, o.fill, o.stroke, 2, null, cut);
+        if (r[0] === 0) o.lab = cen(p);
+      });
     });
+    // outer outline of each untouched square, so it reads as one square before the cut
+    if (cut < 1){
+      h += poly([[-2.4,1.8],[0,0],[1.8,2.4],[-0.6,4.2]], 'none', '#3a5da8', 2);
+      h += poly([[1.8,2.4],[5,0],[7.4,3.2],[4.2,5.6]], 'none', '#b8860b', 2);
+    }
     h += poly([A, B, C], 'none', '#22304f', 2.5);
-    h += txt(L.c[0], L.c[1], L.label, 18, L.lc, true) + txt(R.c[0], R.c[1], R.label, 18, R.lc, true);
+    h += txt(blue.lab[0], blue.lab[1], blue.label, 18, blue.lc, true) + txt(gold.lab[0], gold.lab[1], gold.label, 18, gold.lc, true);
     h += txt(-0.35, -0.3, 'A', 14, '#22304f', true) + txt(5.35, -0.3, 'B', 14, '#22304f', true) + txt(1.8, 2.85, 'C', 14, '#22304f', true);
     h += txt(2.5, -5.45, 'square on the hypotenuse: 25', 12, '#b03030', false);
     svg.innerHTML = h;
     var st;
-    if (t <= 0.001) st = ['The two squares on the legs: 9 and 16.', 'Watch the blue square first, then the gold one. Each area label rides along with its shape.'];
-    else if (t >= 5.999) st = ['Done: 9 + 16 fill the square on the hypotenuse.', 'Nothing was stretched, squashed, added or cut away. So a² + b² = c².'];
-    else if (t < 3) st = steps('L', Math.min(2, Math.floor(t - 0.0001)));
-    else if (t <= 3.001) st = ['The blue 9 has landed in the big square.', 'Now the gold square makes the same three moves.'];
-    else st = steps('R', Math.min(2, Math.floor(t - 3.0001)));
+    if (t <= 0.001) st = ['The two squares on the legs: 9 and 16.', 'Watch them get cut up and moved. The pieces will not bend, stretch or shrink.'];
+    else if (t <= 1) st = ['Step 1. Cut.', 'Two straight cuts split each square into three pieces: one big piece and two right triangles.'];
+    else if (t < 2) st = ['Step 2. Move the blue pieces.', 'One piece at a time, each slides and turns and keeps its exact shape. Together they still cover 9 squares.'];
+    else if (t <= 2.001) st = ['The blue 9 fills the left rectangle exactly.', 'Now the gold pieces do the same.'];
+    else if (t < 2.999) st = ['Step 3. Move the gold pieces.', 'Same rule: slide and turn, no bending. Together they still cover 16 squares.'];
+    else st = ['Done: 9 + 16 fill the square on the hypotenuse.', 'Nothing was stretched, squashed, added or thrown away. So a² + b² = c².'];
     document.getElementById('sh-step').textContent = st[0];
     document.getElementById('sh-why').textContent = st[1];
   }
-  var playing = false, raf = null, btn = document.getElementById('sh-play'), MAX = 600;
+  var playing = false, raf = null, btn = document.getElementById('sh-play');
   function setBtn(){ btn.innerHTML = playing ? '&#10074;&#10074; Pause' : (Number(sl.value) >= MAX ? '&#8635; Play again' : '&#9654; Play'); }
   function stop(){ playing = false; if (raf) cancelAnimationFrame(raf); setBtn(); }
   function play(){
-    if (Number(sl.value) >= MAX) sl.value = 0;
+    // keep the position in a variable: the slider rounds to whole numbers, and on fast screens
+    // one frame's step is less than 1, so reading it back from the slider would never move
+    var v = Number(sl.value);
+    if (v >= MAX) v = 0;
     playing = true; setBtn();
     var last = null, rested = 0, restingAt = -1;
     function frame(ts){
       if (!playing) return;
       if (last === null) last = ts;
-      var dt = ts - last, v = Number(sl.value); last = ts;
+      var dt = Math.min(ts - last, 100); last = ts;
       var whole = Math.round(v / 100) * 100;
-      // pause for a moment at each step boundary so the eye can catch up
       if (Math.abs(v - whole) < 0.01 && whole > 0 && whole < MAX && restingAt !== whole){
         rested += dt;
-        if (rested < 650){ raf = requestAnimationFrame(frame); return; }
+        if (rested < 700){ raf = requestAnimationFrame(frame); return; }
         restingAt = whole; rested = 0;
       }
-      v = Math.min(MAX, v + dt / 14);
-      var next = (Math.floor(Number(sl.value) / 100) + 1) * 100;
-      if (v > next && next < MAX) v = next;          // land exactly on the boundary, then rest
+      var next = (Math.floor(v / 100 + 1e-9) + 1) * 100;
+      v = Math.min(MAX, v + dt / 20);
+      if (v > next && next < MAX) v = next;
       sl.value = v; draw(v / 100);
       if (v >= MAX){ stop(); return; }
       raf = requestAnimationFrame(frame);
@@ -1039,7 +1048,7 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
 <p>The first of its thirteen books climbs through forty-six propositions like a staircase. At the top stands <b>Proposition 47</b>: the theorem of Pythagoras. Generations of students gave its diagram nicknames: the <b>windmill</b>, the <b>bride's chair</b>, the <b>peacock's tail</b>.</p>
 """ + _windmill() + """
 <p>Euclid's idea is different from the sliding proofs, and cleverer. He drops a line from the square corner straight down through the big square, slicing it into <b>two rectangles</b>. Then, using triangles that he slides and turns without changing their area, he proves that the left rectangle is exactly as big as the square on the left leg, and the right rectangle exactly as big as the square on the right leg.</p>
-<p>Here are his moves, played out. Euclid works with triangles that are exactly half of each shape below, but the moves are the same, and so is the reason they work: sliding a shape along its own line, or turning it, never changes how much space it covers.</p>
+<p>Here is the same fact shown in a hands-on way. Euclid's own proof uses triangles that keep their base and height while their shape leans. The animation below does it with scissors instead: cut each small square into three pieces, then slide and turn the pieces, without bending or stretching them, until they fill the two rectangles exactly.</p>
 """ + SHEAR + """
 <p>So the two small squares don't merely <i>add up</i> to the big one. Each has its own <b>place</b> inside it. Euclid shows you where the 9 goes, and where the 16 goes.</p>
 <p>His very next proposition, number 48, runs the theorem backwards: if a triangle's sides obey a² + b² = c², then it <i>must</i> have a square corner. That is what makes the carpenter's knotted rope work. And there the first book ends.</p>
@@ -1054,21 +1063,14 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
         ),
         # ------------------------------------------------------------------ 8
         dict(
-            kicker="Chapter Eight · Proofs Four and Five · 1876 and about 1891",
-            title="The Congressman and the Schoolboy",
+            kicker="Chapter Eight · Proof Four · Washington · 1876",
+            title="The Congressman",
             html="""
 <p>You don't have to be a mathematician to prove the theorem. You have to be stubborn, and you have to like it.</p>
 <p><b>James A. Garfield</b> had been a schoolteacher and the head of a small Ohio college before he became a general in the Civil War and then a congressman. In <b>1876</b>, passing the time with other members of Congress, he found a proof of his own. It was printed that April in the <i>New-England Journal of Education</i>. Five years later he was sworn in as the <b>twentieth President of the United States</b>. He is the only one, so far, to have published a proof of the Pythagorean theorem.</p>
 <p>Garfield's trick is to stand two copies of the triangle on one straight line, toe to toe, and join their tops. The shape you get is a <b>trapezoid</b>, a four-sided figure with two parallel sides, and it is made of exactly three triangles: the two copies, and between them a big one with two sides of length c and a square corner. That middle triangle is <b>half of a square with side c</b>.</p>
 """ + _garfield() + """
-<p>Now measure the trapezoid two ways. As one whole shape, its area is the average of its two parallel sides, times the distance between them. As three pieces, its area is triangle + triangle + half of c². The two answers must agree, and out falls the theorem. You'll run the numbers yourself below.</p>
-<p>The fifth proof belongs to a boy. In Munich, around <b>1891</b>, an engineer named Jakob Einstein told his nephew <b>Albert</b>, who was eleven or twelve, about the theorem of Pythagoras. Albert did not look the proof up. He decided to find one. Many years later he remembered: <i>"After much effort I succeeded in 'proving' this theorem on the basis of the similarity of triangles."</i></p>
-<p><b>Similar</b> triangles are triangles with the same shape in different sizes: scale models of each other. We don't have the boy's notebook, so nobody can say exactly which steps he took. But here is a proof of just the kind he describes. Drop a line from the square corner straight to the hypotenuse:</p>
-""" + _einstein() + """
-<p>The triangle splits into two smaller ones, and both are <b>scale models of the whole</b>, with the same angles and the same shape. Look at their longest sides. The blue one's hypotenuse is the old leg <b>a</b>. The gold one's is the old leg <b>b</b>. The whole triangle's is <b>c</b>.</p>
-<p>Now a fact about scale models: area grows as the <i>square</i> of the size. Double every length and the area is four times as big; triple them and it is nine times. So for triangles of this one shape, the area is always the same fixed fraction of the square on the hypotenuse. For the 3-4-5 shape that fraction happens to be 0.24: the whole triangle has area 0.24 × 25 = 6.</p>
-<p>So the three areas are 0.24 × a², 0.24 × b² and 0.24 × c². But the two small triangles <i>are</i> the big one, cut in two. Their areas add up to its area. Divide away the 0.24, and what is left says a² + b² = c². No squares were drawn at all.</p>
-<div class="bigidea">🌟 <b>Big Idea #3:</b> Nobody asked Garfield for a proof, and the theorem had been settled for two thousand years when Einstein's uncle mentioned it. They proved it anyway, because being told something is true and <i>seeing for yourself why</i> are not the same experience.</div>""",
+<p>Now measure the trapezoid two ways. As one whole shape, its area is the average of its two parallel sides, times the distance between them. As three pieces, its area is triangle + triangle + half of c². The two answers must agree, and out falls the theorem. You'll run the numbers yourself below.</p>""",
             cps=[dict(
                 type="num",
                 kicker="Garfield's trapezoid, measured whole",
@@ -1081,7 +1083,21 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
                 q="""The whole trapezoid is 24.5. Take away the two triangles, which have area <b>6</b> each. What remains is <b>half</b> of the square on the hypotenuse. So what is the area of the <i>whole</i> square on the hypotenuse?""",
                 answers=[25], unit="unit squares",
                 hint="24.5 − 6 − 6 = 12.5. That is half of c². Double it.",
-            ), dict(
+            )],
+        ),
+        # ------------------------------------------------------------------ 9
+        dict(
+            kicker="Chapter Nine · Proof Five · Munich · about 1891",
+            title="The Schoolboy",
+            html="""
+<p>The fifth proof belongs to a boy. In Munich, around <b>1891</b>, an engineer named Jakob Einstein told his nephew <b>Albert</b>, who was eleven or twelve, about the theorem of Pythagoras. Albert did not look the proof up. He decided to find one. Many years later he remembered: <i>"After much effort I succeeded in 'proving' this theorem on the basis of the similarity of triangles."</i></p>
+<p><b>Similar</b> triangles are triangles with the same shape in different sizes: scale models of each other. We don't have the boy's notebook, so nobody can say exactly which steps he took. But here is a proof of just the kind he describes. Drop a line from the square corner straight to the hypotenuse:</p>
+""" + _einstein() + """
+<p>The triangle splits into two smaller ones, and both are <b>scale models of the whole</b>, with the same angles and the same shape. Look at their longest sides. The blue one's hypotenuse is the old leg <b>a</b>. The gold one's is the old leg <b>b</b>. The whole triangle's is <b>c</b>.</p>
+<p>Now a fact about scale models: area grows as the <i>square</i> of the size. Double every length and the area is four times as big; triple them and it is nine times. So for triangles of this one shape, the area is always the same fixed fraction of the square on the hypotenuse. For the 3-4-5 shape that fraction happens to be 0.24: the whole triangle has area 0.24 × 25 = 6.</p>
+<p>So the three areas are 0.24 × a², 0.24 × b² and 0.24 × c². But the two small triangles <i>are</i> the big one, cut in two. Their areas add up to its area. Divide away the 0.24, and what is left says a² + b² = c². No squares were drawn at all.</p>
+<div class="bigidea">🌟 <b>Big Idea #3:</b> Nobody asked Garfield for a proof, and the theorem had been settled for two thousand years when Einstein's uncle mentioned it. They proved it anyway, because being told something is true and <i>seeing for yourself why</i> are not the same experience.</div>""",
+            cps=[dict(
                 type="num",
                 kicker="The schoolboy's proof, checked",
                 q="""In the 3-4-5 shape, a triangle's area is always <b>0.24</b> × the square on its hypotenuse. The small blue triangle has area 0.24 × 9 = <b>2.16</b>. The gold one has area 0.24 × 16 = <b>3.84</b>. Add them. What do you get?""",
@@ -1089,9 +1105,9 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
                 hint="2.16 + 3.84. (And the whole 3-4-5 triangle's area is 3 × 4 ÷ 2. The pieces make the whole. That was the entire proof.)",
             )],
         ),
-        # ------------------------------------------------------------------ 9
+        # ----------------------------------------------------------------- 10
         dict(
-            kicker="Chapter Nine · Southern Italy · the 400s BC",
+            kicker="Chapter Ten · Southern Italy · the 400s BC",
             title="The Number That Would Not Behave",
             html="""
 <p>Remember the creed: <i>All is number.</i> By "number" the Pythagoreans meant whole numbers (1, 2, 3) and the ratios between them, like 3/2 or 17/12. Every length in the world, they believed, could be written as one of those. And then their own theorem turned on them.</p>
@@ -1121,9 +1137,9 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
                 hint="17 × 17 = 17 × 10 + 17 × 7 = 170 + 119. So close to 288, and that gap of one never closes, no matter how big the numbers get.",
             )],
         ),
-        # ----------------------------------------------------------------- 10
+        # ----------------------------------------------------------------- 11
         dict(
-            kicker="Chapter Ten · Everywhere · today",
+            kicker="Chapter Eleven · Everywhere · today",
             title="Put It to Work",
             html="""
 <p>A theorem proved is a tool earned. This one may be the most-used tool in all of mathematics. Carpenters square the corners of a house with a 3-4-5 triangle. A phone finding its position, a video game deciding whether the arrow hit the dragon, a telescope working out how far apart two stars sit on a photograph: deep inside, each of them is squaring two numbers, adding, and taking a square root.</p>
@@ -1167,7 +1183,7 @@ The <b>+2ab</b> and the <b>−2ab</b> cancel each other out, and what is left is
         verdicts=[
             dict(min=10, title="{score}: Q.E.D.", text="Flawless, {name}. Euclid would nod, Garfield would shake your hand, and the brotherhood would probably swear you to secrecy. Go and find a right triangle in the room you are sitting in."),
             dict(min=7, title="{score}: Past the curtain", text="Strong work, {name}. Read the explanations under the ones that got away. Most of them turn on one question: which side is the hypotenuse?"),
-            dict(min=4, title="{score}: Still in the listening years", text="You have the idea, {name}, and the rest is practice. Wipe the slate, keep the recipe from Chapter Ten beside you, and draw the triangle before you calculate anything."),
+            dict(min=4, title="{score}: Still in the listening years", text="You have the idea, {name}, and the rest is practice. Wipe the slate, keep the recipe from Chapter Eleven beside you, and draw the triangle before you calculate anything."),
             dict(min=0, title="{score}: Back to the theorem machine", text="Every one of these can be learned, {name}. Go back to Chapter Three, play with the sliders until the squares feel obvious, then wipe the slate and try again. Einstein said his proof took 'much effort' too."),
         ],
         questions=[
