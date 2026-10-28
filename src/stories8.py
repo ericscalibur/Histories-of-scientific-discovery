@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Story data: Euclid and the Elements. Every checkpoint is a problem or proof step from the Elements."""
 import math
+from stories7 import _windmill, SHEAR
 
 # ---------------------------------------------------------------------------
 # Diagram helper (same conventions as stories7: math y-axis up, figures drawn
@@ -245,6 +246,32 @@ def _ii4():
     f.text(a + b / 2.0, a + b + 0.3, "b", 15, INK, True, halo=False)
     f.text(-0.3, b + a / 2.0, "a", 15, INK, True, halo=False)
     f.text(-0.3, b / 2.0, "b", 15, INK, True, halo=False)
+    return f.svg()
+
+
+def _ii5():
+    f = _Fig(380, 245, 32, 30, 45, "Euclid's figure for Book Two, Proposition 5: a line 10 long cut in half at C and "
+             "again at D. The rectangle 7 by 3 on the unequal pieces, plus a small square 2 by 2, makes the square "
+             "5 by 5 on half the line")
+    f.poly([(0, 0), (5, 0), (5, -3), (0, -3)], A_FILL, A_COL, 2)
+    f.poly([(5, 0), (7, 0), (7, -3), (5, -3)], B_FILL, "#8a6400", 2)
+    f.poly([(7, 0), (10, 0), (10, -5), (7, -5)], A_FILL, A_COL, 2)
+    f.poly([(5, -3), (7, -3), (7, -5), (5, -5)], C_FILL, C_COL, 2)
+    f.poly([(0, 0), (7, 0), (7, -3), (0, -3)], "none", INK, 3)
+    f.poly([(5, 0), (10, 0), (10, -5), (5, -5)], "none", INK, 2.5, ' stroke-dasharray="7 4"')
+    f.line(0, 0, 10, 0, INK, 3)
+    for x, name in ((0, "A"), (5, "C"), (7, "D"), (10, "B")):
+        f.dot(x, 0, 3.5)
+        f.text(x, 0.5, name, 15, INK, True)
+    for x, n in ((2.5, "5"), (6, "2"), (8.5, "3")):
+        f.text(x, 0.5, n, 12, "#4a5878", halo=False)
+    f.text(2.5, -1.5, "15", 17, A_COL, True)
+    f.text(8.5, -2.5, "15", 17, A_COL, True)
+    f.text(6, -1.5, "6", 16, "#8a6400", True)
+    f.text(6, -4, "4", 16, C_COL, True)
+    f.text(2.5, -3.5, "rectangle 7 by 3", 12, INK, italic=True, halo=False)
+    f.text(4.8, -4.6, "square on the gap", 11, C_COL, anchor="end", italic=True, halo=False)
+    f.text(7.5, -5.5, "square on half the line, 5 by 5", 12, INK, italic=True, halo=False)
     return f.svg()
 
 
@@ -1003,7 +1030,7 @@ PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS, BRIDGE, PROP2 = map(_styled, (P
 EUCLID = dict(
     title="No Royal Road: Euclid and the Elements",
     h1="✦ No Royal Road ✦",
-    sub="Euclid, the Elements, and twenty-one problems from the most successful math book ever written",
+    sub="Euclid, the Elements, and twenty-two problems from the most successful math book ever written",
     footer="Every checkpoint is a proposition from the Elements · every legend is labeled as a legend<br>(there is still no royal road)",
     praise=["Q.E.D., {name}!", "Which was to be proved, {name}!", "Proved from the postulates, {name}!",
             "{name}, the straightedge never lies!", "Euclid would put that in the book, {name}!"],
@@ -1169,6 +1196,9 @@ EUCLID = dict(
 <p>All of Book I builds toward its last two propositions. Proposition 47: <i>in a right-angled triangle, the square on the side opposite the right angle equals the squares on the other two sides.</i> The two sides that make the square corner are the <b>legs</b>, and the long side across from it is the <b>hypotenuse</b>. With legs <b>a</b> and <b>b</b> and hypotenuse <b>c</b>:</p>
 <div class="bigidea">📐 <b>Book I, Proposition 47:</b> a&#178; + b&#178; = c&#178;. (a&#178;, "a squared," means a &#215; a: the area of a square with side a.)</div>
 <p>It carries the name of <b>Pythagoras</b>, who lived more than two hundred years before Euclid, though people in Babylon were using the rule more than a thousand years before Pythagoras. The proof in the <i>Elements</i> is a clever one. It cuts the big square into two rectangles and shows that each one matches one of the smaller squares. Proclus believed that this particular proof was Euclid's own.</p>
+""" + _windmill() + """
+<p>Euclid's own proof slides triangles that keep their base and height while their shape leans. The animation below shows the same fact with scissors instead: cut each small square into pieces, then slide and turn them, without bending or stretching, until they fill the two rectangles exactly.</p>
+""" + SHEAR + """
 <p>Try the most famous example. With legs 3 and 4: 3 &#215; 3 = 9 and 4 &#215; 4 = 16, and 9 + 16 = 25. Since 5 &#215; 5 = 25, the hypotenuse is 5. Nobody had to measure the long side. It was <b>calculated</b>.</p>
 <p>Proposition 48 runs the other way: if the squares on two sides add up to the square on the third, then the angle between those two sides <b>is</b> a right angle. A carpenter can check whether a corner is truly square by measuring 3 along one edge, 4 along the other, and checking that the diagonal is exactly 5.</p>""",
             cps=[dict(
@@ -1182,7 +1212,7 @@ EUCLID = dict(
         ),
         # ------------------------------------------------------------------ 7
         dict(
-            kicker="Chapter Seven · Book II, Proposition 4",
+            kicker="Chapter Seven · Book II, Propositions 4 and 5",
             title="Algebra Made of Squares",
             html="""
 <p>The Greeks had no algebra symbols: no x, no little raised 2, no equals sign. They did their algebra with <b>shapes</b>. Book II of the <i>Elements</i> is full of it.</p>
@@ -1191,7 +1221,12 @@ EUCLID = dict(
 <p>The whole square has side <b>a + b</b>. Inside it sit a square on a, a square on b, and two rectangles that are each a by b. In today's symbols:</p>
 <div class="bigidea">(a + b)&#178; = a&#178; + 2ab + b&#178;</div>
 <p>You can use it to square numbers in your head. Take 12 &#215; 12. Split 12 into 10 + 2. The big square is 10 &#215; 10 = 100, the small one 2 &#215; 2 = 4, and the two rectangles are 10 &#215; 2 = 20 each, so 40. Add them: 100 + 40 + 4 = 144.</p>
-<p>In the 1890s two young scholars from Oxford, <b>Bernard Grenfell</b> and <b>Arthur Hunt</b>, dug through the ancient rubbish heaps of an Egyptian town called <b>Oxyrhynchus</b>, where the dry sand had preserved thousands of scraps of papyrus. One scrap, catalogued as <b>P.Oxy. I 29</b>, has the words of the very next proposition, Book II, Proposition 5, along with its diagram of a rectangle and a square. Experts disagree about its age; guesses run from about AD 75 to about AD 300. It is one of the oldest pieces of the <i>Elements</i> that survive, and it is now in the Penn Museum in Philadelphia.</p>""",
+<p>The very next proposition, number 5, is a cousin. Cut a straight line exactly in half, then cut it again somewhere else. Euclid says: the <b>rectangle</b> made from the two unequal pieces, together with the <b>square on the gap</b> between the two cuts, equals the <b>square on half the line</b>.</p>
+""" + _ii5() + """
+<p>Here the line AB is 10 long. C cuts it in half, 5 and 5. D cuts it again into unequal pieces, 7 and 3, leaving a gap CD of 2. The rectangle 7 by 3 is a blue piece plus a gold piece. The square on half the line, 5 by 5, holds the same gold piece, a blue piece of the same size (3 by 5 standing up instead of 5 by 3 lying down), and one more little red square: the square on the gap, 2 by 2. So 7 &#215; 3 + 2 &#215; 2 = 5 &#215; 5, or 21 + 4 = 25. With half the line called h and the gap called d:</p>
+<div class="bigidea">(h + d) &#215; (h &#8722; d) + d&#178; = h&#178; &nbsp;so&nbsp; (h + d) &#215; (h &#8722; d) = h&#178; &#8722; d&#178;</div>
+<p>This is a mental-math trick too. When two numbers sit the same distance either side of a round number, square the round number and take away the square of the distance. 19 &#215; 21: both are 1 away from 20, so the answer is 20 &#215; 20 &#8722; 1 &#215; 1 = 400 &#8722; 1 = 399.</p>
+<p>In the 1890s two young scholars from Oxford, <b>Bernard Grenfell</b> and <b>Arthur Hunt</b>, dug through the ancient rubbish heaps of an Egyptian town called <b>Oxyrhynchus</b>, where the dry sand had preserved thousands of scraps of papyrus. One scrap, catalogued as <b>P.Oxy. I 29</b>, has the words of this very proposition, Book II, Proposition 5, along with its diagram of a rectangle and a square. Compare it with the figure above. Experts disagree about its age; guesses run from about AD 75 to about AD 300. It is one of the oldest pieces of the <i>Elements</i> that survive, and it is now in the Penn Museum in Philadelphia.</p>""",
             cps=[dict(
                 type="num",
                 kicker="Book II, Proposition 4",
@@ -1199,6 +1234,12 @@ EUCLID = dict(
                 figure=_cp_ii4(),
                 answers=[24], unit="square units",
                 hint="One way: each rectangle is 3 by 4. Another way: 7&#178; = 49, 3&#178; = 9 and 4&#178; = 16, so 49 = 9 + (rectangles) + 16. What is 49 &#8722; 9 &#8722; 16?",
+            ), dict(
+                type="num",
+                kicker="Book II, Proposition 5",
+                q="""Multiply <b>48 &#215; 52</b> in your head, Euclid's way. Both numbers are the same distance from <b>50</b>. What is 48 &#215; 52?""",
+                answers=[2496],
+                hint="Half the line is 50 and the gap is 2. Square 50, then take away 2 &#215; 2.",
             )],
         ),
         # ------------------------------------------------------------------ 8
@@ -1271,7 +1312,7 @@ EUCLID = dict(
 <p>A <b>prime number</b> is a number that only 1 and itself can measure: 2, 3, 5, 7, 11, 13, 17, 19, 23... Every other whole number above 1 can be built by multiplying primes together, like 12 = 2 &#215; 2 &#215; 3. Primes are the atoms of arithmetic.</p>
 <p>As you count higher, primes get rarer. Between 1 and 100 there are 25 of them. Between 9,900 and 10,000 there are only 9. Do they eventually stop? Is there a biggest prime?</p>
 <p>Proposition 20 of Book IX answers, in Euclid's careful words: <i>"Prime numbers are more than any assigned multitude of prime numbers."</i> Notice that he never says <b>infinite</b>. Greek mathematicians were wary of the infinite. Instead Euclid says: give me any list of primes you like, and I can show you a prime that is not on it.</p>
-<p>Here is how. Multiply every prime on the list together, then <b>add 1</b>. Call the result N. Now try dividing N by any prime on your list. It always leaves a <b>remainder of 1</b>, because N is one more than a multiple of that prime. That means no prime on your list measures N. Then one of two things is true:</p>
+<p>Here is how. Multiply every prime on the list together, then <b>add 1</b>. Call the result N. Now try dividing N by any prime on your list. It always leaves a <b>remainder of 1</b>, because N is one more than a multiple of that prime. That means no prime on your list <b>measures</b> N (divides into it exactly, with nothing left over). Then one of two things is true:</p>
 <p>&#9312; N is prime itself. It is a new prime, not on your list.<br>&#9313; N is not prime. Then some prime measures it, and that prime cannot be on your list. Again, a new prime.</p>
 <p>Either way, your list was missing a prime. No list can ever hold them all. Euclid's own proof uses a list of just three primes, but the argument works for any list at all. For example, with the list 2, 3, 5: 2 &#215; 3 &#215; 5 + 1 = 31, and 31 is a prime not on the list.</p>""",
             cps=[dict(
@@ -1398,7 +1439,7 @@ EUCLID = dict(
                      ("18°, 72° and 18°", False)],
                  why="The angles beside 72° make 180° with it, so each is 108° (Prop 13). The angle opposite is equal to it: 72° (Prop 15)."),
             dict(type="num", kicker="Book I, Proposition 20",
-                 q="""Two sides of a triangle are <b>4 cm</b> and <b>9 cm</b>. The third side is a whole number of centimetres. What is the <b>shortest</b> it can be?""",
+                 q="""Two sides of a triangle are <b>4 cm</b> and <b>9 cm</b>. The third side is a whole number of centimetres. What is the <b>shortest whole number</b> it can be?""",
                  answers=[6], unit="cm",
                  why="4 plus the third side must be longer than 9, so the third side must be more than 5. The shortest whole number is 6. (With 5, the sides would lie flat.)"),
             dict(type="num", kicker="Book I, Proposition 47",

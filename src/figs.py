@@ -699,7 +699,7 @@ EUCLID_FIGS = [
     # ---- Chapter Seven · algebra made of squares ----
     (6, dict(
         img="P_Oxy_I_29_Euclid_II_5.jpg",
-        side="right", top=70,
+        side="right", top=1440,
         alt="A torn, brown papyrus fragment with eight lines of Greek handwriting and, at the lower right, a small ink diagram of a rectangle beside a square",
         title="Euclid on papyrus: P.Oxy. I 29",
         scroll=("<b>P.Oxy. I 29</b>, a scrap of papyrus pulled from the ancient rubbish "
@@ -724,8 +724,9 @@ EUCLID_FIGS = [
                 "and circles, with a set square in her other hand, and a crowd of students "
                 "with shaved heads (the mark of churchmen) watches her work. The British "
                 "Library suggests she is not a real teacher but <b>Geometry</b> herself, "
-                "shown as a person. Either way, look at the students' faces: they would "
-                "have been reading this book."))),
+                "shown as a person. Either way, students like these, in the monasteries and "
+                "new universities of the 1300s, learned their geometry from Latin copies of "
+                "the <i>Elements</i> just like the one this picture decorates."))),
     (13, dict(
         img="Lincoln_1858_Alschuler.png",
         side="right", top=560,
@@ -741,7 +742,7 @@ EUCLID_FIGS = [
                 "how a proof works, one proposition at a time."))),
     (13, dict(
         img="Byrne_Euclid_1847_title_page.png",
-        side="left", top=1060,
+        side="left", top=365,
         alt="Title page of Oliver Byrne's 1847 Elements, with the diagram for Proposition 47 printed in red, yellow, blue and black",
         title="Oliver Byrne's colour Euclid, 1847",
         scroll=("The title page of <b>Oliver Byrne</b>'s <i>The First Six Books of the "
