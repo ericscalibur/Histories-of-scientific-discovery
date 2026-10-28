@@ -834,7 +834,6 @@ PYTHAGORAS = dict(
     cert_org="The Order of the Right Angle",
     cert_of="the tale of the secret in the squares",
     cert_rank="Master of the Hypotenuse",
-    dev_skip=True,  # press \ to solve the next checkpoint (teacher shortcut)
     finale_title="The Proof Goes On",
     finale_html="""
 <p>In 1927 an American teacher named <b>Elisha Loomis</b> published a whole book containing nothing but proofs of this one theorem. By its second edition it held about <b>370</b> of them: sliding proofs, windmill proofs, a president's trapezoid, proofs by people famous and unknown. No other theorem in mathematics has been proved so many ways. In the same book Loomis laid down a rule: there could never be a proof using <b>trigonometry</b>, the mathematics of angles, because trigonometry, he said, is itself built on the Pythagorean theorem. You'd be using the thing to prove the thing.</p>

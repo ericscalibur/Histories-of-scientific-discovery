@@ -440,6 +440,26 @@
     var nm = (document.getElementById('playerName').value || '').trim();
     document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
   }
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== '\\' && e.key !== '|') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target, tag = (t && t.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    for (var i = 0; i < starOrder.length; i++){
+      var n = starOrder[i], fb = document.getElementById('f' + n);
+      if (!fb || fb.classList.contains('good')) continue;
+      e.preventDefault();
+      if (answers[n]){
+        document.getElementById('a' + n).value = answers[n][0];
+        window.check(n);
+      } else {
+        var btn = document.querySelector('#cp' + n + ' .mc-btn[onclick$="true)"]');
+        if (btn) btn.click();
+      }
+      return;
+    }
+  });
   // ---- review quiz ----
   var QUIZ = null;
   var qAnswered = 0, qScore = 0;

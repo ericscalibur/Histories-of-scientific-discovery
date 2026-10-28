@@ -683,6 +683,26 @@ Watch what happens when you try to answer one. The <b>second</b> question is alw
     var nm = (document.getElementById('playerName').value || '').trim();
     document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
   }
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== '\\' && e.key !== '|') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target, tag = (t && t.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+    for (var i = 0; i < starOrder.length; i++){
+      var n = starOrder[i], fb = document.getElementById('f' + n);
+      if (!fb || fb.classList.contains('good')) continue;
+      e.preventDefault();
+      if (answers[n]){
+        document.getElementById('a' + n).value = answers[n][0];
+        window.check(n);
+      } else {
+        var btn = document.querySelector('#cp' + n + ' .mc-btn[onclick$="true)"]');
+        if (btn) btn.click();
+      }
+      return;
+    }
+  });
   // ---- review quiz ----
   var QUIZ = {"n": 10, "items": {"1": {"type": "mc", "why": "He sold no answers at all. His tool was the question that makes a claim say exactly what it means, and his method got a name: the elenchus."}, "2": {"type": "num", "why": "399 + 28 = 427 BC. Going back in time, BC numbers get bigger. Historians say 428 or 427, depending on which month of the Athenian year you trust.", "answers": [427, 428]}, "3": {"type": "mc", "why": "Geometry guarded the door because it was the one subject where the arguing stops: a proof gives no jury a vote. The other two lines belong to Aristotle and to Socrates at his trial."}, "4": {"type": "num", "why": "6 &times; 6 = 36, which is four times 9, not double. Doubling a side always quadruples the area. Same trap the boy fell into in the Meno, and it works on every square ever drawn.", "answers": [36]}, "5": {"type": "num", "why": "4 &minus; 6 + 4 = 2. It comes out 2 for all five Platonic solids, and for any ball-shaped solid at all. Nobody noticed for two thousand years after Plato; Leonhard Euler finally did in the 1700s.", "answers": [2]}, "6": {"type": "mc", "why": "The prisoners' eyes are used to shadows, and the returning man is now bad at the shadow-guessing game. Plato, who watched Athens hand his teacher the poison cup, wrote the prisoners' death threat on purpose."}, "7": {"type": "mc", "why": "Palm down means <i>here</i>. The doctor's son learned what a horse is from horses. The Forms were Plato's road, and the crowd's vote was exactly what both of them had learned not to trust."}, "8": {"type": "mc", "why": "A true conclusion can fall out of a broken argument by luck. \u201cAll birds have feathers\u201d puts birds inside the club of feathered things; it doesn't make every feathered thing a bird. Same broken pattern as the dolphin, with a happier ending."}, "9": {"type": "num", "why": "356 &minus; 336 = 20. Two years later he crossed into Asia, and eleven years after that he was dead in Babylon at 32.", "answers": [20]}, "10": {"type": "mc", "why": "The specimens come from Pliny, nearly four centuries later; the exit line from Aelian, about five. A good story is not evidence. That rule is the one thing every chapter in this lesson agrees on."}}, "verdicts": [{"min": 10, "title": "{score} &mdash; Philosopher of Nature, First Class", "text": "Not one wobble, {name}. Aristotle would write that down, Plato would carve it over the door, and Socrates would have a follow-up question anyway. Go and ask somebody what they mean."}, {"min": 7, "title": "{score} &mdash; The Academy admits you", "text": "Solid reasoning, {name}. Read the explanations under the ones you missed: every one of them is a place where the obvious answer was a trap, which is the whole point of this lesson."}, {"min": 4, "title": "{score} &mdash; Halfway up out of the cave", "text": "Your eyes are still adjusting to the light, {name}. Wipe the slate, re-read the chapters the missed questions point to, and come back. Plato said learning hurts. He did not say it stops."}, {"min": 0, "title": "{score} &mdash; Back to the agora", "text": "Socrates would say this is the best place to start, {name}: knowing what you don't know yet. Wipe the slate, read again, and this time ask each chapter what it means."}]};
   var qAnswered = 0, qScore = 0;
