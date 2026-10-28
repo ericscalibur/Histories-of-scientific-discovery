@@ -127,6 +127,69 @@ def _circle_defs():
     return f.svg()
 
 
+def _half_turn():
+    f = _Fig(340, 210, 1, 170, 150, "A straight line with another line standing straight up from its middle, making "
+             "two right angles of 90 degrees each that together fill a half-turn of 180 degrees")
+    f.arc(0, 0, 62, 90, 180, A_COL, 2.5, A_FILL)
+    f.arc(0, 0, 62, 0, 90, "#8a6400", 2.5, B_FILL)
+    f.line(-145, 0, 145, 0, INK, 3)
+    f.line(0, 0, 0, 120, INK, 3)
+    f.corner(0, 0, -1, 0, 0, 1, 20)
+    f.corner(0, 0, 1, 0, 0, 1, 20)
+    f.text(-33, 33, "90&#176;", 15, A_COL, True)
+    f.text(33, 33, "90&#176;", 15, "#8a6400", True)
+    f.dot(0, 0, 4.5)
+    f.text(0, -30, "90&#176; + 90&#176; = 180&#176;", 16, INK, True, halo=False)
+    f.text(140, -16, "one straight line", 11, "#4a5878", anchor="end", italic=True, halo=False)
+    return f.svg()
+
+
+def _i3():
+    f = _Fig(390, 265, 36, 112, 150, "Euclid's figure for Book One, Proposition 3: a short line, and a long line AB. "
+             "A copy of the short length is placed at A, and a circle round A cuts off a piece of AB equal to it")
+    r = 2.6
+    f.line(3.9, 2.5, 3.9 + r, 2.5, C_COL, 4)
+    f.text(3.9 + r / 2.0, 2.9, "the short line", 12, C_COL, italic=True, halo=False)
+    f.circle(0, 0, r, "#4a5878", 1.5, "none", "5 4")
+    dx, dy = _pol(r, 125)
+    f.line(0, 0, dx, dy, C_COL, 2.5, "6 4")
+    f.line(0, 0, 7.2, 0, INK, 2.5)
+    f.line(0, 0, r, 0, C_COL, 4)
+    for x, y in ((0, 0), (7.2, 0), (r, 0), (dx, dy)):
+        f.dot(x, y, 3.5)
+    f.text(-0.3, -0.35, "A", 15, INK, True)
+    f.text(7.2, -0.42, "B", 15, INK, True)
+    f.text(r + 0.25, -0.42, "E", 15, C_COL, True)
+    f.text(dx - 0.3, dy + 0.2, "D", 15, C_COL, True)
+    f.text(r / 2.0, -0.45, "AE", 13, C_COL, True)
+    return f.svg()
+
+
+def _i5():
+    f = _Fig(320, 250, 44, 160, 205, "An isosceles triangle ABC with AB equal to AC, a dotted line straight down "
+             "the middle from A to the base, and the two equal base angles marked in red")
+    A, B, C, M = (0, 4.0), (-1.7, 0), (1.7, 0), (0, 0)
+    f.poly([A, B, C], TRI, INK, 2.5)
+    f.line(A[0], A[1], M[0], M[1], "#4a5878", 2, "6 4")
+    f.corner(0, 0, 1, 0, 0, 1, 0.28, "#4a5878")
+    f.tick(A[0], A[1], B[0], B[1], 2)
+    f.tick(A[0], A[1], C[0], C[1], 2)
+    f.tick(B[0], B[1], M[0], M[1], 1)
+    f.tick(M[0], M[1], C[0], C[1], 1)
+    ang = math.degrees(math.atan2(A[1] - B[1], A[0] - B[0]))
+    f.arc(B[0], B[1], 0.55, 0, ang, C_COL, 2.5, C_FILL)
+    f.arc(C[0], C[1], 0.55, 180 - ang, 180, C_COL, 2.5, C_FILL)
+    for P in (A, B, C):
+        f.dot(P[0], P[1], 3.5)
+    f.text(0, 4.35, "A", 15, INK, True)
+    f.text(-1.95, -0.3, "B", 15, INK, True)
+    f.text(1.95, -0.3, "C", 15, INK, True)
+    f.text(3.4, 3.9, "AB = AC", 13, INK, True, anchor="end", halo=False)
+    f.text(3.4, 3.45, "fold along the dotted line:", 11, "#4a5878", anchor="end", italic=True, halo=False)
+    f.text(3.4, 3.1, "the red angles match", 11, "#4a5878", anchor="end", italic=True, halo=False)
+    return f.svg()
+
+
 def _i32():
     f = _Fig(380, 230, 42, 70, 190, "Euclid's figure for Book One, Proposition 32: a triangle with a line through its "
              "top corner parallel to its base, and the angles matched by colour")
@@ -465,13 +528,16 @@ CROSSING = ('<div style="%s">\n  <div style="%s">Two crossing lines &middot; tur
     var p = pt(150, t), q = pt(150, t + 180);
     el('line', {x1: q[0].toFixed(1), y1: q[1].toFixed(1), x2: p[0].toFixed(1), y2: p[1].toFixed(1), stroke: '#22304f', 'stroke-width': 3, 'stroke-linecap': 'round'});
     el('circle', {cx: CX, cy: CY, r: 4, fill: '#22304f'});
-    label(72, t / 2, t + '°', BLUE);
-    label(72, t + u / 2, u + '°', GOLD);
-    label(72, 180 + t / 2, t + '°', BLUE);
-    label(72, 180 + t + u / 2, u + '°', GOLD);
+    // p and q above the flat line, r and s below, going round as in the proof
+    // labels for narrow angles go farther out, where the wedge has room
+    var rt = t < 45 ? 124 : 84, ru = u < 45 ? 124 : 84;
+    label(rt, t / 2, 'p = ' + t + '°', BLUE);
+    label(ru, t + u / 2, 'q = ' + u + '°', GOLD);
+    label(rt, 180 + t / 2, 'r = ' + t + '°', BLUE);
+    label(ru, 180 + t + u / 2, 's = ' + u + '°', GOLD);
     document.getElementById('cx-out').innerHTML =
-      'Side by side (Prop 13): <span style="color:#3a5da8"><b>' + t + '°</b></span> + <span style="color:#8a6400"><b>' + u + '°</b></span> = <b>180°</b>' +
-      '<br>Opposite angles (Prop 15): blue matches blue, gold matches gold.';
+      'Side by side (Prop 13): p + q = <span style="color:#3a5da8"><b>' + t + '°</b></span> + <span style="color:#8a6400"><b>' + u + '°</b></span> = <b>180°</b>' +
+      '<br>Opposite angles (Prop 15): p = r and q = s.';
   }
   sl.addEventListener('input', draw);
   draw();
@@ -701,7 +767,237 @@ def _styled(w):
     return w.replace("@@GO@@", _GO).replace("@@BTN@@", _BTN)
 
 
-PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS = map(_styled, (PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS))
+
+# ---- Euclid's own proof of Proposition 5, as a fold-out stepper ----
+def _bridge_svg():
+    A, B, C = (0, 4.4), (-1.4, 1.8), (1.4, 1.8)
+
+    def along(P, Q, k):
+        return (P[0] + k * (Q[0] - P[0]), P[1] + k * (Q[1] - P[1]))
+    D, E = along(A, B, 1.95), along(A, C, 1.95)
+    F, G = along(A, B, 1.55), along(A, C, 1.55)
+    leg = math.degrees(math.atan2(A[1] - B[1], A[0] - B[0]))           # BA direction, about 61.7
+    low = math.degrees(math.atan2(G[1] - B[1], G[0] - B[0]))           # BG direction, below the base
+    cross = math.degrees(math.atan2(C[1] - F[1], C[0] - F[0]))         # FC direction
+
+    def layer(lid, draw, shown=False):
+        g = _Fig(420, 330, 50, 210, 272, "")
+        draw(g)
+        return '<g id="%s" style="opacity:%d; transition:opacity .4s ease;">%s</g>' % (lid, shown, "".join(g.parts))
+
+    def base(g):
+        g.line(D[0], D[1], A[0], A[1], INK, 2.5)
+        g.line(E[0], E[1], A[0], A[1], INK, 2.5)
+        g.line(B[0], B[1], C[0], C[1], INK, 2.5)
+        g.tick(A[0], A[1], B[0], B[1], 2)
+        g.tick(A[0], A[1], C[0], C[1], 2)
+
+    def labels(g):
+        for P in (A, B, C, D, E):
+            g.dot(P[0], P[1], 3.5)
+        g.text(0, 4.75, "A", 15, INK, True)
+        g.text(-1.75, 1.95, "B", 15, INK, True)
+        g.text(1.75, 1.95, "C", 15, INK, True)
+        g.text(-3.1, -0.25, "D", 15, INK, True)
+        g.text(3.1, -0.25, "E", 15, INK, True)
+
+    def fg(g):
+        g.line(F[0], F[1], C[0], C[1], INK, 2)
+        g.line(G[0], G[1], B[0], B[1], INK, 2)
+        g.dot(F[0], F[1], 3.5)
+        g.dot(G[0], G[1], 3.5)
+        g.text(-2.45, 0.75, "F", 15, INK, True)
+        g.text(2.45, 0.75, "G", 15, INK, True)
+
+    def big(g):
+        g.poly([A, F, C], A_FILL, A_COL, 2.5)
+        g.poly([A, G, B], B_FILL, "#8a6400", 2.5)
+        g.arc(F[0], F[1], 0.8, cross, leg, C_COL, 2.5, C_FILL)
+        g.arc(G[0], G[1], 0.8, 180 - leg, 180 - cross, C_COL, 2.5, C_FILL)
+
+    def bf_cg(g):
+        g.line(B[0], B[1], F[0], F[1], C_COL, 5)
+        g.line(C[0], C[1], G[0], G[1], C_COL, 5)
+
+    def small(g):
+        g.poly([B, F, C], A_FILL, A_COL, 2.5)
+        g.poly([C, G, B], B_FILL, "#8a6400", 2.5)
+        g.arc(F[0], F[1], 0.8, cross, leg, C_COL, 2.5, C_FILL)
+        g.arc(G[0], G[1], 0.8, 180 - leg, 180 - cross, C_COL, 2.5, C_FILL)
+        g.arc(B[0], B[1], 0.5, 180 + leg, 360, "#1e7d43", 2.5, "rgba(30,125,67,.22)")
+        g.arc(C[0], C[1], 0.5, 180, 360 - leg, "#1e7d43", 2.5, "rgba(30,125,67,.22)")
+
+    def finish(g):
+        g.arc(B[0], B[1], 1.0, low, 0, "#8a6400", 2.5, B_FILL)
+        g.arc(C[0], C[1], 1.0, 180, 180 - low, "#8a6400", 2.5, B_FILL)
+        g.arc(B[0], B[1], 0.62, 0, leg, C_COL, 2.5, C_FILL)
+        g.arc(C[0], C[1], 0.62, 180 - leg, 180, C_COL, 2.5, C_FILL)
+
+    return ('<svg id="br-svg" width="420" height="330" viewBox="0 0 420 330" role="img" aria-label="Euclid\'s figure '
+            'for Book One, Proposition 5, built and explained one step at a time" style="background:#fffdf4; '
+            'border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;"><g font-family="Georgia,serif">'
+            + layer("br-big", big) + layer("br-small", small) + layer("br-fin", finish)
+            + layer("br-base", base, True) + layer("br-bf", bf_cg) + layer("br-fg", fg)
+            + layer("br-lab", labels, True) + "</g></svg>")
+
+
+BRIDGE = ('<details style="%s">\n  <summary style="cursor:pointer; font-weight:bold; color:#8a6400;">'
+          'Euclid&#8217;s way: crossing the bridge of asses, step by step</summary>\n'
+          '  <p style="margin-top:10px;">The fold is the easy way to see it, but Euclid could not use it. In the '
+          '<i>Elements</i> a proof may only use what has already been proved, and at Proposition 5 he has just two '
+          'tools: <b>Proposition 3</b> from Chapter Two (cut off a length equal to a given length) and <b>Proposition 4</b>, often called '
+          '<b>SAS</b>: if two triangles have two sides and the angle between them equal, the triangles match completely. '
+          'Cutting an angle in half does not come until Proposition 9, and its proof leans on Proposition 5. So Euclid '
+          'builds extra triangles that SAS <i>can</i> handle.</p>\n'
+          '  <div style="text-align:center;">' % _BOX) + _bridge_svg() + r"""</div>
+  <div id="br-step" style="text-align:center; font-size:.8rem; letter-spacing:1.5px; text-transform:uppercase; color:#8a6400; margin:8px 0 2px;">Step 0 of 5</div>
+  <div id="br-out" style="text-align:center; font-size:1rem; color:#3d3320; line-height:1.55; min-height:4.8em; max-width:560px; margin:0 auto 10px;"></div>
+  <div style="text-align:center; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+    <button type="button" id="br-go" style="@@GO@@">Next step &#9654;</button>
+    <button type="button" id="br-reset" style="@@BTN@@">Start over</button>
+  </div>
+</details>
+<script>
+(function(){
+  var go = document.getElementById('br-go');
+  if (!go) return;
+  var step = 0;
+  var MSG = [
+    'The triangle with <b>AB = AC</b>. Euclid starts by carrying the two equal sides on downward, to <b>D</b> and <b>E</b> (Postulate 2 lets you extend a straight line).',
+    'Pick any point <b>F</b> on BD. Using Proposition 3, mark <b>G</b> on CE so that <b>AG = AF</b>. Then join <b>F</b> to <b>C</b> and <b>G</b> to <b>B</b>.',
+    'Compare the big triangles <span style="color:#3a5da8"><b>AFC</b></span> and <span style="color:#8a6400"><b>AGB</b></span>. AF = AG, AC = AB, and they share the angle at A. By <b>SAS</b> they match, so <b>FC = GB</b>, the red angles at F and G are equal, and angle ACF = angle ABG.',
+    'AF = AG and AB = AC. Take the equal pieces away from the equal wholes, and what is left over is equal: <b>BF = CG</b> (Common Notion 3).',
+    'Now the small triangles under the base, <span style="color:#3a5da8"><b>BFC</b></span> and <span style="color:#8a6400"><b>CGB</b></span>. BF = CG, FC = GB, and the red angles between them are equal. <b>SAS</b> again: they match. So the green angles under the base are equal, and so are angles CBG and BCF.',
+    'From step 2, angle ABG = angle ACF. Each is a <span style="color:#b03030"><b>base angle</b></span> plus a <span style="color:#8a6400"><b>gold piece</b></span>, and step 4 showed the gold pieces are equal. Take them away: <b>angle ABC = angle ACB</b>. Across the bridge.'
+  ];
+  function on(id, v){ document.getElementById(id).style.opacity = v ? 1 : 0; }
+  function show(){
+    on('br-fg', step >= 1);
+    on('br-big', step === 2);
+    on('br-bf', step === 3);
+    on('br-small', step === 4);
+    on('br-fin', step === 5);
+    document.getElementById('br-out').innerHTML = MSG[step];
+    document.getElementById('br-step').textContent = 'Step ' + step + ' of 5';
+    go.disabled = step >= 5;
+    go.style.opacity = step >= 5 ? 0.5 : 1;
+    go.innerHTML = step >= 5 ? 'Done: Q.E.D.' : 'Next step &#9654;';
+  }
+  go.addEventListener('click', function(){ if (step < 5){ step++; show(); } });
+  document.getElementById('br-reset').addEventListener('click', function(){ step = 0; show(); });
+  show();
+})();
+</script>"""
+
+
+# ---- Proposition 2 (copy a length to a new point), as a fold-out stepper ----
+def _prop2_svg():
+    s3 = math.sqrt(3)
+    A, B = (0, 0), (2.2, 0)
+    D = (1.1, 1.1 * s3)
+    C = (B[0] + 1.6 * math.cos(math.radians(20)), 1.6 * math.sin(math.radians(20)))
+    down_l, down_r = (-0.5, -s3 / 2), (0.5, -s3 / 2)                  # directions D->A and D->B
+    G = (B[0] + 1.6 * down_r[0], B[1] + 1.6 * down_r[1])
+    L = (D[0] + 3.8 * down_l[0], D[1] + 3.8 * down_l[1])
+    E = (D[0] + 4.6 * down_l[0], D[1] + 4.6 * down_l[1])
+    F = (D[0] + 4.6 * down_r[0], D[1] + 4.6 * down_r[1])
+
+    def layer(lid, draw, shown=False):
+        g = _Fig(410, 300, 55, 110, 150, "")
+        draw(g)
+        return '<g id="%s" style="opacity:%d; transition:opacity .4s ease;">%s</g>' % (lid, shown, "".join(g.parts))
+
+    def given(g):
+        g.line(B[0], B[1], C[0], C[1], C_COL, 4)
+        g.dot(A[0], A[1], 4)
+
+    def tri(g):
+        g.poly([A, B, D], TRI, INK, 2.5)
+        g.tick(A[0], A[1], D[0], D[1], 2)
+        g.tick(B[0], B[1], D[0], D[1], 2)
+        g.dot(D[0], D[1], 3.5)
+        g.text(D[0], D[1] + 0.35, "D", 15, INK, True)
+
+    def ext(g):
+        g.line(A[0], A[1], E[0], E[1], INK, 2)
+        g.line(B[0], B[1], F[0], F[1], INK, 2)
+        g.text(E[0] - 0.2, E[1] - 0.2, "E", 14, INK, True)
+        g.text(F[0] + 0.2, F[1] - 0.2, "F", 14, INK, True)
+
+    def circ_b(g):
+        g.circle(B[0], B[1], 1.6, "#8a6400", 1.8, "none", "5 4")
+        g.line(B[0], B[1], G[0], G[1], C_COL, 4)
+        g.dot(G[0], G[1], 3.5)
+        g.text(G[0] + 0.3, G[1] - 0.05, "G", 15, C_COL, True)
+
+    def circ_d(g):
+        g.arc(D[0], D[1], 3.8, 224, 314, A_COL, 1.8)
+        g.dot(L[0], L[1], 3.5)
+        g.text(L[0] - 0.3, L[1] - 0.05, "L", 15, A_COL, True)
+
+    def fin(g):
+        g.line(A[0], A[1], L[0], L[1], C_COL, 4)
+
+    def labels(g):
+        g.dot(B[0], B[1], 3.5)
+        g.dot(C[0], C[1], 3.5)
+        g.text(A[0] - 0.3, A[1] + 0.05, "A", 15, INK, True)
+        g.text(B[0] + 0.05, B[1] + 0.32, "B", 15, INK, True)
+        g.text(C[0] + 0.28, C[1], "C", 15, C_COL, True)
+
+    return ('<svg id="p2-svg" width="410" height="300" viewBox="0 0 410 300" role="img" aria-label="Euclid\'s figure '
+            'for Book One, Proposition 2, built one step at a time" style="background:#fffdf4; '
+            'border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;"><g font-family="Georgia,serif">'
+            + layer("p2-circd", circ_d) + layer("p2-circb", circ_b) + layer("p2-ext", ext) + layer("p2-tri", tri)
+            + layer("p2-fin", fin) + layer("p2-given", given, True) + layer("p2-lab", labels, True) + "</g></svg>")
+
+
+PROP2 = ('<details style="%s">\n  <summary style="cursor:pointer; font-weight:bold; color:#8a6400;">'
+         'Proposition 2, step by step: copying a length with a compass that snaps shut</summary>\n'
+         '  <p style="margin-top:10px;">The job: you are given a point <b>A</b> and a straight line <b>BC</b> somewhere '
+         'else. Draw a line starting at A that is exactly as long as BC. You may not lift the compass with BC&#8217;s '
+         'length in it.</p>\n'
+         '  <div style="text-align:center;">' % _BOX) + _prop2_svg() + r"""</div>
+  <div id="p2-step" style="text-align:center; font-size:.8rem; letter-spacing:1.5px; text-transform:uppercase; color:#8a6400; margin:8px 0 2px;">Step 0 of 5</div>
+  <div id="p2-out" style="text-align:center; font-size:1rem; color:#3d3320; line-height:1.55; min-height:4.8em; max-width:560px; margin:0 auto 10px;"></div>
+  <div style="text-align:center; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+    <button type="button" id="p2-go" style="@@GO@@">Next step &#9654;</button>
+    <button type="button" id="p2-reset" style="@@BTN@@">Start over</button>
+  </div>
+</details>
+<script>
+(function(){
+  var go = document.getElementById('p2-go');
+  if (!go) return;
+  var step = 0;
+  var MSG = [
+    'The point <b>A</b> and the <span style="color:#b03030"><b>red line BC</b></span>. The compass can draw a circle round B through C, but it cannot carry that length over to A.',
+    'Join <b>A</b> to <b>B</b> (Postulate 1). On AB build an equilateral triangle <b>DAB</b>, exactly as in Proposition 1. So <b>DA = DB</b>.',
+    'Extend <b>DA</b> past A and <b>DB</b> past B (Postulate 2), out to <b>E</b> and <b>F</b>.',
+    'Draw the circle round <b>B</b> through <b>C</b>. It crosses the line DF at <b>G</b>. BG and BC are radii of the same circle, so <b>BG = BC</b>.',
+    'Now draw the circle round <b>D</b> through <b>G</b>. It crosses the line DE at <b>L</b>. DL and DG are radii of this bigger circle, so <b>DL = DG</b>.',
+    'DL = DG and DA = DB. Take the equal pieces DA and DB away, and what is left is equal: <b>AL = BG</b> (Common Notion 3). And BG = BC, so <b>AL = BC</b> (Common Notion 1). Three red lines, one length, and the compass never left the page.'
+  ];
+  function on(id, v){ document.getElementById(id).style.opacity = v ? 1 : 0; }
+  function show(){
+    on('p2-tri', step >= 1);
+    on('p2-ext', step >= 2);
+    on('p2-circb', step >= 3);
+    on('p2-circd', step >= 4);
+    on('p2-fin', step >= 5);
+    document.getElementById('p2-out').innerHTML = MSG[step];
+    document.getElementById('p2-step').textContent = 'Step ' + step + ' of 5';
+    go.disabled = step >= 5;
+    go.style.opacity = step >= 5 ? 0.5 : 1;
+    go.innerHTML = step >= 5 ? 'Done: Q.E.F.' : 'Next step &#9654;';
+  }
+  go.addEventListener('click', function(){ if (step < 5){ step++; show(); } });
+  document.getElementById('p2-reset').addEventListener('click', function(){ step = 0; show(); });
+  show();
+})();
+</script>"""
+
+PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS, BRIDGE, PROP2 = map(_styled, (PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS, BRIDGE, PROP2))
 
 # ---------------------------------------------------------------------------
 EUCLID = dict(
@@ -763,6 +1059,10 @@ EUCLID = dict(
 """ + PROP1 + """
 <p>Euclid's argument for why the sides are equal uses only two facts from the start of the book. The first is Definition 15: all the radii of one circle are equal. The second is Common Notion 1: things equal to the same thing are equal to each other. Look at the finished picture and see if you can put them together before you answer.</p>
 <p>At the end of a construction Euclid writes, in Greek, <i>"which is what it was required to do."</i> Later Latin translators shortened this to <b>Q.E.F.</b> At the end of a proved theorem he writes <i>"which is what it was required to prove,"</i> in Latin <i>quod erat demonstrandum</i>: <b>Q.E.D.</b> Mathematicians still write Q.E.D. at the end of proofs today.</p>
+<p>Euclid's compass has a strange limit. Postulate 3 lets you draw a circle around a centre <i>through a point you already have</i>. It does not let you open the compass to one length, lift it, and set it down somewhere else. Historians call it a <b>collapsing compass</b>: it is as if the compass snaps shut whenever you pick it up. So even copying a length is something Euclid has to earn.</p>
+<p>That is the job of the next two propositions. <b>Proposition 2</b> shows how to copy any given length so that it starts at any point you choose. Its construction is clever, and it uses the equilateral triangle from Proposition 1. <b>Proposition 3</b> then says: <i>"Given two unequal straight lines, to cut off from the greater a straight line equal to the less."</i> In plain words, mark off a piece of the long line exactly as long as the short one. Use Proposition 2 to copy the short length to the end <b>A</b> of the long line, as <b>AD</b>. Draw the circle round A through D. Every radius of that circle equals AD, so where the circle crosses the long line, at <b>E</b>, the piece <b>AE</b> is exactly the short length.</p>
+""" + _i3() + PROP2 + """
+<p>From here on Euclid can mark off equal lengths whenever he needs them. Watch for it in Chapter Four, where it gets him across the bridge of asses.</p>
 <div class="funfact">🔎 An honest note. Euclid never proves that the two circles actually <i>cross</i>. It looks obvious in the picture. By his own rules, though, a picture is not a proof, and nothing in his postulates says that two circles must meet. Readers spotted gaps like this over the centuries. In <b>1899</b> the German mathematician <b>David Hilbert</b> wrote out a fuller set of starting rules for geometry that fills them. The chain was stronger than anyone had a right to expect, but it was not perfect.</div>""",
             cps=[dict(
                 type="mc",
@@ -787,8 +1087,9 @@ EUCLID = dict(
             title="Where Two Lines Cross",
             html="""
 <p>Euclid never uses <b>degrees</b>. He measures angles in <b>right angles</b>, the square corner. Proposition 13 says: when one straight line stands on another, the two angles it makes beside each other add up to <b>two right angles</b>. In degrees, where a right angle is 90°, that is <b>180°</b>. A straight line is a half-turn.</p>
+""" + _half_turn() + """
 <p>Proposition 15 is about two straight lines that <b>cross</b>, like an X. They make four angles. The angles <b>opposite</b> each other (across the crossing point, not side by side) are always <b>equal</b>. Proclus says this fact was first discovered by <b>Thales</b>, a Greek thinker who lived around 600 BC, about three hundred years before Euclid. It was Euclid who gave it a proof.</p>
-<p>The proof is short. Call the four angles, going round, <b>p</b>, <b>q</b>, <b>r</b> and <b>s</b>. Angles p and q sit side by side on one straight line, so by Proposition 13, p + q = 180°. Angles q and r sit side by side on the <i>other</i> straight line, so q + r = 180°. Now subtract q from both:</p>
+<p>The proof is short. Picture the X with one line lying flat. Call the four angles, going round, <b>p</b>, <b>q</b>, <b>r</b> and <b>s</b>, so that p and q are <b>above</b> the flat line and r and s are <b>below</b> it. Angles p and q sit side by side on the flat line, so by Proposition 13, p + q = 180°. Now look at the slanted line instead. Angles q and r sit side by side on <i>that</i> line, q above the flat line and r below it, so q + r = 180°. Now subtract q from both:</p>
 <div class="bigidea">p + q = 180° &nbsp;so&nbsp; p = 180° &#8722; q<br>q + r = 180° &nbsp;so&nbsp; r = 180° &#8722; q<br>Both equal 180° &#8722; q, so <b>p = r</b>. (Common Notions 1 and 3.)</div>
 <p>Turn the slanted line and watch the numbers.</p>
 """ + CROSSING,
@@ -816,7 +1117,8 @@ EUCLID = dict(
             title="The Bridge of Asses",
             html="""
 <p>A triangle with two equal sides is called <b>isosceles</b> (eye-SOSS-uh-leez), Greek for "equal legs." Proposition 5 says that in an isosceles triangle, the two angles at the base (the angles where the equal sides meet the third side) are <b>equal</b>. Proclus says Thales knew this too.</p>
-<p>Euclid's proof is famous for being tricky: he extends the two equal sides downward and compares two pairs of overlapping triangles. Generations of students got stuck right there. In the Middle Ages it earned a nickname: <i>pons asinorum</i>, Latin for <b>"the bridge of asses."</b> An ass is a donkey. If you could not get over this bridge, you were the donkey. (Euclid's drawing, with its extended sides, even looks a little like a bridge.)</p>
+<p>Euclid's proof is famous for being tricky: he extends the two equal sides downward and compares two pairs of overlapping triangles. Generations of students got stuck right there. In the Middle Ages it earned a nickname: <i>pons asinorum</i>, Latin for <b>"the bridge of asses."</b> An ass is a donkey. If you could not get over this bridge, you were the donkey.</p>
+""" + _i5() + BRIDGE + """
 <p>Proposition 32 is one of the most useful facts in all of geometry: the three angles of any triangle add up to <b>two right angles</b>, 180°. Here is Euclid's idea. Through the top corner, draw a line <b>parallel</b> to the base. The parallel line makes an angle equal to <b>a</b> on the left and an angle equal to <b>b</b> on the right (that is Proposition 29). Now look at the top corner: a, c and b sit side by side along a straight line. By Proposition 13, they make 180°.</p>
 """ + _i32() + """
 <p>The same proposition gives a bonus. Extend one side of a triangle past a corner. The angle outside, the <b>exterior angle</b>, equals the two inside angles at the <i>other</i> two corners added together. Here is why, with the inside angles called a, b and c, and the exterior angle beside c called e:</p>
