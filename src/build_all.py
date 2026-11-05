@@ -18,6 +18,8 @@ from stories5 import GALILEO
 from stories6 import SUN_MOON
 from stories7 import PYTHAGORAS
 from stories8 import EUCLID
+from stories9 import DESCARTES
+from stories10 import KIRCHHOFF
 import figs
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "lessons") + os.sep
@@ -35,6 +37,8 @@ jobs = [
     (SUN_MOON, "SUN_MOON", "Sun_Moon_Coincidence_Interactive_Story.html"),
     (PYTHAGORAS, "PYTHAGORAS", "Pythagoras_Secret_in_the_Squares_Interactive_Story.html"),
     (EUCLID, "EUCLID", "Euclid_Elements_Interactive_Story.html"),
+    (DESCARTES, "DESCARTES", "Descartes_Fly_and_the_Grid_Interactive_Story.html"),
+    (KIRCHHOFF, "KIRCHHOFF", "Kirchhoff_Bunsen_Dark_Lines_Interactive_Story.html"),
 ]
 plans = {}
 for story, key, fname in jobs:

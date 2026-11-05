@@ -80,6 +80,31 @@ redistribution:
   six books of Euclid") is from his 1860 autobiographical sketch, written in the
   third person.
 
+- **Descartes (I Think, Therefore I Am):** the Louvre portrait of Descartes "after Frans
+  Hals" (`Descartes_after_Frans_Hals_Louvre.jpg`; Commons marks it public domain, and
+  the caption says it is a copy after Hals, not Hals's own painting) and the title page
+  of the 1637 Leiden first edition of the *Discours de la Methode*, with *La Geometrie*
+  named on it (`Descartes_Discours_de_la_methode_1637_title_page.jpg`; Commons: public
+  domain, 2321 x 3133 scan; it carries a round red royal-library stamp). Both fetched
+  from the Commons API and direct upload.wikimedia.org links with a descriptive
+  User-Agent. The caption reads the date off the page: CIↃ IↃ C XXXVII = 1637.
+  Passed over: `DescartesLaGeometrieIntroPage.jpg` (CC BY-SA 4.0, would need a credit
+  line and share-alike).
+
+- **The Dark Lines in the Rainbow (Kirchhoff, Bunsen & Fraunhofer):** Carl Christian Vogel
+  von Vogelstein's pencil profile of Fraunhofer, drawn from life on 10 Nov 1825
+  (`Fraunhofer_portrait_Vogel_1825.jpg`; Austrian National Library, Commons: public
+  domain); Fraunhofer's own 1817 solar-spectrum figure with the D line, as reproduced in
+  Hufbauer's *Exploring the Sun* (`Fraunhofer_1817_solar_spectrum_D_line.jpg`; Commons:
+  public domain); the Kirchhoff-Bunsen spectroscope engraving from Poggendorff's
+  *Annalen* vol. 110, 1860 (`Kirchhoff_Bunsen_spectroscope_1860.jpg`; Commons: public
+  domain); and the 1862 photograph of Bunsen, Kirchhoff and Roscoe, cropped from a
+  Science History Institute scan of a book page (`Bunsen_Kirchhoff_Roscoe_1862.jpg`;
+  Commons/DPLA: public domain). Caption checks worth remembering: the Commons record does
+  not say which man is which in the 1862 photo, so the caption only lists the three names
+  as printed; the third tube of the spectroscope is described as carrying a scale, from the
+  1860 paper, not from the picture itself.
+
 ## Wish list — Great Coincidence (Sun/Moon) lesson
 
 - A total-eclipse corona photograph (NASA's are public domain).

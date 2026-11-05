@@ -772,7 +772,100 @@ EUCLID_FIGS = [
                 "printed book (Harvard, Houghton Library)."))),
 ]
 
+DESCARTES_FIGS = [
+    # ---- Chapter One · the boy who stayed in bed ----
+    (0, dict(
+        img="Descartes_after_Frans_Hals_Louvre.jpg",
+        side="left", top=80,
+        alt="Portrait of a man with shoulder-length dark hair and a thin moustache, in a black cloak with a plain white collar, his head turned toward the viewer",
+        title="Descartes, in a portrait after Frans Hals",
+        scroll=("A portrait of Descartes in the <b>Louvre</b>, Paris. It is catalogued as "
+                "a copy <i>after</i> the Dutch painter <b>Frans Hals</b>, so it follows "
+                "Hals but is not his own brush, and nobody can say how closely it matches a "
+                "lost original. The usual story is that the sitting happened around "
+                "<b>1649</b>, when Descartes had lived in the Dutch Republic for about twenty "
+                "years and was about to leave for Sweden. He would have been in his early "
+                "fifties. Look at the plain black clothes and the white collar: this is a "
+                "thinker, not a courtier. It is the face most people picture when they "
+                "hear his name."))),
+    # ---- Chapter Seven · La Géométrie ----
+    (6, dict(
+        img="Descartes_Discours_de_la_methode_1637_title_page.jpg",
+        side="right", top=60,
+        alt="Title page of a printed French book: Discours de la Methode in large capitals, then smaller lines naming La Dioptrique, Les Meteores and La Geometrie, a small woodcut of a man digging inside a wreath, and the printer and place at the foot",
+        title="The 1637 title page: Discours de la Methode, plus La Geometrie",
+        scroll=("The title page of the <b>first edition</b>, printed in <b>Leiden</b> by "
+                "<b>Ian Maire</b>. Read it from the top: <i>Discours de la Methode</i>, "
+                "&ldquo;plus <i>La Dioptrique</i>, <i>Les Meteores</i> and <i>La "
+                "Geometrie</i>, which are essays of this Method.&rdquo; Notice what is "
+                "<b>missing</b>: no author&rsquo;s name anywhere. The date at the foot is "
+                "in Roman numerals, <b>CI&#8579; I&#8579; C XXXVII</b>, which is 1000 + 500 + "
+                "100 + 37 = <b>1637</b>. Below the woodcut of a man digging with a spade, "
+                "<i>Avec Privilege</i> means the book was printed with official "
+                "permission. The red round stamp is a royal library mark. <i>La "
+                "Geometrie</i>, the part that gave us the coordinate plane, is the "
+                "third and last of the three essays."))),
+]
+
+KIRCHHOFF_FIGS = [
+    # ---- Chapter Three · the orphan who counted the lines ----
+    (2, dict(
+        img="Fraunhofer_portrait_Vogel_1825.jpg",
+        side="left", top=60,
+        alt="Pencil drawing of a man's head in profile facing right, with handwritten inscription underneath",
+        title="Fraunhofer, drawn from life on 10 November 1825",
+        scroll=("A pencil profile of <b>Joseph Fraunhofer</b> by the Munich artist <b>Carl "
+                "Christian Vogel von Vogelstein</b>. The handwriting underneath says it was "
+                "drawn from nature (<i>nach der Natur gezeichnet</i>) on <b>10 November 1825</b>, "
+                "in Munich. Fraunhofer died on 7 June 1826, about seven months later, aged "
+                "39. This is one of the few likenesses made while he was alive. The original "
+                "is in the Austrian National Library."))),
+    (2, dict(
+        img="Fraunhofer_1817_solar_spectrum_D_line.jpg",
+        side="right", top=560,
+        alt="A figure from a printed paper: a band of the solar spectrum crossed by many thin dark vertical lines, with the letters B, C, D and E marking the strongest, and a smooth curve above",
+        title="Fraunhofer&rsquo;s own figure of the solar spectrum, 1817",
+        scroll=("Part of the figure Fraunhofer published in <b>1817</b>, as reproduced in a "
+                "modern history of solar science. The German words at the foot are the "
+                "colours: <i>Roth</i> (red), <i>Orange</i>, <i>Gelb</i> (yellow) and "
+                "<i>Gr&uuml;n</i> (green). The letters <b>B, C, D, E</b> mark the strongest "
+                "dark lines, and <b>D</b> is the thin dark stroke in the yellow, the place "
+                "where a flame&rsquo;s bright sodium line falls. The smooth curve on top "
+                "shows how bright the light is, peaking near the yellow-green. Count the "
+                "fine lines between the lettered ones: that is only a corner of the 574 he "
+                "had mapped."))),
+    # ---- Chapter Five · the spectroscope ----
+    (4, dict(
+        img="Kirchhoff_Bunsen_spectroscope_1860.jpg",
+        side="right", top=700,
+        alt="Engraving of a prism spectroscope: a box with two small telescopes and a thinner tube pointing into it, a gas burner with a sample on a wire stand to the right, all on a flat table",
+        title="The Kirchhoff and Bunsen spectroscope, 1860",
+        scroll=("The instrument as drawn in the journal <i>Annalen der Physik und Chemie</i> "
+                "in <b>1860</b>. A prism sits inside the open box. On the right a "
+                "gas burner heats a sample held on a thin wire, and a small telescope fitted "
+                "with a narrow slit carries the flame&rsquo;s light into the box. A second "
+                "telescope, on the left, looks at the spread-out colours, and a third, "
+                "slimmer tube lets a tiny measuring scale be seen alongside, so that the "
+                "position of every line can be read off. Remarkably plain equipment for "
+                "reading what the Sun is made of."))),
+    # ---- Chapter Seven · the professors ----
+    (6, dict(
+        img="Bunsen_Kirchhoff_Roscoe_1862.jpg",
+        side="left", top=330,
+        alt="Studio photograph of three men in dark frock coats, two standing and one seated between them, with a printed caption beneath naming Bunsen, Kirchhoff and Roscoe, 1862",
+        title="Bunsen, Kirchhoff and Roscoe, 1862",
+        scroll=("A studio photograph from <b>1862</b>, printed in a book published in "
+                "1906. The caption names the three men: <b>Robert Bunsen</b>, "
+                "<b>Gustav Kirchhoff</b> and <b>Henry Roscoe</b>. Roscoe, who had studied "
+                "under Bunsen in Heidelberg and was by then a professor in Manchester, "
+                "explains in the book that it was taken in Manchester during a visit by "
+                "his two old teachers. Spectral analysis was only about three years old, "
+                "and it had already made all three of them famous."))),
+]
+
 FIGS = {
+    "KIRCHHOFF": KIRCHHOFF_FIGS,
+    "DESCARTES": DESCARTES_FIGS,
     "EUCLID": EUCLID_FIGS,
     "PYTHAGORAS": PYTHAGORAS_FIGS,
     "NEWTON": NEWTON_FIGS,
