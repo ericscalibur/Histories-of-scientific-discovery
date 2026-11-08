@@ -215,20 +215,28 @@
 <p>Most people would say "huh, neat" and move on. Eratosthenes froze. Because he knew for a fact that in Alexandria, on that <i>same day</i> at that <i>same noon</i>, sticks and columns <b>do</b> cast a shadow. Short — but definitely there.</p>
 <p>Now think like a librarian who reads everything. The Sun is far, far away, so its rays arrive at Earth practically <b>parallel</b> — like lines of rain falling straight down together. If the Earth were <b>flat</b>, parallel rays would hit every city at the same angle, and every stick everywhere would cast the <i>same</i> shadow at the same moment.</p>
 <p>But Syene had no shadow while Alexandria had one. Same moment, same sun, different shadows. There was only one explanation: the ground itself must be <b>tilted</b> between the two cities. The Earth's surface <i>curves</i>.</p>
-<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Curved Earth with two sticks: parallel sun rays make no shadow at Syene but a shadow at Alexandria">
+<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Curved Earth with a well at Syene and a stick at Alexandria: parallel sun rays reach the bottom of the well but make a shadow at Alexandria">
   <rect width="480" height="210" fill="#0d1330" rx="10"/>
   <path d="M 40 210 A 260 260 0 0 1 440 210" fill="#1b2a55" stroke="#3a4a86" stroke-width="2"/>
-  <g stroke="#ffd97a" stroke-width="2" opacity=".85">
-    <line x1="150" y1="14" x2="150" y2="120"/>
-    <line x1="205" y1="14" x2="205" y2="106"/>
-    <line x1="275" y1="14" x2="275" y2="106"/>
-    <line x1="330" y1="14" x2="330" y2="122"/>
+  <defs>
+    <marker id="rayArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffd97a"/>
+    </marker>
+  </defs>
+  <g stroke="#ffd97a" stroke-width="2" opacity=".85" marker-end="url(#rayArrow)">
+    <line x1="150" y1="14" x2="150" y2="124"/>
+    <line x1="205" y1="14" x2="205" y2="108"/>
+    <line x1="275" y1="14" x2="275" y2="108"/>
+    <line x1="330" y1="14" x2="330" y2="124"/>
+    <line x1="101" y1="14" x2="101" y2="156"/>
   </g>
   <text x="416" y="26" fill="#ffd97a" font-size="12" text-anchor="end" font-family="Georgia">sunlight (parallel rays)</text>
-  <line x1="240" y1="116" x2="240" y2="72" stroke="#f9f3e4" stroke-width="4"/>
-  <text x="240" y="144" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Syene: no shadow</text>
+  <rect x="232" y="116" width="16" height="34" fill="#05081a" stroke="#6f80b8" stroke-width="2"/>
+  <line x1="228" y1="116" x2="252" y2="116" stroke="#6f80b8" stroke-width="3"/>
+  <line x1="240" y1="14" x2="240" y2="149" stroke="#ffd97a" stroke-width="2" opacity=".85" marker-end="url(#rayArrow)"/>
+  <text x="240" y="176" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Syene: well, no shadow</text>
   <line x1="120" y1="145" x2="101" y2="109" stroke="#f9f3e4" stroke-width="4"/>
-  <line x1="120" y1="145" x2="100" y2="157" stroke="#e8a90c" stroke-width="3.5"/>
+  <line x1="120" y1="145" x2="101" y2="156" stroke="#e8a90c" stroke-width="3.5"/>
   <text x="106" y="182" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Alexandria: shadow!</text>
 </svg>
 <div class="checkpoint" id="cp2">
@@ -275,7 +283,7 @@
 <p>So the whole Earth is 50 of those slices. Now Eratosthenes needed just one more number: <b>how far is it from Syene to Alexandria?</b></p>
 <p>No cars. No maps with distance markers. Egypt's answer: <b>bematists</b> — professional step-counters. These were trained surveyors who walked with perfectly even strides, counting every single step, for days and weeks, across the desert beside the Nile. (Camels were involved. Camels do not walk in even steps. The humans did the counting.)</p>
 <p>The official distance came back: <b>5,000 stadia</b> — the stadion being the length of a Greek stadium racetrack. Now Eratosthenes had everything: the walk was 1/50 of the way around the world, and the walk was 5,000 stadia long.</p>
-<div class="funfact">👣 Bematists were astonishingly good. Records from Alexander the Great's step-counters show their measured distances over hundreds of kilometers were often within 1–2% of modern values. Careful counting was a real profession — Tycho would have approved.</div>
+<div class="funfact">👣 Bematists were astonishingly good. Records from Alexander the Great's step-counters show their measured distances over hundreds of kilometers were often within 1–2% of modern values. Careful counting was a real profession.</div>
 <div class="checkpoint" id="cp4">
 <div class="cp-kicker">&#9733; Checkpoint 4 &middot; Around the world in one multiplication</div>
 <div class="question">If <b>1/50</b> of the way around the Earth is <b>5,000 stadia</b>, how many stadia is the <b>whole</b> way around?</div>

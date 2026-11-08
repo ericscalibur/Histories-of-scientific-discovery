@@ -96,7 +96,7 @@ ERATOSTHENES = dict(
 <p>So the whole Earth is 50 of those slices. Now Eratosthenes needed just one more number: <b>how far is it from Syene to Alexandria?</b></p>
 <p>No cars. No maps with distance markers. Egypt's answer: <b>bematists</b> — professional step-counters. These were trained surveyors who walked with perfectly even strides, counting every single step, for days and weeks, across the desert beside the Nile. (Camels were involved. Camels do not walk in even steps. The humans did the counting.)</p>
 <p>The official distance came back: <b>5,000 stadia</b> — the stadion being the length of a Greek stadium racetrack. Now Eratosthenes had everything: the walk was 1/50 of the way around the world, and the walk was 5,000 stadia long.</p>
-<div class="funfact">👣 Bematists were astonishingly good. Records from Alexander the Great's step-counters show their measured distances over hundreds of kilometers were often within 1–2% of modern values. Careful counting was a real profession — Tycho would have approved.</div>""",
+<div class="funfact">👣 Bematists were astonishingly good. Records from Alexander the Great's step-counters show their measured distances over hundreds of kilometers were often within 1–2% of modern values. Careful counting was a real profession.</div>""",
             cps=[dict(
                 type="num",
                 kicker="Around the world in one multiplication",
