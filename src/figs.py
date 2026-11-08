@@ -90,7 +90,7 @@ ERATOSTHENES_FIGS = [
                 "perfect <b>gnomon</b> &mdash; a shadow-caster. A stick works just as well, "
                 "but an obelisk makes the point beautifully: plant something straight up, "
                 "watch its shadow, and the sky becomes an instrument you can read."))),
-    (3, dict(
+    (4, dict(
         img="Description de l'Égypte Syène.jpg",
         side="right", top=70,
         alt="Engraving of the Nile at Syene from the Description de l'Egypte",

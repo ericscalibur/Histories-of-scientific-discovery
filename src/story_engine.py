@@ -436,7 +436,8 @@ def cp_html(cp, first_in_chapter):
         out.append(cp["figure"])
     if cp["type"] == "num":
         out.append('<div class="answer-row">')
-        out.append('<input type="text" inputmode="numeric" id="a%d" aria-label="answer %d">' % (n, n))
+        mode = "decimal" if any(a != int(a) for a in cp["answers"]) else "numeric"
+        out.append('<input type="text" inputmode="%s" id="a%d" aria-label="answer %d">' % (mode, n, n))
         out.append('<span class="unit">%s</span>' % cp.get("unit", ""))
         out.append('<button class="check-btn" onclick="check(%d)">Check &#10022;</button>' % n)
         out.append('<button class="hint-btn" onclick="document.getElementById(\'h%d\').style.display=\'block\'">Hint?</button>' % n)

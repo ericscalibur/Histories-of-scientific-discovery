@@ -47,20 +47,28 @@ ERATOSTHENES = dict(
 <p>Most people would say "huh, neat" and move on. Eratosthenes froze. Because he knew for a fact that in Alexandria, on that <i>same day</i> at that <i>same noon</i>, sticks and columns <b>do</b> cast a shadow. Short — but definitely there.</p>
 <p>Now think like a librarian who reads everything. The Sun is far, far away, so its rays arrive at Earth practically <b>parallel</b> — like lines of rain falling straight down together. If the Earth were <b>flat</b>, parallel rays would hit every city at the same angle, and every stick everywhere would cast the <i>same</i> shadow at the same moment.</p>
 <p>But Syene had no shadow while Alexandria had one. Same moment, same sun, different shadows. There was only one explanation: the ground itself must be <b>tilted</b> between the two cities. The Earth's surface <i>curves</i>.</p>
-<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Curved Earth with two sticks: parallel sun rays make no shadow at Syene but a shadow at Alexandria">
+<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Curved Earth with a well at Syene and a stick at Alexandria: parallel sun rays reach the bottom of the well but make a shadow at Alexandria">
   <rect width="480" height="210" fill="#0d1330" rx="10"/>
   <path d="M 40 210 A 260 260 0 0 1 440 210" fill="#1b2a55" stroke="#3a4a86" stroke-width="2"/>
-  <g stroke="#ffd97a" stroke-width="2" opacity=".85">
-    <line x1="150" y1="14" x2="150" y2="120"/>
-    <line x1="205" y1="14" x2="205" y2="106"/>
-    <line x1="275" y1="14" x2="275" y2="106"/>
-    <line x1="330" y1="14" x2="330" y2="122"/>
+  <defs>
+    <marker id="rayArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffd97a"/>
+    </marker>
+  </defs>
+  <g stroke="#ffd97a" stroke-width="2" opacity=".85" marker-end="url(#rayArrow)">
+    <line x1="150" y1="14" x2="150" y2="124"/>
+    <line x1="205" y1="14" x2="205" y2="108"/>
+    <line x1="275" y1="14" x2="275" y2="108"/>
+    <line x1="330" y1="14" x2="330" y2="124"/>
+    <line x1="101" y1="14" x2="101" y2="156"/>
   </g>
   <text x="416" y="26" fill="#ffd97a" font-size="12" text-anchor="end" font-family="Georgia">sunlight (parallel rays)</text>
-  <line x1="240" y1="116" x2="240" y2="72" stroke="#f9f3e4" stroke-width="4"/>
-  <text x="240" y="144" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Syene: no shadow</text>
+  <rect x="232" y="116" width="16" height="34" fill="#05081a" stroke="#6f80b8" stroke-width="2"/>
+  <line x1="228" y1="116" x2="252" y2="116" stroke="#6f80b8" stroke-width="3"/>
+  <line x1="240" y1="14" x2="240" y2="149" stroke="#ffd97a" stroke-width="2" opacity=".85" marker-end="url(#rayArrow)"/>
+  <text x="240" y="176" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Syene: well, no shadow</text>
   <line x1="120" y1="145" x2="101" y2="109" stroke="#f9f3e4" stroke-width="4"/>
-  <line x1="120" y1="145" x2="100" y2="157" stroke="#e8a90c" stroke-width="3.5"/>
+  <line x1="120" y1="145" x2="101" y2="156" stroke="#e8a90c" stroke-width="3.5"/>
   <text x="106" y="182" fill="#aebadf" font-size="12" text-anchor="middle" font-family="Georgia">Alexandria: shadow!</text>
 </svg>""",
             cps=[dict(
@@ -78,8 +86,37 @@ ERATOSTHENES = dict(
             kicker="Chapter Three · Noon, the longest day of the year",
             title="The Stick and the Angle",
             html="""
-<p>Curved how much, though? That's the genius part. On the next summer solstice, at exact noon, Eratosthenes measured the shadow of a vertical stick (a <i>gnomon</i>) in Alexandria and worked out the angle of the sunbeam: <b>7.2 degrees</b> away from straight overhead.</p>
-<p>Remember your sky-measuring units: a full circle — all the way around the Earth and back — is <b>360 degrees</b>. And 7.2° is a very special slice of 360°…</p>
+<p>Curved how much, though? That's the genius part. On the next summer solstice, at exact noon, Eratosthenes measured the shadow of a vertical obelisk (a <i>gnomon</i>) in Alexandria. From that shadow he could work out the angle of the sunbeam, how far it leaned away from straight overhead.</p>
+<p>Here are the numbers, so you can check his work yourself. (The real measurements were not recorded, so these are realistic stand-ins.) The obelisk stood <b>10 m</b> tall, and at noon its shadow was <b>1.26 m</b> long. The obelisk, the shadow, and the sunbeam grazing the obelisk's tip make a <b>right triangle</b>.</p>
+<svg class="illus" width="480" height="210" viewBox="0 0 480 210" role="img" aria-label="Right triangle: obelisk 10 meters tall, shadow 1.26 meters long, sunbeam as the hypotenuse, angle theta at the top">
+  <rect width="480" height="210" fill="#0d1330" rx="10"/>
+  <line x1="200" y1="20" x2="200" y2="180" stroke="#f9f3e4" stroke-width="4"/>
+  <line x1="200" y1="180" x2="220.2" y2="180" stroke="#e8a90c" stroke-width="4"/>
+  <line x1="200" y1="20" x2="220.2" y2="180" stroke="#ffd97a" stroke-width="2"/>
+  <path d="M 200 168 L 212 168 L 212 180" fill="none" stroke="#aebadf" stroke-width="1.5"/>
+  <path d="M 200 44 A 24 24 0 0 0 203 44.3" fill="none" stroke="#ffd97a" stroke-width="1.5"/>
+  <text x="188" y="104" fill="#f9f3e4" font-size="14" text-anchor="end" font-family="Georgia">obelisk: 10 m</text>
+  <text x="210" y="200" fill="#e8a90c" font-size="14" text-anchor="middle" font-family="Georgia">shadow: 1.26 m</text>
+  <text x="236" y="104" fill="#ffd97a" font-size="14" font-family="Georgia">sunbeam</text>
+  <text x="212" y="34" fill="#ffd97a" font-size="16" font-style="italic" font-family="Georgia">θ = ?</text>
+  <text x="400" y="20" fill="#aebadf" font-size="11" text-anchor="end" font-family="Georgia">(angle drawn larger than life)</text>
+</svg>
+<p><b>Try it:</b> use trigonometry to find the angle θ at the top. Which side is opposite θ, and which is adjacent? Then use <b>tan θ = opposite ÷ adjacent</b> and a calculator's inverse tangent (<b>tan⁻¹</b>). Round to one decimal place.</p>
+""",
+            cps=[dict(
+                type="num",
+                kicker="Be Eratosthenes",
+                q="""The obelisk is <b>10 m</b> tall and its shadow is <b>1.26 m</b> long. Using <b>tan θ = shadow ÷ obelisk</b>, what is the angle θ of the sunbeam, in degrees, rounded to one decimal place?""",
+                answers=[7.2], unit="degrees",
+                hint="Divide 1.26 by 10 to get tan θ = 0.126. Then press tan⁻¹ (inverse tangent) on your calculator, in degree mode, and round to one decimal place.",
+            )],
+        ),
+        dict(
+            kicker="Chapter Four · The magic slice",
+            title="The Magic Slice",
+            html="""
+<p>That's it: the sunbeam leans <b>7.2 degrees</b> away from straight overhead in Alexandria, the same angle Eratosthenes found.</p>
+<p>Remember your sky-measuring units: a full circle, all the way around the Earth and back, is <b>360 degrees</b>. And 7.2° is a very special slice of 360°.</p>
 <p>Here's the picture in Eratosthenes' head: since the sun stood exactly overhead at Syene and 7.2° off-overhead at Alexandria, then walking from Syene to Alexandria bends you <b>7.2° around the curve of the Earth</b>. That walk is one slice of the full journey around the world.</p>""",
             cps=[dict(
                 type="num",
@@ -90,7 +127,7 @@ ERATOSTHENES = dict(
             )],
         ),
         dict(
-            kicker="Chapter Four · The road south",
+            kicker="Chapter Five · The road south",
             title="The Men Who Walked in Perfect Steps",
             html="""
 <p>So the whole Earth is 50 of those slices. Now Eratosthenes needed just one more number: <b>how far is it from Syene to Alexandria?</b></p>
@@ -106,7 +143,7 @@ ERATOSTHENES = dict(
             )],
         ),
         dict(
-            kicker="Chapter Five · The answer",
+            kicker="Chapter Six · The answer",
             title="How Close Did He Get?",
             html="""
 <p><b>250,000 stadia.</b> Convert the ancient stadion to modern units (about 157.5 meters each, by the most common reckoning) and Eratosthenes' Earth comes out to roughly <b>39,000 kilometers</b> around.</p>
