@@ -139,7 +139,7 @@ ERATOSTHENES = dict(
                 kicker="Around the world in one multiplication",
                 q="""If <b>1/50</b> of the way around the Earth is <b>5,000 stadia</b>, how many stadia is the <b>whole</b> way around?""",
                 answers=[250000], unit="stadia",
-                hint="50 × 5,000. Do 5 × 5 first, then bring back all five zeros.",
+                hint="50 × 5,000. Do 5 × 5 first, then bring back all four zeros (one from the 50 and three from the 5,000).",
             )],
         ),
         dict(
