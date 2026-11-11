@@ -104,6 +104,20 @@ redistribution:
   not say which man is which in the 1862 photo, so the caption only lists the three names
   as printed; the third tube of the spectroscope is described as carrying a scale, from the
   1860 paper, not from the picture itself.
+  Chapter Three: Richard Wimmer's 1897 painting of Fraunhofer demonstrating the
+  spectroscope, as a photogravure in *Essays in Astronomy* (Appleton, 1900)
+  (`Fraunhofer_demonstrating_spectroscope_Wimmer.jpg`; Commons: public domain). The
+  caption calls it an imagined scene; Commons names Utzschneider (left, seated) and
+  Reichenbach ("on right"), which does not settle whether Reichenbach is the man at the
+  eyepiece, so the caption does not say.
+  Chapter Four portraits: Bertall & Cie's carte de visite of Léon Foucault, taken before
+  1868 (`Foucault_Bertall_carte_de_visite.jpg`; Gallica btv1b8449954m, Commons: public
+  domain; the "3 Sept. 82" stamp on the back is later, not the sitting date); Anders
+  Ångström seated, Uppsala University, Commons date 1862 though its description says
+  "date unknown", so the caption says "about 1862" (`Angstrom_Uppsala_c1862.jpg`, resized
+  to 1600 px; Commons: public domain); John Moffat's 1864 photograph of W. H. Fox Talbot,
+  a 1948 carbon print by Harold White at the George Eastman Museum
+  (`Talbot_Moffat_1864.jpg`, the Commons "(cropped)" version; public domain).
 
 ## Wish list — Great Coincidence (Sun/Moon) lesson
 

@@ -822,7 +822,7 @@ KIRCHHOFF_FIGS = [
                 "is in the Austrian National Library."))),
     (2, dict(
         img="Fraunhofer_1817_solar_spectrum_D_line.jpg",
-        side="right", top=560,
+        side="right", top=1140,
         alt="A figure from a printed paper: a band of the solar spectrum crossed by many thin dark vertical lines, with the letters B, C, D and E marking the strongest, and a smooth curve above",
         title="Fraunhofer&rsquo;s own figure of the solar spectrum, 1817",
         scroll=("Part of the figure Fraunhofer published in <b>1817</b>, as reproduced in a "
@@ -834,6 +834,55 @@ KIRCHHOFF_FIGS = [
                 "shows how bright the light is, peaking near the yellow-green. Count the "
                 "fine lines between the lettered ones: that is only a corner of the 574 he "
                 "had mapped."))),
+    (2, dict(
+        img="Fraunhofer_demonstrating_spectroscope_Wimmer.jpg",
+        side="left", top=700,
+        alt="Painting of a crowded workshop: a young man in a white smock gestures at a brass instrument on a wooden stand while an older man bends to look into its eyepiece, a seated gentleman watches, and two men look on from behind",
+        title="Fraunhofer demonstrating the spectroscope, painted in 1897",
+        scroll=("A painting by <b>Richard Wimmer</b>, finished in <b>1897</b>, about seventy "
+                "years after Fraunhofer died, so it is an imagined scene, not a record. "
+                "Fraunhofer is the young man in the white smock, pointing at the instrument. "
+                "The description of the painting names two more men: <b>Joseph von "
+                "Utzschneider</b>, who ran the optical works, seated on the left, and the "
+                "instrument-maker <b>Georg von Reichenbach</b> on the right. The brass "
+                "instrument on the stand is a telescope on a divided circle, the same idea "
+                "as the theodolite set-up in the diagram, made into a dedicated "
+                "<b>spectrometer</b>."))),
+    # ---- Chapter Four · the people who came close ----
+    (3, dict(
+        img="Foucault_Bertall_carte_de_visite.jpg",
+        side="left", top=530,
+        alt="Small studio photograph card of a man with a moustache, seated in a carved chair with a book in one hand, printed with the studio name Bertall at the foot",
+        title="L&eacute;on Foucault, photographed by Bertall",
+        scroll=("A <i>carte de visite</i>, a small photograph mounted on card, of "
+                "<b>L&eacute;on Foucault</b> from the Paris studio of <b>Bertall</b>. It was "
+                "taken some time before his death in 1868. (A stamp on the back reads "
+                "&ldquo;3 Sept. 82&rdquo;, added years later.) It is now in the French "
+                "National Library. In <b>1849</b> Foucault watched the D lines darken when "
+                "sunlight passed through his arc lamp. Two years later, in 1851, he hung "
+                "his famous pendulum in Paris and showed the Earth turning."))),
+    (3, dict(
+        img="Angstrom_Uppsala_c1862.jpg",
+        side="right", top=700,
+        alt="Photograph of a clean-shaven man with swept-back hair, in a dark coat and bow tie, seated with one arm on a chair",
+        title="Anders &Aring;ngstr&ouml;m, about 1862",
+        scroll=("<b>Anders Jonas &Aring;ngstr&ouml;m</b>, professor of physics at Uppsala "
+                "in Sweden, in a photograph kept by Uppsala University and thought to date "
+                "from about 1862. In 1853 he suggested that a glowing gas gives out the same "
+                "colours it can soak up. A tiny unit of length is named after him: one "
+                "<b>&aring;ngstr&ouml;m</b> is a tenth of a nanometre, so the sodium D line at "
+                "589 nm is about <b>5,890 &aring;ngstr&ouml;ms</b>."))),
+    (3, dict(
+        img="Talbot_Moffat_1864.jpg",
+        side="left", top=940,
+        alt="Photograph of a balding man with side whiskers, seated at a carved table, holding a small brass object beside a wooden box camera",
+        title="William Henry Fox Talbot in 1864",
+        scroll=("<b>William Henry Fox Talbot</b> photographed in 1864 by the Scottish "
+                "photographer <b>John Moffat</b>, with a wooden camera on the table and "
+                "what looks like a lens in his hands. Talbot was one of the inventors of "
+                "photography itself: by 1841 he could make a negative on paper and print "
+                "many copies from it. This print was made in 1948 from Moffat&rsquo;s "
+                "original and is in the George Eastman Museum."))),
     # ---- Chapter Five · the spectroscope ----
     (4, dict(
         img="Kirchhoff_Bunsen_spectroscope_1860.jpg",

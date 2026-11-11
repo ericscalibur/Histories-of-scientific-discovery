@@ -26,11 +26,11 @@ def _cp_table():
 
 REVERSAL = ('<div style="%s">\n  <div style="%s">Kirchhoff&rsquo;s sodium flame &middot; slide the background lamp</div>' % (_BOX, _CAP)) + r"""
   <div style="text-align:center;">
-    <svg id="rv-svg" width="420" height="170" viewBox="0 0 420 170" font-family="Georgia,serif" style="background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;" role="img" aria-label="A strip of yellow light near 589 nanometres with the sodium D pair of lines shown brighter, darker or invisible depending on the background lamp"></svg>
+    <svg id="rv-svg" width="420" height="282" viewBox="0 0 420 282" font-family="Georgia,serif" style="background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; max-width:100%; height:auto;" role="img" aria-label="Above: a lump of hot lime glowing more or less brightly, a sodium flame, and a prism. Below: a strip of yellow light near 589 nanometres with the sodium D pair of lines shown brighter, darker or invisible depending on how bright the lime is"></svg>
   </div>
   <div id="rv-out" style="text-align:center; font-size:1rem; color:#3d3320; margin:8px 0 8px; line-height:1.6; min-height:5.2em;"></div>
   <div style="max-width:440px; margin:0 auto; display:grid; grid-template-columns:auto 1fr auto; gap:6px 10px; align-items:center; font-size:.9rem; color:#3d3320;">
-    <label for="rv-b">Background lamp</label><input id="rv-b" type="range" min="0" max="100" step="5" value="80" style="width:100%;"><span id="rv-bv" style="min-width:2.2em; text-align:right;"><b>80</b></span>
+    <label for="rv-b">Background lamp (hot lime)</label><input id="rv-b" type="range" min="0" max="100" step="5" value="80" style="width:100%;"><span id="rv-bv" style="min-width:2.2em; text-align:right;"><b>80</b></span>
   </div>
   <div style="text-align:center; margin-top:10px;"><label style="font-size:.9rem; color:#3d3320; cursor:pointer;"><input type="checkbox" id="rv-on" checked> sodium flame in the beam (glows at 50, soaks up 60% of the light behind it)</label></div>
 </div>
@@ -48,19 +48,58 @@ REVERSAL = ('<div style="%s">\n  <div style="%s">Kirchhoff&rsquo;s sodium flame 
   }
   function shade(v){ var k = Math.max(0, Math.min(100, v)) / 100; return 'rgb(' + Math.round(255 * k) + ',' + Math.round(205 * k) + ',' + Math.round(20 * k) + ')'; }
   function X(nm){ return 30 + (nm - 585) / 8 * 360; }
+  function glow(id, cx, cy, r, color, op){
+    var g = el('radialGradient', {id: id});
+    [[0, op], [0.45, op * 0.55], [1, 0]].forEach(function(st){
+      var s = document.createElementNS(NS, 'stop');
+      s.setAttribute('offset', st[0]); s.setAttribute('stop-color', color); s.setAttribute('stop-opacity', st[1]);
+      g.appendChild(s);
+    });
+    el('circle', {cx: cx, cy: cy, r: r, fill: 'url(#' + id + ')'});
+  }
+  function bench(B, flame){
+    var Y = 58;
+    el('rect', {x: 10, y: 8, width: 400, height: 112, rx: 8, fill: '#0d1330'});
+    // beam: as bright as the lime
+    el('line', {x1: 60, y1: Y, x2: 318, y2: Y, stroke: '#fff3c0', 'stroke-width': 3, opacity: (0.08 + 0.8 * B / 100).toFixed(2)});
+    // hot lime: glow and core follow the slider
+    var k = B / 100;
+    glow('rv-gl', 60, Y, 8 + 34 * k, '#fff2b0', 0.15 + 0.85 * k);
+    var c = function(a, b){ return Math.round(a + (b - a) * k); };
+    el('rect', {x: 52, y: Y - 8, width: 16, height: 16, rx: 2, fill: 'rgb(' + c(70, 255) + ',' + c(66, 251) + ',' + c(60, 232) + ')'});
+    el('text', {x: 60, y: 108, 'text-anchor': 'middle', 'font-size': 11, fill: '#aebadf'}, 'hot lime: ' + B);
+    // sodium flame: fixed glow of F
+    el('rect', {x: 186, y: Y + 12, width: 8, height: 26, fill: '#8a8f9a'});
+    if (flame){
+      glow('rv-gf', 190, Y - 2, 8 + 34 * F / 100, '#ffd23a', 0.15 + 0.85 * F / 100);
+      el('path', {d: 'M190 ' + (Y - 24) + ' C202 ' + (Y - 6) + ' 199 ' + (Y + 12) + ' 190 ' + (Y + 12) +
+                     ' C181 ' + (Y + 12) + ' 178 ' + (Y - 6) + ' 190 ' + (Y - 24) + ' z', fill: '#ffd23a', 'fill-opacity': 0.9});
+      el('path', {d: 'M190 ' + (Y - 10) + ' C195 ' + Y + ' 194 ' + (Y + 10) + ' 190 ' + (Y + 10) +
+                     ' C186 ' + (Y + 10) + ' 185 ' + Y + ' 190 ' + (Y - 10) + ' z', fill: '#fff4a0'});
+      el('text', {x: 190, y: 108, 'text-anchor': 'middle', 'font-size': 11, fill: '#aebadf'}, 'sodium flame: ' + F);
+    } else {
+      el('text', {x: 190, y: 108, 'text-anchor': 'middle', 'font-size': 11, fill: '#aebadf'}, 'flame out');
+    }
+    // prism, then the light heads down to the strip
+    el('polygon', {points: '320,' + (Y - 20) + ' 305,' + (Y + 14) + ' 335,' + (Y + 14), fill: '#9fc6e8', 'fill-opacity': 0.2, stroke: '#cfe3f5', 'stroke-width': 1.5});
+    el('text', {x: 320, y: 108, 'text-anchor': 'middle', 'font-size': 11, fill: '#aebadf'}, 'prism');
+    el('text', {x: 372, y: Y + 4, 'text-anchor': 'middle', 'font-size': 18, fill: '#aebadf'}, '\u2193');
+  }
   function draw(){
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var B = Number(sb.value), flame = on.checked;
     var L = flame ? Math.round((B * (1 - A) + A * F) * 10) / 10 : B;
-    el('rect', {x: 30, y: 30, width: 360, height: 70, fill: shade(B), stroke: '#22304f', 'stroke-width': 2});
+    bench(B, flame);
+    var T = 142;
+    el('rect', {x: 30, y: T, width: 360, height: 70, fill: shade(B), stroke: '#22304f', 'stroke-width': 2});
     if (flame){
-      [589.0, 589.6].forEach(function(nm){ el('rect', {x: X(nm) - 3, y: 30, width: 6, height: 70, fill: shade(L)}); });
+      [589.0, 589.6].forEach(function(nm){ el('rect', {x: X(nm) - 3, y: T, width: 6, height: 70, fill: shade(L)}); });
     }
     [585, 587, 589, 591, 593].forEach(function(nm){
-      el('line', {x1: X(nm), y1: 100, x2: X(nm), y2: 106, stroke: '#4a5878', 'stroke-width': 1});
-      el('text', {x: X(nm), y: 120, 'text-anchor': 'middle', 'font-size': 11, fill: '#4a5878'}, nm);
+      el('line', {x1: X(nm), y1: T + 70, x2: X(nm), y2: T + 76, stroke: '#4a5878', 'stroke-width': 1});
+      el('text', {x: X(nm), y: T + 90, 'text-anchor': 'middle', 'font-size': 11, fill: '#4a5878'}, nm);
     });
-    el('text', {x: 210, y: 140, 'text-anchor': 'middle', 'font-size': 11, fill: '#4a5878'}, 'wavelength (nm), zoomed in on the sodium D pair');
+    el('text', {x: 210, y: T + 110, 'text-anchor': 'middle', 'font-size': 11, fill: '#4a5878'}, 'wavelength (nm), zoomed in on the sodium D pair');
     var verdict, col;
     if (!flame){ verdict = 'No flame in the beam: a smooth, even glow.'; col = '#4a5878'; }
     else if (L > B + 0.05){ verdict = 'A BRIGHT pair of lines: the flame glows more than the lamp behind it.'; col = '#1e7d43'; }
@@ -191,6 +230,307 @@ RULES = """<div class="bigidea"><b>Kirchhoff&rsquo;s three kinds of spectrum</b>
 # ---------------------------------------------------------------------------
 # The story
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Static illustrations for Chapter Two (prism and Wollaston's slit)
+# ---------------------------------------------------------------------------
+_WL_STOPS = [(400, (139, 0, 255)), (440, (60, 70, 255)), (480, (0, 170, 255)), (510, (0, 210, 120)),
+             (550, (120, 230, 40)), (575, (245, 225, 20)), (600, (255, 150, 0)), (640, (255, 40, 10)),
+             (700, (170, 0, 0))]
+
+
+def _wl_rgb(nm):
+    """Rough display colour for a wavelength in nm (400 to 700)."""
+    s = _WL_STOPS
+    if nm <= s[0][0]:
+        c = s[0][1]
+    elif nm >= s[-1][0]:
+        c = s[-1][1]
+    else:
+        for (a, ca), (b, cb) in zip(s, s[1:]):
+            if a <= nm <= b:
+                t = (nm - a) / float(b - a)
+                c = tuple(round(ca[i] + (cb[i] - ca[i]) * t) for i in range(3))
+                break
+    return "#%02x%02x%02x" % c
+
+
+def _prism_fig():
+    """White sunlight enters a prism and fans out: red bends least, violet most."""
+    cols = [_wl_rgb(nm) for nm in (680, 610, 578, 530, 480, 445, 410)]   # red ... violet
+    ex, ey0, ey1 = (260.9, 270.3), 112, 134          # exit points on the right face
+    o = ['<svg class="illus" width="480" height="230" viewBox="0 0 480 230" font-family="Georgia,serif" '
+         'role="img" aria-label="A thin beam of white sunlight passes through a hole in a shutter, enters a '
+         'triangular glass prism, and leaves as a fan of colours from red at the top to violet at the bottom: '
+         'red is bent the least and violet the most">',
+         '<rect width="480" height="230" fill="#0d1330" rx="10"/>',
+         # shutter with hole
+         '<rect x="22" y="40" width="10" height="70" fill="#5a4630"/>',
+         '<rect x="22" y="122" width="10" height="70" fill="#5a4630"/>',
+         '<text x="27" y="30" fill="#aebadf" font-size="11" text-anchor="middle">shutter</text>',
+         '<text x="27" y="210" fill="#aebadf" font-size="11" text-anchor="middle">hole</text>',
+         '<line x1="27" y1="196" x2="27" y2="120" stroke="#aebadf" stroke-width="1" stroke-dasharray="2 3"/>',
+         # white beam in
+         '<line x1="34" y1="116" x2="196" y2="120" stroke="#fffbe8" stroke-width="4"/>',
+         '<text x="110" y="106" fill="#fffbe8" font-size="12" text-anchor="middle">white sunlight</text>']
+    # inside the prism: a narrow wedge from the entry point
+    for i, c in enumerate(cols):
+        t = i / 6.0
+        x = ex[0] + (ex[1] - ex[0]) * t
+        y = ey0 + (ey1 - ey0) * t
+        o.append('<line x1="196" y1="120" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.6" opacity=".9"/>' % (x, y, c))
+    # prism body on top of the inner rays, slightly transparent
+    o.append('<polygon points="230,40 165,190 295,190" fill="#9fc6e8" fill-opacity=".18" stroke="#cfe3f5" stroke-width="2"/>')
+    o.append('<text x="230" y="208" fill="#cfe3f5" font-size="12" text-anchor="middle">glass prism</text>')
+    # the fan out to the screen
+    for i, c in enumerate(cols):
+        t = i / 6.0
+        x = ex[0] + (ex[1] - ex[0]) * t
+        y = ey0 + (ey1 - ey0) * t
+        yend = 92 + 104 * t
+        o.append('<line x1="%.1f" y1="%.1f" x2="432" y2="%.1f" stroke="%s" stroke-width="2.4"/>' % (x, y, yend, c))
+        o.append('<rect x="432" y="%.1f" width="12" height="17.4" fill="%s"/>' % (yend - 8.7, c))
+    o += ['<rect x="432" y="83" width="12" height="122" fill="none" stroke="#6f80b8" stroke-width="1"/>',
+          '<text x="438" y="72" fill="#aebadf" font-size="11" text-anchor="middle">screen</text>',
+          '<text x="360" y="86" fill="%s" font-size="12" text-anchor="middle">red bends least</text>' % '#ff7a6a',
+          '<text x="350" y="214" fill="%s" font-size="12" text-anchor="middle">violet bends most</text>' % '#c39bff',
+          '</svg>']
+    return "\n".join(o)
+
+
+def _slit_fig():
+    """Round hole versus narrow slit: the slit gives each colour its own thin line, so the dark gaps show."""
+    X0, W, LO, HI = 174, 270, 390, 700
+    gaps = [397, 431, 486, 527, 589, 656, 687]          # seven strong solar lines (Fraunhofer's H, G, F, E, D, C, B)
+
+    def X(nm):
+        return X0 + W * (nm - LO) / float(HI - LO)
+
+    o = ['<svg class="illus" width="480" height="250" viewBox="0 0 480 250" font-family="Georgia,serif" '
+         'role="img" aria-label="Two spectra of sunlight compared. Top: light through a round hole makes a row of '
+         'overlapping coloured circles, and the dark gaps are filled in by the neighbouring colours. Bottom: light '
+         'through a narrow slit makes a row of thin coloured lines side by side, and seven thin dark lines can be '
+         'seen crossing the band">',
+         '<rect width="480" height="250" fill="#0d1330" rx="10"/>',
+         '<defs><linearGradient id="wl-band" x1="0" x2="1" y1="0" y2="0">']
+    for nm in range(400, 701, 20):
+        o.append('<stop offset="%.3f" stop-color="%s"/>' % ((nm - LO) / float(HI - LO), _wl_rgb(nm)))
+    o.append('</linearGradient></defs>')
+
+    # ---- row 1: round hole
+    o += ['<text x="20" y="24" fill="#ffd97a" font-size="13" font-weight="bold">Through a round hole</text>',
+          '<rect x="40" y="44" width="46" height="62" fill="#5a4630" rx="3"/>',
+          '<circle cx="63" cy="75" r="9" fill="#fffbe8"/>',
+          '<line x1="94" y1="75" x2="132" y2="75" stroke="#fffbe8" stroke-width="2"/>',
+          '<path d="M132 70 L141 75 L132 80 z" fill="#fffbe8"/>']
+    for nm in range(392, 701, 6):
+        if any(abs(nm - g) < 4 for g in gaps):
+            continue                                   # a missing colour: its circle is simply absent
+        o.append('<circle cx="%.1f" cy="75" r="22" fill="%s" fill-opacity=".38"/>' % (X(nm), _wl_rgb(nm)))
+    o.append('<text x="245" y="120" fill="#aebadf" font-size="11" text-anchor="middle">'
+             'each colour is a blurry circle; neighbours overlap and cover the gaps</text>')
+
+    # ---- row 2: narrow slit
+    o += ['<text x="20" y="150" fill="#ffd97a" font-size="13" font-weight="bold">Through a narrow slit (Wollaston, 1802)</text>',
+          '<rect x="40" y="168" width="46" height="62" fill="#5a4630" rx="3"/>',
+          '<rect x="61" y="174" width="4" height="50" fill="#fffbe8"/>',
+          '<line x1="94" y1="199" x2="132" y2="199" stroke="#fffbe8" stroke-width="2"/>',
+          '<path d="M132 194 L141 199 L132 204 z" fill="#fffbe8"/>',
+          '<rect x="%d" y="176" width="%d" height="46" fill="url(#wl-band)"/>' % (X0, W)]
+    for g in gaps:
+        o.append('<line x1="%.1f" y1="176" x2="%.1f" y2="222" stroke="#05081a" stroke-width="2"/>' % (X(g), X(g)))
+    o += ['<text x="245" y="240" fill="#aebadf" font-size="11" text-anchor="middle">'
+          'each colour is its own thin line, so a missing colour leaves a dark line</text>',
+          '</svg>']
+    return "\n".join(o)
+
+
+def _dline_fig():
+    """The Sun's dark D pair sits exactly where a salted flame shows its bright yellow pair.
+    The Sun strip also carries hydrogen's C line and magnesium's b group, which the flame lacks."""
+    X0, W, LO, HI = 40, 400, 400, 700
+
+    def X(nm):
+        return X0 + W * (nm - LO) / float(HI - LO)
+
+    d = X(589.3)
+    pair = (d - 2.5, d + 2.5)                           # 589.0 and 589.6, spread out so the eye can see two
+    b = X(517.5)
+    bgrp = (b - 3, b, b + 3)                            # 516.7, 517.3, 518.4, spread out likewise
+    c = X(656.3)
+    o = ['<svg class="illus" width="480" height="264" viewBox="0 0 480 264" font-family="Georgia,serif" '
+         'role="img" aria-label="Two spectra one above the other. Top: sunlight, a full rainbow crossed by dark '
+         'lines: a group of three in the green from magnesium, a pair in the yellow from sodium, and a strong '
+         'single line in the red from hydrogen. Bottom: a lamp flame with salt in it, black except for a bright '
+         'yellow pair of lines. A dashed guide shows that the sodium pairs sit at exactly the same place, '
+         '589 nanometres">',
+         '<rect width="480" height="264" fill="#0d1330" rx="10"/>',
+         '<defs><linearGradient id="wl-band-d" x1="0" x2="1" y1="0" y2="0">']
+    for nm in range(400, 701, 20):
+        o.append('<stop offset="%.3f" stop-color="%s"/>' % ((nm - LO) / float(HI - LO), _wl_rgb(nm)))
+    o += ['</linearGradient></defs>',
+          # Sun
+          '<text x="%d" y="22" fill="#ffd97a" font-size="13" font-weight="bold">Sunlight</text>' % X0,
+          '<text x="%d" y="22" fill="#aebadf" font-size="11" text-anchor="end">dark lines (Fraunhofer)</text>' % (X0 + W),
+          '<rect x="%d" y="50" width="%d" height="50" fill="url(#wl-band-d)"/>' % (X0, W)]
+    for x in bgrp:
+        o.append('<line x1="%.1f" y1="50" x2="%.1f" y2="100" stroke="#05081a" stroke-width="1.6"/>' % (x, x))
+    for x in pair:
+        o.append('<line x1="%.1f" y1="50" x2="%.1f" y2="100" stroke="#05081a" stroke-width="2.2"/>' % (x, x))
+    o.append('<line x1="%.1f" y1="50" x2="%.1f" y2="100" stroke="#05081a" stroke-width="3.2"/>' % (c, c))
+    for x, letter, who in ((b, "b", "magnesium"), (d, "D", "sodium"), (c, "C", "hydrogen")):
+        o.append('<text x="%.1f" y="38" fill="#fffbe8" font-size="11.5" text-anchor="middle">'
+                 '<tspan font-weight="bold">%s</tspan> %s</text>' % (x, letter, who))
+        o.append('<line x1="%.1f" y1="41" x2="%.1f" y2="48" stroke="#aebadf" stroke-width="1"/>' % (x, x))
+    # flame
+    o += ['<text x="%d" y="150" fill="#ffd97a" font-size="13" font-weight="bold">Lamp flame with salt in it</text>' % X0,
+          '<text x="%d" y="150" fill="#aebadf" font-size="11" text-anchor="end">bright lines</text>' % (X0 + W),
+          '<rect x="%d" y="160" width="%d" height="50" fill="#000" stroke="#3a4a86" stroke-width="1"/>' % (X0, W)]
+    for x in pair:
+        o.append('<line x1="%.1f" y1="160" x2="%.1f" y2="210" stroke="#ffe14d" stroke-width="2.4"/>' % (x, x))
+    # guide
+    o += ['<line x1="%.1f" y1="102" x2="%.1f" y2="158" stroke="#fffbe8" stroke-width="1.2" stroke-dasharray="4 4"/>' % (d, d),
+          '<text x="%.1f" y="126" fill="#fffbe8" font-size="12">same place, 589 nm</text>' % (d + 10),
+          '<text x="%d" y="228" fill="#aebadf" font-size="11" text-anchor="middle">400 nm</text>' % X0,
+          '<text x="%d" y="228" fill="#aebadf" font-size="11" text-anchor="middle">700 nm</text>' % (X0 + W),
+          '<text x="240" y="252" fill="#aebadf" font-size="11" text-anchor="middle">'
+          'the D pair and the b group are drawn further apart than true scale</text>',
+          '</svg>']
+    return "\n".join(o)
+
+def _theodolite_fig():
+    """Fraunhofer's 1814 arrangement: slit in a shutter, prism before a theodolite's objective."""
+    cols = [_wl_rgb(nm) for nm in (680, 610, 578, 530, 480, 445, 410)]
+    o = ['<svg class="illus" width="480" height="250" viewBox="0 0 480 250" font-family="Georgia,serif" '
+         'role="img" aria-label="Diagram of Fraunhofer\'s 1814 set-up. Sunlight comes through a narrow slit in a '
+         'window shutter, travels several metres across a dark room to a flint-glass prism, and the spread-out '
+         'colours enter a small telescope mounted on a divided circle, a theodolite, through which Fraunhofer '
+         'looks and reads off the angle of each dark line">',
+         '<rect width="480" height="250" fill="#0d1330" rx="10"/>',
+         # shutter and slit
+         '<rect x="22" y="40" width="10" height="66" fill="#5a4630"/>',
+         '<rect x="22" y="110" width="10" height="70" fill="#5a4630"/>',
+         '<text x="14" y="200" fill="#aebadf" font-size="11">slit in the</text>',
+         '<text x="14" y="214" fill="#aebadf" font-size="11">window shutter</text>',
+         '<text x="14" y="28" fill="#ffd97a" font-size="11">sunlight</text>',
+         # beam with a break
+         '<line x1="34" y1="108" x2="118" y2="108" stroke="#fffbe8" stroke-width="2.5"/>',
+         '<line x1="132" y1="108" x2="226" y2="108" stroke="#fffbe8" stroke-width="2.5"/>',
+         '<path d="M114 98 l8 20 M128 98 l8 20" stroke="#aebadf" stroke-width="1.4"/>',
+         '<text x="125" y="90" fill="#aebadf" font-size="11" text-anchor="middle">several metres</text>',
+         '<text x="125" y="134" fill="#aebadf" font-size="11" text-anchor="middle">of dark room</text>']
+    # divided circle (drawn first so the telescope sits on top)
+    cx, cy, r = 362, 151, 46
+    o.append('<circle cx="%d" cy="%d" r="%d" fill="#16204a" stroke="#cfe3f5" stroke-width="1.5"/>' % (cx, cy, r))
+    import math
+    for k in range(0, 360, 10):
+        a = math.radians(k)
+        r2 = r - (7 if k % 30 == 0 else 4)
+        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#cfe3f5" stroke-width="1"/>'
+                 % (cx + r * math.cos(a), cy + r * math.sin(a), cx + r2 * math.cos(a), cy + r2 * math.sin(a)))
+    o.append('<line x1="%d" y1="%d" x2="%d" y2="232" stroke="#cfe3f5" stroke-width="3"/>' % (cx, cy + r, cx))
+    o.append('<line x1="%d" y1="232" x2="%d" y2="232" stroke="#cfe3f5" stroke-width="3"/>' % (cx - 30, cx + 30))
+    o.append('<text x="%d" y="246" fill="#aebadf" font-size="11" text-anchor="middle">divided circle: read the angle</text>' % cx)
+    # colour fan from prism to objective
+    for i, c in enumerate(cols):
+        t = i / 6.0
+        o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="%s" stroke-width="1.8"/>'
+                 % (262 + 3 * t, 114 + 6 * t, 298, 124 + 18 * t, c))
+    # prism
+    o.append('<polygon points="246,74 222,140 270,140" fill="#9fc6e8" fill-opacity=".2" stroke="#cfe3f5" stroke-width="2"/>')
+    o.append('<text x="246" y="62" fill="#cfe3f5" font-size="11" text-anchor="middle">flint-glass prism</text>')
+    # telescope, tilted to follow the bent light
+    o.append('<g transform="rotate(16 300 133)">'
+             '<rect x="300" y="122" width="130" height="22" rx="3" fill="#8a6a3a" stroke="#d9c9a3" stroke-width="1.5"/>'
+             '<ellipse cx="301" cy="133" rx="4" ry="13" fill="#9fc6e8" stroke="#cfe3f5" stroke-width="1.5"/>'
+             '<rect x="430" y="127" width="16" height="12" fill="#6a522c" stroke="#d9c9a3" stroke-width="1"/>'
+             '</g>')
+    o.append('<circle cx="%d" cy="%d" r="3.5" fill="#d9c9a3" stroke="#5a4630"/>' % (cx, cy))
+    o.append('<text x="338" y="96" fill="#cfe3f5" font-size="11" text-anchor="middle">theodolite telescope</text>')
+    o.append('<text x="300" y="168" fill="#aebadf" font-size="10" text-anchor="end">objective</text>')
+    o.append('<text x="462" y="196" fill="#ffd97a" font-size="11" text-anchor="end">eye</text>')
+    o.append('</svg>')
+    return "\n".join(o)
+
+
+def _kirchhoff_exp_fig():
+    """Kirchhoff, October 1859: sunlight, then limelight, sent through a sodium flame."""
+    X0, W, LO, HI = 178, 278, 400, 700
+
+    def X(nm):
+        return X0 + W * (nm - LO) / float(HI - LO)
+
+    d = X(589.3)
+    pair = (d - 2.2, d + 2.2)
+    sun_other = [X(517.5) - 2.5, X(517.5), X(517.5) + 2.5, X(656.3)]
+    o = ['<svg class="illus" width="480" height="330" viewBox="0 0 480 330" font-family="Georgia,serif" '
+         'role="img" aria-label="Kirchhoff\'s two experiments of October 1859. Top: sunlight alone shows a dark D '
+         'pair; sunlight sent through a sodium flame shows the D pair darker and sharper. Bottom: light from '
+         'glowing lime alone is a smooth rainbow with no dark lines; sent through a sodium flame, a dark pair '
+         'appears exactly at the D position">',
+         '<rect width="480" height="330" fill="#0d1330" rx="10"/>',
+         '<defs><linearGradient id="wl-band-k" x1="0" x2="1" y1="0" y2="0">']
+    for nm in range(400, 701, 20):
+        o.append('<stop offset="%.3f" stop-color="%s"/>' % ((nm - LO) / float(HI - LO), _wl_rgb(nm)))
+    o += ['</linearGradient>',
+          '<radialGradient id="lime-glow"><stop offset="0" stop-color="#fffbe8"/>'
+          '<stop offset=".5" stop-color="#fff2b0" stop-opacity=".6"/><stop offset="1" stop-color="#fff2b0" stop-opacity="0"/></radialGradient>',
+          '</defs>']
+
+    def flame(x, y):
+        return ['<rect x="%d" y="%d" width="8" height="22" fill="#8a8f9a"/>' % (x - 4, y + 14),
+                '<path d="M%d %d C%d %d %d %d %d %d C%d %d %d %d %d %d z" fill="#ffd23a" fill-opacity=".85"/>'
+                % (x, y - 22, x + 12, y - 4, x + 9, y + 14, x, y + 14, x - 9, y + 14, x - 12, y - 4, x, y - 22),
+                '<path d="M%d %d C%d %d %d %d %d %d C%d %d %d %d %d %d z" fill="#fff4a0"/>'
+                % (x, y - 8, x + 5, y + 2, x + 4, y + 12, x, y + 12, x - 4, y + 12, x - 5, y + 2, x, y - 8),
+                '<text x="%d" y="%d" fill="#aebadf" font-size="10" text-anchor="middle">sodium flame</text>' % (x, y + 50)]
+
+    def prism(x, y):
+        return ['<polygon points="%d,%d %d,%d %d,%d" fill="#9fc6e8" fill-opacity=".2" stroke="#cfe3f5" stroke-width="1.5"/>'
+                % (x, y - 16, x - 12, y + 12, x + 12, y + 12),
+                '<text x="%d" y="%d" fill="#aebadf" font-size="10" text-anchor="middle">prism</text>' % (x, y + 50)]
+
+    def strip(y, label, sun, dstyle):
+        out = ['<text x="%d" y="%d" fill="#fffbe8" font-size="11">%s</text>' % (X0, y - 5, label),
+               '<rect x="%d" y="%d" width="%d" height="30" fill="url(#wl-band-k)"/>' % (X0, y, W)]
+        if sun:
+            for x in sun_other:
+                out.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="#05081a" stroke-width="1.5" opacity=".75"/>' % (x, y, x, y + 30))
+        if dstyle:
+            w, op = dstyle
+            for x in pair:
+                out.append('<line x1="%.1f" y1="%d" x2="%.1f" y2="%d" stroke="#05081a" stroke-width="%s" opacity="%s"/>' % (x, y, x, y + 30, w, op))
+        return out
+
+    # ---- row 1: the Sun
+    o.append('<text x="18" y="24" fill="#ffd97a" font-size="13" font-weight="bold">1 &#183; Sunlight through a sodium flame</text>')
+    o += ['<circle cx="34" cy="92" r="14" fill="#ffd23a"/>',
+          '<text x="34" y="142" fill="#aebadf" font-size="10" text-anchor="middle">Sun</text>',
+          '<line x1="50" y1="92" x2="136" y2="92" stroke="#fffbe8" stroke-width="2" opacity=".8"/>']
+    o += flame(88, 92) + prism(140, 92)
+    o += strip(52, "Sun alone", True, (1.4, .7))
+    o += strip(110, "Sun through the flame: D darker and sharper", True, (2.6, 1))
+    o.append('<line x1="18" y1="166" x2="462" y2="166" stroke="#3a4a86" stroke-width="1"/>')
+    # ---- row 2: limelight
+    o.append('<text x="18" y="190" fill="#ffd97a" font-size="13" font-weight="bold">2 &#183; Limelight through a sodium flame</text>')
+    o += ['<circle cx="34" cy="258" r="20" fill="url(#lime-glow)"/>',
+          '<rect x="28" y="252" width="12" height="12" fill="#fffbe8" rx="2"/>',
+          '<text x="34" y="308" fill="#aebadf" font-size="10" text-anchor="middle">hot lime</text>',
+          '<line x1="50" y1="258" x2="136" y2="258" stroke="#fffbe8" stroke-width="2" opacity=".8"/>']
+    o += flame(88, 258) + prism(140, 258)
+    o += strip(218, "Limelight alone: no dark lines at all", False, None)
+    o += strip(276, "Through the flame: a dark D pair appears", False, (2.6, 1))
+    o += ['<text x="%.1f" y="321" fill="#ffd97a" font-size="11" text-anchor="middle">D, made in the lab</text>' % d,
+          '</svg>']
+    return "\n".join(o)
+
+
+PRISM_FIG = _prism_fig()
+SLIT_FIG = _slit_fig()
+DLINE_FIG = _dline_fig()
+THEO_FIG = _theodolite_fig()
+KEXP_FIG = _kirchhoff_exp_fig()
+
+
 KIRCHHOFF = dict(
     title="The Dark Lines in the Rainbow: Fraunhofer, Kirchhoff and Bunsen",
     h1="✦ The Dark Lines in the Rainbow ✦",
@@ -241,10 +581,12 @@ KIRCHHOFF = dict(
             title="Splitting the Light",
             html="""
 <p>Newton&rsquo;s discovery was that white sunlight is not a pure thing. It is a <b>mixture</b> of all the colours, and a prism pulls them apart because it bends some colours more than others: violet the most, red the least. The result is a fan of colour from red through orange, yellow, green and blue to violet. In a paper of 1672 he called the band a <b>spectrum</b>, from a Latin word that means an &ldquo;appearance&rdquo; (the same root gives us <i>spectre</i>, a ghost).</p>
+""" + PRISM_FIG + """
 <p>By the early 1800s, scientists understood that light behaves like a <b>wave</b>, and that each colour is a different <b>wavelength</b>: the distance from one crest to the next. Wavelengths of light are tiny. They are measured in <b>nanometres</b> (nm): one nanometre is a <b>billionth of a metre</b>. Red light is about <b>700 nm</b> long and violet about <b>400 nm</b>. For comparison, a human hair is about <b>80,000 nm</b> wide.</p>
 <p>In <b>1802</b>, an English doctor and chemist named <b>William Hyde Wollaston</b> tried something new. Instead of a round hole, he let the sunlight in through a very <b>narrow slit</b>, and then looked at it through a prism. The colours came out much sharper, and to his surprise he saw a few thin <b>dark lines</b> crossing the rainbow, like gaps in a comb. He counted about seven.</p>
 <p>Wollaston guessed that the lines marked the natural <b>borders between colours</b>, and he did not look further. He was wrong about that, but he was the first person to see them. Nobody knew what the lines were. Hardly anyone noticed.</p>
-<div class="funfact">🔎 Why a slit? A round hole makes a smeared stack of overlapping coloured circles. A thin slit makes a thin line of light, and each colour lands in its own thin line, side by side. A sharp line can be noticed at a very exact position, and that is what turned out to matter.</div>""",
+<div class="funfact">🔎 Why a slit? A round hole makes a smeared stack of overlapping coloured circles. A thin slit makes a thin line of light, and each colour lands in its own thin line, side by side. A sharp line can be noticed at a very exact position, and that is what turned out to matter.</div>
+""" + SLIT_FIG,
             cps=[dict(
                 type="num",
                 kicker="How small is a wavelength?",
@@ -260,10 +602,12 @@ KIRCHHOFF = dict(
             html="""
 <p>The man who really put the lines on the map was a glassmaker. <b>Joseph Fraunhofer</b> was born in <b>1787</b> in the Bavarian town of Straubing, the youngest of eleven children of a glazier. Both parents died when he was <b>eleven</b>. He was sent to Munich to work as an apprentice to a mirror-maker and glass-cutter, a master who, the tellers say, was harsh and did not let him go to school.</p>
 <p>In <b>July 1801</b>, when Joseph was fourteen, the house where he worked <b>collapsed</b> with him inside. He was dug out of the rubble after hours. The ruler of Bavaria, Prince-Elector <b>Maximilian Joseph</b>, was at the scene, and (the story goes) he gave the boy a gift of money, about 18 ducats. Fraunhofer spent it on books and a glass-cutting machine. A few years later an optical firm in the abbey of <b>Benediktbeuern</b> took him on, and within a few years he was running its glassworks. He was a self-taught genius at making lenses.</p>
-<p>His problem was colour. In the telescopes of the time, a lens bent the different colours by different amounts, so every star came with a coloured fringe, like a faint rainbow. To correct this, a lens-maker has to know <b>exactly</b> how much each kind of glass bends each colour. But &ldquo;red&rdquo; and &ldquo;yellow&rdquo; are vague words. He needed one precise, repeatable colour to measure with.</p>
+<p>His problem was colour. In the telescopes of the time, a lens bent the different colours by different amounts, so every star came with a coloured fringe, like a faint rainbow. Opticians call this fault <b>chromatic aberration</b>. The cure is an <b>achromatic</b> lens, which pairs two kinds of glass, <b>crown</b> and <b>flint</b>, so that their colour errors cancel. To design one, a lens-maker has to know <b>exactly</b> how much each kind of glass bends each colour. But &ldquo;red&rdquo; and &ldquo;yellow&rdquo; are vague words. He needed one precise, repeatable colour to measure with.</p>
 <p>He found one in a lamp flame. When he looked at the flame through a prism, there was a bright <b>yellow line</b> that was always in exactly the same place. Next he turned the prism toward the <b>Sun</b>, hoping to find the same line there. Instead, at <b>exactly the same place</b>, he found a thin <b>dark</b> line. And in the rest of the rainbow there were hundreds more.</p>
+<p>His instrument was not a special machine. It was a <b>theodolite</b>, a surveyor&rsquo;s telescope mounted on a finely <b>divided circle</b>, so that the angle it pointed at could be read to a tiny fraction of a degree. In a darkened room he let sunlight in through a <b>narrow slit</b> in the window shutter, several metres away. In front of the telescope&rsquo;s <b>objective</b> (the big lens at the front) he set a prism of his own flint glass, turned to the angle of <b>minimum deviation</b>, where the colours come out sharpest. Then he swung the telescope slowly across the spectrum and read off the angle of each dark line from the circle.</p>
+""" + THEO_FIG + """
 <p>In <b>1814</b> Fraunhofer carefully mapped <b>574</b> dark lines. He gave the strongest ones capital letters, working from the red end: <b>A, B, C, D, E, F, G, H</b>. The dark pair he labelled <b>D</b> was where the lamp flame&rsquo;s bright line lay. Look at his own drawing from 1817 in the margin: the dark line D stands out like a pencil stroke in the yellow.</p>
-<p>Fraunhofer tested whether the lines could be a trick of the prism or of Earth&rsquo;s air. He pointed his instrument at <b>moonlight</b> and at the <b>planets</b>, which only shine by reflecting sunlight, and found the same lines. But the light of bright <b>stars</b> showed different patterns of lines. So the lines were not made by the prism or the atmosphere. They belonged to each light source itself. In 1821 he began to use a grating of fine wires, which let him measure wavelengths. The D line came out at about <b>589 nm</b>.</p>
+<p>Fraunhofer tested whether the lines could be a trick of the prism or of Earth&rsquo;s air. He pointed his instrument at <b>moonlight</b> and at the <b>planets</b>, which only shine by reflecting sunlight, and found the same lines. For the stars he fixed a prism over the objective of a telescope, so that each star became a tiny spectrum in the eyepiece. Astronomers still call this an <b>objective prism</b>. But the light of bright <b>stars</b> showed different patterns of lines. So the lines were not made by the prism or the atmosphere. They belonged to each light source itself. In 1821 he built a <b>diffraction grating</b>: hundreds of fine wires stretched side by side, evenly spaced, a fraction of a millimetre apart. Light passing through the gaps <b>interferes</b> with itself, and each colour comes out at its own angle. Because he knew the spacing of the wires, the angle told him the <b>wavelength</b>. Later he ruled even finer gratings with a diamond on glass. The D line came out at about <b>589 nm</b>.</p>
 <p>Fraunhofer died in <b>1826</b>, aged only <b>39</b>. Years of breathing the fumes of the glassworks probably played a part. On his grave in Munich are written the Latin words <i>Approximavit sidera</i>: &ldquo;He brought the stars closer.&rdquo; He knew the lines were important. He never found out why they were there.</p>""",
             cps=[dict(
                 type="num",
@@ -280,6 +624,7 @@ KIRCHHOFF = dict(
             html="""
 <p>After Fraunhofer, the puzzle sat there. People <b>suspected</b> that the lines were a message of some sort. Nobody could read it.</p>
 <p>The clue was the <b>coincidence of position</b>. Why should a dark line in sunlight be at <b>exactly the same place</b> as the bright line from a lamp flame? Salt put in a flame (which turns the flame yellow) is a compound of the metal <b>sodium</b>. So perhaps sodium was involved. But how could the same stuff make a bright line here and a dark line there?</p>
+""" + DLINE_FIG + """
 <p>In <b>1849</b> in Paris, a young physicist named <b>L&eacute;on Foucault</b> (later famous for his pendulum, which proved the Earth turns) came very close to the answer. He used a strong electric <b>arc lamp</b>, a glowing spark between two carbon rods. The arc showed the bright yellow D pair. Then he shone <b>sunlight</b> straight through the arc into his prism. Now the D pair in the sunlight got <b>darker</b> than before. The arc, which could <b>give out</b> the D colours, was also <b>soaking them up</b> from the sunlight passing through it.</p>
 <p>It was a remarkable observation. Foucault wrote it up in a short note and moved on to other things, and nobody built on it. In 1853 the Swedish physicist <b>Anders &Aring;ngstr&ouml;m</b> suggested in print that a glowing gas gives out just the colours it can absorb. That idea, too, was set aside.</p>
 <p>Others had other pieces. In 1826 the English photography pioneer <b>William Henry Fox Talbot</b> noticed that different salts gave different coloured flames, and suggested that a prism might be used to tell the substances apart. But nobody had put these pieces together, or measured carefully enough to be sure. The dark lines of the Sun and the bright lines of the flame remained two puzzles, not one.</p>
@@ -317,10 +662,11 @@ KIRCHHOFF = dict(
             kicker="Chapter Six · Heidelberg · October 1859",
             title="The Experiment That Connected Everything",
             html="""
-<p>Kirchhoff was now thinking about Fraunhofer&rsquo;s D line. If sodium in a flame gave a <b>bright</b> pair of lines at exactly the position of the Sun&rsquo;s <b>dark</b> pair, there had to be a connection. In <b>October 1859</b> he tried an experiment, very like Foucault&rsquo;s of ten years before, but carried through with care.</p>
+<p>Kirchhoff was now thinking about Fraunhofer&rsquo;s D line. If sodium in a flame gave a <b>bright</b> pair of lines at exactly the position of the Sun&rsquo;s <b>dark</b> pair, there had to be a connection. In <b>October 1859</b> he tried an experiment much like Foucault&rsquo;s of ten years before, but carried it through with care.</p>
 <p>First he let <b>sunlight</b> go through a flame with sodium in it, and then into his spectroscope. He expected that the flame&rsquo;s bright D lines would <b>fill in</b> the dark D lines of the Sun, at least a bit. Instead, the dark lines became <b>darker and sharper</b>.</p>
 <p>Next he replaced the Sun with an artificial source, a glowing lump of heated lime, which gives a smooth rainbow with <b>no</b> dark lines at all. He sent that light through the sodium flame, and a pair of <b>dark</b> lines appeared in the rainbow, right at the D position. He had <b>manufactured Fraunhofer&rsquo;s D lines</b> in the laboratory.</p>
-<p>The conclusion followed. Sodium vapour that <b>gives out</b> yellow light at those two colours when hot will also <b>take in</b> light of those same two colours that pass through it. And the Sun&rsquo;s dark D lines must therefore be caused by <b>sodium in the Sun&rsquo;s atmosphere</b>: a layer of cooler gas above a hotter, glowing body, soaking up its own colours from the light that comes from below. The Sun was not a solid chunk of one thing. It had a surface hot enough to glow with every colour, and above it a layer of gases, each in its own fingerprint, writing its name in dark ink across the rainbow.</p>
+""" + KEXP_FIG + """
+<p>The conclusion followed. Sodium vapour that <b>gives out</b> yellow light at those two colours when hot will also <b>take in</b> light of those same two colours that pass through it. And the Sun&rsquo;s dark D lines must therefore be caused by <b>sodium in the Sun&rsquo;s atmosphere</b>: a layer of cooler gas above a hotter, glowing body, soaking up its own colours from the light that comes from below. The Sun was not a solid chunk of one thing. It had a surface hot enough to glow with every colour, and above it a layer of cooler gases. Each gas in that layer absorbs its own set of colours, so each one leaves its own pattern of dark lines across the spectrum.</p>
 <p>Bunsen understood at once. In a letter to a friend in November 1859 he wrote that Kirchhoff had made a wonderful, quite unexpected discovery, finding the cause of the dark lines in the solar spectrum, and that now the way was open to determine the make-up of the Sun and the fixed stars with the <b>same certainty</b> with which a chemist tests for sulphuric acid or chlorine in the lab. (This is a close paraphrase of his letter to Henry Roscoe.) Comte&rsquo;s impossible question had been answered 24 years after it was called impossible.</p>
 """ + RULES + """
 <p>There is a catch that makes the picture more interesting: whether the lines look bright or dark depends on <b>how bright the background is compared with the gas</b>. Try the sodium flame yourself. The flame glows at a brightness of 50 and soaks up 60% of whatever light passes through it. Slide the lamp behind it from dim to bright.</p>
@@ -337,18 +683,12 @@ KIRCHHOFF = dict(
             ), dict(
                 type="mc",
                 kicker="Bright line or dark line?",
-                q="""Same flame (brightness 50, soaks up 60%), but now the lamp behind it is dim, only <b>30</b>. The D line has brightness 30 &times; 0.4 + 0.6 &times; 50. What do you see?""",
+                q="""Same flame (brightness 50, soaks up 60%), but now the lamp behind it is dim, only <b>30</b>. The D line has brightness 30 &times; 0.4 + 0.6 &times; 50. How would the lines appear?""",
                 mc=[("Darker than the background: 12", False),
                     ("Brighter than the background: 42", True),
                     ("No change: 30", False)],
                 good="Right, {name}. 12 + 30 = 42, which is more than the background of 30, so the flame shows as a bright line. A dim background with a hotter, glowing gas in front gives bright lines. The Sun is the other way round.",
                 bad="Work it out, {name}: 30 &times; 0.4 = 12 and 0.6 &times; 50 = 30, so the line is 12 + 30. Compare that total with the background of 30.",
-            ), dict(
-                type="num",
-                kicker="Could it be luck?",
-                q="""Suppose a skeptic says the match between a lab line and a dark solar line might be pure luck. Say each line has only a <b>1 in 10</b> chance of landing on a dark line by accident. What are the chances that all <b>4</b> lines of an element match by luck? Give the answer as &ldquo;1 in ...&rdquo;.""",
-                answers=[10000], unit="(1 in ...)",
-                hint="Each line multiplies the odds by 10: 10 &times; 10 &times; 10 &times; 10. Kirchhoff found more than sixty iron lines matching. That is 1 in 10 multiplied by itself sixty times.",
             )],
         ),
         # ------------------------------------------------------------------ 7
