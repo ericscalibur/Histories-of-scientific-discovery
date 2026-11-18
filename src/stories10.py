@@ -565,7 +565,7 @@ KIRCHHOFF = dict(
 <p>In <b>1835</b> the French philosopher <b>Auguste Comte</b> published a long book on how knowledge works. In it he gave an example of a question that science would never answer. He wrote that we could imagine finding the <b>shapes</b>, <b>distances</b>, <b>sizes</b> and <b>motions</b> of the stars, but that we could never, by any means, study their <b>chemical make-up</b>. (That is a paraphrase of his French; he said it flatly and he meant it.)</p>
 <p>It was a reasonable thing to think. To find out what something is made of, a chemist needs a <b>sample</b>: a pinch to heat, to dissolve, to weigh. Nobody could fetch a pinch of the Sun. Even the nearest star is trillions of kilometres away. The Sun itself is about <b>150 million kilometres</b> from Earth. Light, the fastest thing there is, travels about <b>300,000 kilometres every second</b>, and still takes a good while to make the trip.</p>
 <p>Comte had missed one thing. The Sun may be out of reach, but its <b>light</b> is not. Light comes all the way from the Sun to your window. Every ray that arrives has been through the Sun&rsquo;s outer layers on its way out, and it might carry some record of what it passed through. All anyone needed was a way to read it.</p>
-<p>The way to read light had been around for nearly two hundred years. In 1666 a young <b>Isaac Newton</b>, home from Cambridge during the plague, had let a thin beam of sunlight through a hole in a shutter and through a glass prism, and found that it fanned out into a band of colours. (If you have done the Newton lesson, you were there.) The story of this lesson begins with that band of colours, and with a few thin dark lines that nobody could explain.</p>
+<p>The way to read light had been around for nearly two hundred years. In 1666 a young <b>Isaac Newton</b>, home from Cambridge during the plague, had let a thin beam of sunlight through a hole in a shutter and through a glass prism, and found that it fanned out into a band of colours. The story of this lesson begins with that band of colours, and with a few thin dark lines that nobody could explain.</p>
 <div class="bigidea">🌟 <b>Big Idea #1:</b> Sometimes the thing you are told you can never know is only hard to reach. If a message is arriving anyway, ask what it might be carrying, and how you could read it.</div>""",
             cps=[dict(
                 type="num",
@@ -721,10 +721,10 @@ KIRCHHOFF = dict(
 <p>Today we know that helium is the <b>second most common element in the universe</b>, after hydrogen. It fills the stars, and it gave us the first sign that the dark lines could do more than confirm what we knew. They could point to something new.</p>""",
             cps=[dict(
                 type="num",
-                kicker="First in the Sun, then on Earth",
-                q="""Helium was spotted in the Sun in <b>1868</b> and found on Earth in <b>1895</b>. How many <b>years later</b> was it found on Earth?""",
-                answers=[27], unit="years",
-                hint="Subtract: 1895 &#8722; 1868.",
+                kicker="Not sodium after all",
+                q="""The new yellow line was at <b>587.6 nm</b>. The two sodium lines are at <b>589.0 nm</b> and <b>589.6 nm</b>. How many <b>nanometres</b> apart is the helium line from the <b>nearer</b> sodium line?""",
+                answers=[1.4], unit="nm",
+                hint="The nearer sodium line is 589.0. Subtract: 589.0 &#8722; 587.6.",
             )],
         ),
         # ------------------------------------------------------------------ 9
@@ -794,9 +794,9 @@ KIRCHHOFF = dict(
                  answers=[3.8], unit="nm",
                  why="459.3 &#8722; 455.5 = 3.8."),
             dict(type="num", kicker="Helium",
-                 q="""The helium line is at <b>587.6 nm</b>. The nearer sodium line is at <b>589.0 nm</b>. How many nm apart?""",
-                 answers=[1.4], unit="nm",
-                 why="589.0 &#8722; 587.6 = 1.4. Close enough to confuse a careless eye, far enough to prove a new element."),
+                 q="""The helium line is at <b>587.6 nm</b>. The <b>farther</b> sodium line is at <b>589.6 nm</b>. How many nm apart?""",
+                 answers=[2], unit="nm",
+                 why="589.6 &#8722; 587.6 = 2.0. Close enough to confuse a careless eye, far enough to prove a new element."),
             dict(type="num", kicker="Balmer&rsquo;s formula",
                  q="""Balmer&rsquo;s formula is 364.6 &times; n&#178; &#247; (n&#178; &#8722; 4). With <b>n = 4</b>, work out 364.6 &times; 16 &#247; 12 to the nearest whole nanometre.""",
                  answers=[486, 486.1, 486.13], unit="nm",

@@ -1057,6 +1057,21 @@ KIRCHHOFF_FIGS = [
                 "reading what the Sun is made of."))),
     # ---- Chapter Seven · the professors ----
     (6, dict(
+        img="Hydrogen_discharge_tube_Pniok.jpg",
+        side="right", top=0, beside="was found too. The bright lines of hydrogen in a lab tube",
+        alt="A thin glass tube glowing bright pink and purple against a black background, with wider glass ends on each side",
+        title="Hydrogen glowing in a glass tube",
+        scroll=("This is what &ldquo;hydrogen in a lab tube&rdquo; looks like. A sealed glass "
+                "tube holds a little hydrogen at very low pressure, with a metal wire at each "
+                "end. A flame is not hot enough to make hydrogen shine, so a <b>high voltage</b> "
+                "is put across the wires instead, and the gas glows, much like a neon sign. "
+                "Tubes like this were made by the glassblower <b>Heinrich Geissler</b> in Bonn "
+                "in the late 1850s, and the physicist <b>Julius Pl&uuml;cker</b> used them to "
+                "measure hydrogen&rsquo;s bright lines. The pink-purple colour is the red line "
+                "at 656.3 nm and the blue-green and violet lines mixed together; a prism pulls "
+                "them apart again. <i>(A modern photograph. Photo: Heinrich Pniok, Free Art "
+                "License.)</i>"))),
+    (6, dict(
         img="Bunsen_Kirchhoff_Roscoe_1862.jpg",
         side="left", top=330,
         alt="Studio photograph of three men in dark frock coats, two standing and one seated between them, with a printed caption beneath naming Bunsen, Kirchhoff and Roscoe, 1862",

@@ -231,3 +231,10 @@ These files sit in this folder but are deliberately **not** used in any lesson:
   (`black-drop-effect.png` is the better copy, which is embedded)
 - `tycho-brahes-drawing-of-the-supernova.jpg` — the watermarked working copy the
   clean `Tycho_Cassiopeia.jpg` scan replaced
+
+  Chapter Seven adds a modern photograph of hydrogen glowing in a discharge tube
+  (`Hydrogen_discharge_tube_Pniok.jpg`; Commons `Hydrogen discharge tube cropped.jpg`
+  by Heinrich Pniok, **Free Art License**: the credit is printed in the caption and must
+  stay). It breaks the period-only rule on purpose, since students need to see the glow;
+  the caption says it is modern. A period alternative is the small Meyers (c. 1885)
+  engraving of a Geissler tube on a stand, `Meyers b7 s0029 b1.png`, 382 x 215.

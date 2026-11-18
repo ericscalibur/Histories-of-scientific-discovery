@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spectroscopy Lab</title>
+<style>
+  :root{
+    --night:#0b1230; --night2:#141c42; --panel:#0f1636; --line:#2a3560;
+    --parchment:#f9f3e4; --parchment2:#f1e7cf; --ink:#22304f; --ink-soft:#4a5878;
+    --gold:#e8a90c; --gold-dark:#8a6400; --pale:#cdd6ee; --dim:#8f9cc4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--night); color:var(--pale); font-family:Georgia,'Times New Roman',serif;
+    background-image:radial-gradient(1px 1px at 12% 18%, #ffffff55 50%, transparent 51%),
+      radial-gradient(1px 1px at 72% 9%, #ffffff44 50%, transparent 51%),
+      radial-gradient(1px 1px at 88% 61%, #ffffff33 50%, transparent 51%),
+      radial-gradient(1px 1px at 33% 77%, #ffffff33 50%, transparent 51%);
+    min-height:100vh;}
+  .wrap{max-width:1120px; margin:0 auto; padding:22px 16px 60px;}
+  header{text-align:center; padding:10px 8px 14px;}
+  header h1{color:var(--gold); font-size:clamp(1.6rem,4vw,2.4rem); text-shadow:0 0 18px rgba(232,169,12,.45);}
+  header .sub{font-style:italic; margin-top:6px; font-size:1.02rem;}
+  .card{background:var(--parchment); color:var(--ink); border-radius:12px; padding:14px 18px; margin:14px 0;
+    box-shadow:0 8px 28px rgba(0,0,0,.45);}
+  .card p{line-height:1.55; margin:0 0 8px;}
+  .card p:last-child{margin-bottom:0;}
+  .howto{font-size:.97rem;}
+  .lab{background:var(--panel); border:1.5px solid var(--line); border-radius:14px; padding:12px 14px; margin:14px 0;
+    box-shadow:inset 0 0 40px rgba(0,0,0,.5), 0 8px 26px rgba(0,0,0,.45);}
+  .lab h2{font-size:.78rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin:2px 0 10px; font-weight:bold;}
+  .lab h2 small{letter-spacing:0; text-transform:none; color:var(--dim); font-weight:normal; font-style:italic; font-size:.85rem; margin-left:6px;}
+
+  /* ---------- rack ---------- */
+  .rack-groups{display:flex; flex-wrap:wrap; justify-content:center; align-items:stretch; gap:2px; padding:8px 4px 0;
+    border-bottom:6px solid #5b3d22; background:linear-gradient(#0f1636, #121a40); border-radius:8px 8px 0 0; box-shadow:0 4px 0 #3a2614;}
+  .rack-div{display:flex; align-items:center; justify-content:center; width:20px; margin:4px 2px 8px 8px;
+    border-left:1px dashed #2f3b70;}
+  .rack-div.first{margin-left:0; border-left:none;}
+  .rack-div span{writing-mode:vertical-rl; transform:rotate(180deg); font-size:.62rem; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--dim); white-space:nowrap;}
+  .rack-item{all:unset; box-sizing:border-box; cursor:grab; display:flex; flex-direction:column; align-items:center;
+    width:52px; padding:4px 1px 4px; border-radius:8px; touch-action:none; user-select:none; -webkit-user-select:none;}
+  .rack-item:hover{background:rgba(255,255,255,.05);}
+  .rack-item:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
+  .rack-item.selected{background:rgba(232,169,12,.18); outline:2px solid var(--gold);}
+  .rack-item.inuse{opacity:.28; cursor:default;}
+  .rack-item svg{display:block; pointer-events:none;}
+  .rack-item .sym{font-weight:bold; color:#fff; font-size:.95rem; margin-top:2px; pointer-events:none;}
+  .rack-item .nm{font-size:.66rem; color:var(--dim); text-align:center; line-height:1.15; pointer-events:none; min-height:1.6em;}
+  .info{margin-top:10px; min-height:2.8em; font-size:.93rem; line-height:1.5; color:var(--pale); background:rgba(255,255,255,.04);
+    border-left:3px solid var(--gold); padding:7px 11px; border-radius:0 8px 8px 0;}
+  .info b{color:#fff;}
+  .reveal-row{margin-top:8px; font-size:.88rem; color:var(--dim);}
+
+  /* ---------- buttons ---------- */
+  .btn{font-family:Georgia,serif; cursor:pointer; background:#1d2858; color:var(--pale); border:1.5px solid #3a4a86;
+    border-radius:8px; padding:6px 11px; font-size:.86rem;}
+  .btn:hover{background:#26346f;}
+  .btn:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
+  .btn.gold{background:var(--gold); color:#2a2005; border-color:var(--gold); font-weight:bold;}
+  .btn.on{background:#3a2c05; color:#ffd97a; border-color:var(--gold);}
+  .presets{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;}
+
+  /* ---------- bench ---------- */
+  .bench{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)) minmax(0,1.5fr); gap:0; align-items:stretch;
+    border-bottom:8px solid #5b3d22; box-shadow:0 5px 0 #3a2614; border-radius:10px 10px 0 0;
+    background:linear-gradient(#0c1330, #111a42);}
+  .slot{position:relative; padding:8px 6px 10px; border-right:1px dashed #263266; display:flex; flex-direction:column;
+    align-items:center; outline:none; min-width:0;}
+  .slot:focus-visible{box-shadow:inset 0 0 0 2px var(--gold);}
+  .slot .slot-h{font-size:.72rem; letter-spacing:1px; text-transform:uppercase; color:var(--gold); text-align:center;}
+  .slot .slot-h small{display:block; text-transform:none; letter-spacing:0; color:var(--dim); font-style:italic; font-size:.78rem;}
+  .holder{position:relative; width:100%; height:172px; display:flex; align-items:center; justify-content:center; margin-top:4px;}
+  .holder .clamp{position:absolute; left:50%; width:62px; height:7px; margin-left:-31px; background:#59607a; border-radius:3px;}
+  .holder .clamp.top{top:14px;} .holder .clamp.bot{bottom:14px;}
+  .holder .post{position:absolute; left:50%; margin-left:28px; top:14px; bottom:14px; width:5px; background:#3d4460; border-radius:2px;}
+  .holder .empty{position:relative; z-index:2; width:64px; height:150px; border:2px dashed #3a4a86; border-radius:12px;
+    display:flex; align-items:center; justify-content:center; text-align:center; font-size:.72rem; color:var(--dim); padding:4px;}
+  .slot.can-drop .holder .empty{border-color:var(--gold); color:#ffd97a; background:rgba(232,169,12,.07);}
+  .slot.hover-drop .holder{background:rgba(232,169,12,.12); border-radius:10px;}
+  .slotted{position:relative; z-index:2; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none;}
+  .slotted svg{display:block; pointer-events:none;}
+  .slotted.selected{outline:2px solid var(--gold); border-radius:10px;}
+  .beam{position:absolute; top:50%; height:10px; margin-top:-5px; z-index:1; transition:background .25s;}
+  .beam.in{left:0; width:50%;} .beam.out{right:0; width:50%;}
+  .slot-ctrl{display:flex; flex-direction:column; align-items:center; gap:5px; margin-top:6px; min-height:58px; width:100%;}
+  .slot-ctrl .nmlabel{font-size:.8rem; color:#fff; text-align:center; line-height:1.2;}
+  .slot-ctrl .row{display:flex; gap:4px; flex-wrap:wrap; justify-content:center;}
+  .slot-ctrl .btn{font-size:.76rem; padding:4px 8px;}
+  .slot-ctrl label{font-size:.76rem; color:var(--pale); display:flex; align-items:center; gap:5px; width:100%; justify-content:center;}
+  .slot-ctrl input[type=range]{width:90px;}
+  .scope{position:relative; padding:8px 6px; display:flex; flex-direction:column; align-items:center; min-width:0;}
+  .scope .slot-h{font-size:.72rem; letter-spacing:1px; text-transform:uppercase; color:var(--gold); text-align:center;}
+  .scope .slot-h small{display:block; text-transform:none; letter-spacing:0; color:var(--dim); font-style:italic; font-size:.78rem;}
+  .slot .holder, .scope .holder{margin-left:-6px; margin-right:-6px; width:calc(100% + 12px);}
+  .beam.out{right:-1px;}
+  .scope .holder svg{position:absolute; inset:0; width:100%; height:100%; display:block;}
+
+  /* ---------- spectrum ---------- */
+  .controls{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; font-size:.86rem; margin-bottom:8px;}
+  .controls label{display:flex; align-items:center; gap:6px;}
+  .controls select{font-family:Georgia,serif; background:#1d2858; color:var(--pale); border:1.5px solid #3a4a86; border-radius:6px; padding:3px 6px;}
+  .controls input[type=range]{width:120px;}
+  .specwrap{position:relative;}
+  .specwrap canvas{display:block; width:100%; cursor:crosshair;}
+  .cursor{position:absolute; top:0; bottom:0; width:1px; background:rgba(255,255,255,.7); pointer-events:none; display:none;}
+  .magbox{position:absolute; border:1.5px solid var(--gold); border-radius:3px; pointer-events:none; box-shadow:0 0 8px rgba(232,169,12,.5);}
+  .readout{font-size:.86rem; color:var(--pale); min-height:1.4em; margin:6px 2px 0; font-variant-numeric:tabular-nums;}
+  .magrow{display:flex; align-items:center; gap:8px; margin:12px 0 6px; flex-wrap:wrap;}
+  .magrow .t{font-size:.78rem; letter-spacing:2px; text-transform:uppercase; color:var(--gold); font-weight:bold;}
+  .magrow .hint{font-size:.82rem; color:var(--dim); font-style:italic;}
+  .explain{font-size:1rem;}
+  .explain p{margin-bottom:8px;}
+  .rule{background:#eef2fb; border-left:4px solid #3a5da8; border-radius:0 8px 8px 0; padding:10px 14px; font-size:.95rem; color:#22304f;}
+  footer{color:var(--dim); text-align:center; font-size:.82rem; margin-top:26px; line-height:1.6;}
+  .ghost{position:fixed; left:0; top:0; z-index:50; pointer-events:none; opacity:.92; filter:drop-shadow(0 8px 12px rgba(0,0,0,.6));}
+
+  @media (max-width:760px){
+    .bench{grid-template-columns:repeat(3, minmax(0,1fr));}
+    .scope{grid-column:1 / -1; border-top:1px dashed #263266;}
+    .holder{height:160px;}
+    .slot-ctrl input[type=range]{width:70px;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .lit-pulse{animation:pulse 2.4s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1} 50%{opacity:.86}}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0" stop-color="#6f7690"/><stop offset=".45" stop-color="#d7dbe8"/><stop offset="1" stop-color="#555b72"/>
+    </linearGradient>
+    <filter id="glowF" x="-200%" y="-40%" width="500%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <h1>&#10022; The Spectroscope Bench &#10022;</h1>
+    <div class="sub">Make gases glow, shine light through them, and read the lines they leave in the rainbow</div>
+  </header>
+
+  <div class="card howto">
+    <p><b>How to use the bench.</b> Drag a light source or a gas tube from the rack into the holder at the back of the bench. Its light passes through the two holders in the beam, then through a slit and a prism, and spreads out into the spectrum below. Put more tubes in the beam to see what each gas does to the light behind it. (You can also click an item, then click a holder.)</p>
+    <p>Each tube has an <b>exciter</b>: a high-voltage supply that makes the gas inside glow. Switch it off and the gas goes cool and dark. Every lamp and tube on the bench has its own slider: <b>Heat</b> for the limelight, <b>Brightness</b> for the Sun and the candle, <b>Glow</b> for a tube.</p>
+  </div>
+
+  <section class="lab" aria-label="Rack of light sources and tubes">
+    <h2>The rack <small>drag one onto the bench</small></h2>
+    <div class="rack-groups" id="rack"></div>
+    <div class="info" id="info" aria-live="polite">Point at anything on the rack to read about it.</div>
+    <div class="reveal-row"><button class="btn" id="reveal" type="button">Reveal what is in the mystery flame and tube</button> <span id="revealText"></span></div>
+  </section>
+
+  <section class="lab" aria-label="Optical bench">
+    <h2>The bench <small>light travels from left to right</small></h2>
+    <div class="presets" id="presets"></div>
+    <div class="bench" id="bench"></div>
+  </section>
+
+  <section class="lab" aria-label="Spectrum">
+    <h2>The spectrum <small>what you see through the eyepiece</small></h2>
+    <div class="controls">
+      <label><input type="checkbox" id="letters"> Fraunhofer&rsquo;s letters</label>
+      <label for="compare">Compare with the lines of: <select id="compare"></select></label>
+    </div>
+    <div class="specwrap" id="mainWrap">
+      <canvas id="main" height="222" aria-label="The spectrum: a colour strip with a brightness graph underneath" role="img"></canvas>
+      <div class="cursor" id="mainCursor"></div>
+      <div class="magbox" id="magbox"></div>
+    </div>
+    <div class="readout" id="mainRead">Move over the spectrum to read wavelengths. Click to aim the magnifier.</div>
+    <div class="magrow">
+      <span class="t">Magnifier</span>
+      <button class="btn" type="button" id="magL" aria-label="Move magnifier toward violet">&#9664;</button>
+      <button class="btn" type="button" id="magR" aria-label="Move magnifier toward red">&#9654;</button>
+      <span class="hint" id="magHint"></span>
+    </div>
+    <div class="specwrap" id="magWrap">
+      <canvas id="mag" height="176" aria-label="Magnified part of the spectrum" role="img"></canvas>
+      <div class="cursor" id="magCursor"></div>
+    </div>
+    <div class="readout" id="magRead"></div>
+  </section>
+
+  <div class="card explain">
+    <div id="explain"></div>
+    <div class="rule"><b>Kirchhoff&rsquo;s rule (1859).</b> A glowing gas gives <b>bright lines</b> at its own colours. Put it in front of a <b>brighter</b> light and the same lines turn <b>dark</b>, because the gas soaks up more of those colours than it gives out. Put it in front of a <b>dimmer</b> light and they stay bright. Each element always uses the same lines, like a fingerprint.</div>
+  </div>
+
+  <footer>Line positions are measured wavelengths in nanometres (nm). Brightnesses are simplified so that they show up well on a screen.<br>Real lines are much thinner than drawn here; use the magnifier to see close pairs such as sodium&rsquo;s.</footer>
+</div>
+
+<div class="ghost" id="ghost" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var LO = 380, HI = 790, MAGW = 12;
+
+// ---------------------------------------------------------------- data
+// [wavelength in nm, relative brightness]. res = lines a COOL vapour absorbs (from the ground state).
+var EL = {
+  H:  {name:'Hydrogen', lines:[[656.28,1],[486.13,.45],[434.05,.22],[410.17,.12],[397.01,.06]], res:[],
+       desc:'The simplest atom. Bright lines at <b>656.3</b> nm (red, Fraunhofer&rsquo;s C), <b>486.1</b> (blue-green, F), 434.0 and 410.2 (violet). Cool hydrogen does not absorb visible light: it has to be excited first.'},
+  He: {name:'Helium', lines:[[706.52,.35],[667.82,.45],[587.56,1],[504.77,.08],[501.57,.4],[492.19,.2],[471.31,.18],[447.15,.5],[438.79,.1],[402.62,.15],[388.87,.4]], res:[],
+       desc:'Spotted in the Sun in <b>1868</b> by its yellow line at <b>587.6</b> nm, close to sodium&rsquo;s but not the same. It was found on Earth 27 years later.'},
+  Ne: {name:'Neon', lines:[[534.11,.1],[540.06,.2],[585.25,.5],[588.19,.3],[594.48,.4],[597.55,.2],[603.0,.3],[607.43,.4],[609.62,.4],[614.31,.6],[616.36,.3],[621.73,.3],[626.65,.4],[630.48,.3],[633.44,.5],[638.3,.5],[640.22,1],[650.65,.6],[659.9,.3],[667.83,.3],[692.95,.4],[703.24,.5]], res:[],
+       desc:'Dozens of red and orange lines, which is why a neon sign glows orange-red.'},
+  Ar: {name:'Argon', lines:[[404.44,.1],[415.86,.3],[419.83,.2],[420.07,.3],[425.94,.25],[427.22,.2],[430.01,.2],[451.07,.15],[549.59,.08],[560.67,.1],[603.21,.1],[696.54,.6],[706.72,.5],[714.7,.2],[738.4,.4],[750.39,.8],[763.51,.9],[772.38,.5]], res:[],
+       desc:'Most of its strongest lines are deep red, past 690 nm, with a cluster of weaker violet-blue lines near 420 nm.'},
+  Hg: {name:'Mercury', lines:[[404.66,.5],[407.78,.15],[435.83,1],[491.6,.08],[546.07,.9],[576.96,.45],[579.07,.45],[623.44,.05]], res:[],
+       desc:'Violet <b>404.7</b>, blue <b>435.8</b>, green <b>546.1</b> and a yellow pair at 577.0 and 579.1 nm. Its strongest line, at 253.7 nm, is ultraviolet and out of sight, so cool mercury absorbs nothing you can see.'},
+  Na: {name:'Sodium', lines:[[588.995,1],[589.592,.55],[568.82,.04],[568.27,.03],[615.42,.03],[616.08,.03],[498.28,.02],[497.85,.02]], res:[588.995,589.592],
+       desc:'The famous yellow pair: <b>589.0</b> and <b>589.6</b> nm, only 0.6 nm apart. Aim the magnifier at them to split them. Cool sodium vapour soaks up the same two lines.'},
+  Li: {name:'Lithium', lines:[[670.78,1],[610.36,.25],[460.29,.06],[413.26,.03]], res:[670.78],
+       desc:'A strong crimson line at <b>670.8</b> nm and a weaker orange one at 610.4.'},
+  K:  {name:'Potassium', lines:[[766.49,1],[769.9,.6],[404.41,.15],[404.72,.08],[580.18,.02],[583.19,.02],[691.11,.03],[693.88,.03]], res:[766.49,769.9,404.41,404.72],
+       desc:'Its strongest pair, <b>766.5</b> and <b>769.9</b> nm, is at the very edge of what eyes can see. There is a faint violet pair near 404.5 nm too.'},
+  Ca: {name:'Calcium', lines:[[422.67,1],[442.54,.12],[443.5,.15],[445.48,.25],[527.03,.1],[558.88,.2],[585.75,.12],[612.22,.25],[616.22,.3],[643.91,.3],[646.26,.25],[649.38,.2]], res:[422.67],
+       desc:'A strong violet line at <b>422.7</b> nm and groups of orange-red lines. In the Sun, calcium atoms that have lost an electron make Fraunhofer&rsquo;s H and K.'},
+  Sr: {name:'Strontium', lines:[[460.73,1],[483.21,.1],[496.23,.1],[640.85,.3],[650.4,.25],[687.83,.35],[707.01,.4]], res:[460.73],
+       desc:'The red of fireworks. A blue line at <b>460.7</b> nm and several red ones.'},
+  Cs: {name:'Caesium', lines:[[455.53,1],[459.32,.55],[672.33,.1],[697.33,.1]], res:[455.53,459.32],
+       desc:'Latin <i>caesius</i>, &ldquo;sky blue&rdquo;. Bunsen and Kirchhoff found it in <b>1860</b> from two blue lines at <b>455.5</b> and <b>459.3</b> nm, before anyone held a pinch of it.'},
+  Rb: {name:'Rubidium', lines:[[420.18,.3],[421.56,.2],[775.77,.1],[776.16,.1],[780.03,1]], res:[420.18,421.56,780.03],
+       desc:'Latin <i>rubidus</i>, &ldquo;deep red&rdquo;. Found in <b>1861</b> from deep red lines (780.0 nm, right at the edge of sight) and a violet pair near 421 nm.'}
+};
+var ORDER = ['H','He','Ne','Ar','Hg','Na','Li','K','Ca','Sr','Cs','Rb'];
+
+// Fraunhofer's dark lines in sunlight: [nm, depth, width(sigma nm)]
+var SUN_LINES = [[759.37,.75,.9],[686.72,.65,.5],[656.28,.6,.35],[589.59,.6,.2],[589.0,.7,.2],[527.04,.4,.15],
+  [518.36,.5,.2],[517.27,.5,.2],[516.73,.35,.15],[486.13,.55,.3],[434.05,.45,.25],[430.79,.45,.3],[410.17,.4,.25],
+  [396.85,.85,.7],[393.37,.85,.7],[422.67,.5,.2],[438.35,.4,.15],[440.48,.35,.15],[404.58,.4,.15],[406.36,.3,.12],
+  [407.17,.3,.12],[425.08,.25,.12],[427.18,.35,.12],[432.58,.35,.12],[495.76,.25,.1],[532.8,.25,.1],[537.15,.2,.1],[526.95,.3,.1]];
+var LETTERS = [['A',759.4],['B',686.7],['C',656.3],['D',589.3],['E',527.0],['b',517.3],['F',486.1],['G',430.8],['h',410.2],['H',396.8],['K',393.4]];
+
+// ---------------------------------------------------------------- colour helpers
+function rgbOf(w){
+  var r=0,g=0,b=0;
+  if (w<440){ r=-(w-440)/60; b=1; }
+  else if (w<490){ g=(w-440)/50; b=1; }
+  else if (w<510){ g=1; b=-(w-510)/20; }
+  else if (w<580){ r=(w-510)/70; g=1; }
+  else if (w<645){ r=1; g=-(w-645)/65; }
+  else { r=1; }
+  var f = w<420 ? 0.3+0.7*(w-380)/40 : (w<=700 ? 1 : 0.3+0.7*(790-w)/90);
+  f = Math.max(0.12, Math.min(1, f));
+  return [Math.max(0,r)*f, Math.max(0,g)*f, Math.max(0,b)*f];
+}
+function glowOf(lines){
+  var r=0,g=0,b=0;
+  lines.forEach(function(l){ var c=rgbOf(l[0]); r+=c[0]*l[1]; g+=c[1]*l[1]; b+=c[2]*l[1]; });
+  var m=Math.max(r,g,b)||1;
+  return [0.15+0.85*r/m, 0.15+0.85*g/m, 0.15+0.85*b/m];
+}
+function css(c,a){ return 'rgba('+Math.round(c[0]*255)+','+Math.round(c[1]*255)+','+Math.round(c[2]*255)+','+(a==null?1:a)+')'; }
+function planck(nm,T){ var l=nm*1e-9; return 1/(Math.pow(l,5)*(Math.exp(1.4388e-2/(l*T))-1)); }
+
+// ---------------------------------------------------------------- items
+var ITEM = {};
+function mkTube(id, name, sym, lines, res, desc, mystery){
+  var it = {id:id, kind:'tube', name:name, sym:sym, desc:desc, mystery:!!mystery,
+    lines: lines.map(function(l){ return {l:l[0], rel:l[1], a:0.85*Math.pow(Math.min(1,l[1]),0.6)}; })};
+  it.resLines = it.lines.filter(function(L){ return res.some(function(r){ return Math.abs(r-L.l)<0.05; }); });
+  it.glow = glowOf(lines);
+  ITEM[id] = it; return it;
+}
+ORDER.forEach(function(k){ var e=EL[k]; mkTube(k, e.name, k, e.lines, e.res, e.desc); });
+function mixOf(keys){
+  var lines=[], res=[];
+  keys.forEach(function(k){ EL[k].lines.forEach(function(l){ lines.push([l[0], l[1]*0.85]); }); res = res.concat(EL[k].res); });
+  return {lines:lines, res:res};
+}
+var MA_KEYS = ['Li','Na','Sr'];
+var pool = ORDER.slice(), MB_KEYS = [];
+while (MB_KEYS.length < 2){ var p = pool.splice(Math.floor(Math.random()*pool.length),1)[0]; MB_KEYS.push(p); }
+var mA = mixOf(MA_KEYS), mB = mixOf(MB_KEYS);
+// the mystery flame is a light source: a candle-like flame with unknown salts in it, glowing only at its elements' lines
+mkTube('MA','Mystery flame','?', mA.lines, mA.res, 'A flame with a pinch of something unknown sprinkled into it, the way Bunsen and Kirchhoff tested salts. It glows only at a few colours. Which elements are in it? Use &ldquo;Compare with&rdquo; to test your guesses, line by line.', true);
+ITEM.MA.kind='lamp'; ITEM.MA.flame=true;
+// flame colour as an eye would see it: each line's colour, weighted by how sensitive eyes are to it (peak near 555 nm)
+ITEM.MA.flameCol = (function(){
+  var r=0,g=0,b=0;
+  mA.lines.forEach(function(l){ var c=rgbOf(l[0]), v=Math.exp(-0.5*Math.pow((l[0]-557)/45,2))*l[1]; r+=c[0]*v; g+=c[1]*v; b+=c[2]*v; });
+  var m=Math.max(r,g,b)||1; return [r/m, g/m, b/m];
+})();
+mkTube('MB','Mystery tube','?', mB.lines, mB.res, 'Two gases mixed in one tube, chosen at random each time the page loads. Which two? Match every line before you reveal the answer.', true);
+
+ITEM.lime = {id:'lime', kind:'lamp', name:'Limelight', sym:'Lime',
+  desc:'A block of <b>lime</b> heated in a very hot flame until it glows white, as in theatre &ldquo;limelights&rdquo;. Kirchhoff used one in 1859. A hot solid glows at <b>every</b> colour, so it gives an unbroken rainbow. Turn up the heat to make it brighter.'};
+ITEM.sun = {id:'sun', kind:'lamp', name:'Sunlight', sym:'Sun',
+  desc:'Sunlight let in through a slit. A rainbow crossed by <b>dark lines</b>: the Sun&rsquo;s hot inside glows at every colour, and gases in its outer layers soak up their own colours on the way out.'};
+ITEM.candle = {id:'candle', kind:'lamp', name:'Candle', sym:'Candle',
+  desc:'A candle flame&rsquo;s light comes from tiny glowing specks of soot, so it is a dim rainbow, heavy on orange and red, with no lines.'};
+var LAMPS = ['lime','sun','candle','MA'];
+
+// ---------------------------------------------------------------- state
+var DEFAULT_LVL = {lime:100, sun:85, candle:30, tube:60};
+function defaultLvl(id){ return DEFAULT_LVL[id]!=null ? DEFAULT_LVL[id] : DEFAULT_LVL.tube; }
+var state = {slots:[null,null,null], power:[true,true,true], lvl:{}, selected:null,
+  magC:589.3, letters:false, compare:'', revealed:false};
+// each item keeps its own brightness: heat for the lime, brightness for the Sun and candle, glow for a tube
+function lvl(id){ return state.lvl[id]!=null ? state.lvl[id] : defaultLvl(id); }
+
+function displayName(it){ return (it.mystery && !state.revealed) ? it.name.toLowerCase().replace(/^mystery/, 'the mystery') : it.name; }
+
+// ---------------------------------------------------------------- physics
+function lampSpectrum(it, lams, sv){
+  var n=lams.length, I=new Float64Array(n), T, bright;
+  if (it.flame) return applyTube(it, true, I, lams, sv);   // bright lines only
+  bright=lvl(it.id);
+  if (it.id==='lime') T=2000+12*bright;
+  else if (it.id==='sun') T=5800;
+  else T=1900;
+  var ref = 0; for (var q=LO;q<=HI;q+=5) ref=Math.max(ref, planck(q,T));  // brightest colour = bright
+  for (var j=0;j<n;j++){
+    var v = bright*planck(lams[j],T)/ref;
+    if (it.id==='sun'){
+      for (var k=0;k<SUN_LINES.length;k++){
+        var L=SUN_LINES[k], s=Math.max(L[2],sv), d=lams[j]-L[0];
+        if (d>5*s || d<-5*s) continue;
+        v *= 1 - L[1]*Math.exp(-0.5*d*d/(s*s));
+      }
+    }
+    I[j]=v;
+  }
+  return I;
+}
+function applyTube(it, on, I, lams, sv){
+  var lines = on ? it.lines : it.resLines, S = on ? lvl(it.id) : 0;
+  var n=lams.length, out=new Float64Array(n);
+  for (var j=0;j<n;j++){
+    var T=1;
+    for (var k=0;k<lines.length;k++){
+      var d=lams[j]-lines[k].l;
+      if (d>5*sv || d<-5*sv) continue;
+      T *= 1 - lines[k].a*Math.exp(-0.5*d*d/(sv*sv));
+    }
+    var A=1-T;
+    out[j] = I[j]*(1-A) + A*S;
+  }
+  return out;
+}
+function computeStages(lams, sv){
+  var I=new Float64Array(lams.length), stages=[];
+  for (var k=0;k<3;k++){
+    var id=state.slots[k];
+    if (id){
+      var it=ITEM[id];
+      I = it.kind==='lamp' ? lampSpectrum(it, lams, sv) : applyTube(it, state.power[k], I, lams, sv);
+    }
+    stages.push(I);
+  }
+  return stages;
+}
+
+// ---------------------------------------------------------------- SVG pictures
+function tubeSVG(it, lit, w, h, L){
+  var c = css(it.glow), soft = css(it.glow, 0.16), op = L==null ? 1 : 0.25+0.75*L/100;
+  var s = '<svg viewBox="0 0 46 150" width="'+w+'" height="'+h+'" aria-hidden="true">';
+  s += '<rect x="15" y="2" width="16" height="14" rx="3" fill="url(#metal)"/><rect x="15" y="134" width="16" height="14" rx="3" fill="url(#metal)"/>';
+  s += '<line x1="23" y1="14" x2="23" y2="32" stroke="#aab" stroke-width="1.5"/><line x1="23" y1="118" x2="23" y2="136" stroke="#aab" stroke-width="1.5"/>';
+  if (lit){
+    s += '<g opacity="'+op.toFixed(2)+'"><g filter="url(#glowF)" class="lit-pulse"><rect x="10" y="15" width="26" height="28" rx="12" fill="'+css(it.glow,0.55)+'"/>'
+       + '<rect x="10" y="107" width="26" height="28" rx="12" fill="'+css(it.glow,0.55)+'"/>'
+       + '<rect x="19" y="40" width="8" height="70" rx="4" fill="'+c+'"/></g>'
+       + '<rect x="21.5" y="42" width="3" height="66" rx="1.5" fill="#fff" opacity=".75"/></g>';
+  } else {
+    s += '<rect x="10" y="15" width="26" height="28" rx="12" fill="'+soft+'"/><rect x="10" y="107" width="26" height="28" rx="12" fill="'+soft+'"/>'
+       + '<rect x="19" y="40" width="8" height="70" rx="4" fill="'+soft+'"/>';
+  }
+  s += '<g fill="none" stroke="rgba(220,235,255,.6)" stroke-width="1.2"><rect x="9" y="14" width="28" height="30" rx="12"/>'
+     + '<rect x="9" y="106" width="28" height="30" rx="12"/><rect x="18.5" y="40" width="9" height="70" rx="4.5"/></g>';
+  s += '<line x1="13" y1="20" x2="13" y2="36" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/>';
+  if (it.mystery) s += '<text x="23" y="128" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff" font-family="Georgia">?</text>';
+  return s + '</svg>';
+}
+function lampSVG(it, lit, w, h, L){
+  var s = '<svg viewBox="0 0 46 150" width="'+w+'" height="'+h+'" aria-hidden="true">';
+  var op = L==null ? 1 : 0.2+0.8*Math.min(1, L/85);
+  if (it.id==='lime'){
+    var t = L==null ? 0.75 : L/100;
+    var col = [0.47+0.53*t, 0.16+0.78*t, 0.04+0.78*t*t];
+    s += '<rect x="21" y="106" width="4" height="30" fill="#59607a"/><rect x="11" y="136" width="24" height="6" rx="2" fill="#59607a"/>';
+    s += '<rect x="0" y="88" width="13" height="6" rx="2" fill="url(#metal)"/>';
+    s += '<path d="M13 86 Q22 91 13 96 Z" fill="#6fa8ff" opacity=".9"/>';
+    s += '<g'+(t>0.15?' filter="url(#glowF)"':'')+'><rect x="16" y="74" width="14" height="32" rx="3" fill="'+css(col)+'"/></g>';
+  } else if (it.id==='sun'){
+    s += '<g opacity="'+op.toFixed(2)+'"><g filter="url(#glowF)"><circle cx="23" cy="72" r="14" fill="#ffd75e"/></g>';
+    for (var i=0;i<8;i++){ var a=i*Math.PI/4; s += '<line x1="'+(23+18*Math.cos(a)).toFixed(1)+'" y1="'+(72+18*Math.sin(a)).toFixed(1)+'" x2="'+(23+24*Math.cos(a)).toFixed(1)+'" y2="'+(72+24*Math.sin(a)).toFixed(1)+'" stroke="#ffd75e" stroke-width="2.5" stroke-linecap="round"/>'; }
+    s += '</g>';
+  } else if (it.flame){
+    var fsc = L==null ? 1 : 0.4+0.6*Math.min(1, L/60), fo = L==null ? 1 : 0.25+0.75*Math.min(1, L/60);
+    var fc = it.flameCol, core=[0.6+0.4*fc[0], 0.6+0.4*fc[1], 0.6+0.4*fc[2]];
+    s += '<rect x="17" y="84" width="12" height="54" rx="2" fill="#d9cfe8"/><rect x="12" y="136" width="22" height="6" rx="2" fill="#59607a"/>';
+    s += '<text x="23" y="116" text-anchor="middle" font-size="13" font-weight="bold" fill="#4a3d6b" font-family="Georgia">?</text>';
+    s += '<line x1="23" y1="84" x2="23" y2="77" stroke="#333" stroke-width="1.5"/>';
+    s += '<g opacity="'+fo.toFixed(2)+'" transform="translate(23 80) scale('+fsc.toFixed(2)+') translate(-23 -80)"><g filter="url(#glowF)"><ellipse cx="23" cy="66" rx="7" ry="14" fill="'+css(fc)+'"/><ellipse cx="23" cy="70" rx="3.2" ry="7" fill="'+css(core)+'"/></g></g>';
+  } else {
+    s += '<rect x="17" y="84" width="12" height="54" rx="2" fill="#efe3c4"/><rect x="12" y="136" width="22" height="6" rx="2" fill="#59607a"/>';
+    s += '<line x1="23" y1="84" x2="23" y2="77" stroke="#333" stroke-width="1.5"/>';
+    var sc = L==null ? 1 : 0.4+0.6*Math.min(1, L/30);
+    s += '<g opacity="'+Math.min(1,op*1.4).toFixed(2)+'" transform="translate(23 80) scale('+sc.toFixed(2)+') translate(-23 -80)"><g filter="url(#glowF)"><ellipse cx="23" cy="68" rx="6" ry="12" fill="#ff9d2e"/><ellipse cx="23" cy="71" rx="3" ry="6" fill="#fff3c0"/></g></g>';
+  }
+  return s + '</svg>';
+}
+function itemSVG(it, lit, w, h, L){ return it.kind==='lamp' ? lampSVG(it, lit, w, h, L) : tubeSVG(it, lit, w, h, L); }
+
+// ---------------------------------------------------------------- rack
+var rackEl=document.getElementById('rack'), infoEl=document.getElementById('info');
+function renderRack(){
+  var groups = [['Light sources', LAMPS], ['Gas tubes', ORDER], ['Mystery', ['MB']]];
+  rackEl.innerHTML = '';
+  groups.forEach(function(g, gi){
+    // one shelf that wraps item by item; a slim divider with a vertical label opens each group
+    var dv=document.createElement('div'); dv.className='rack-div'+(gi===0?' first':''); dv.setAttribute('aria-hidden','true');
+    dv.innerHTML='<span>'+g[0]+'</span>';
+    rackEl.appendChild(dv);
+    var row=rackEl;
+    g[1].forEach(function(id){
+      var it=ITEM[id], inuse=state.slots.indexOf(id)>=0;
+      var b=document.createElement('button'); b.type='button'; b.className='rack-item'+(inuse?' inuse':'')+(state.selected===id?' selected':'');
+      b.dataset.id=id;
+      b.setAttribute('aria-label', (it.mystery&&!state.revealed? it.name : it.name)+(inuse?' (on the bench)':''));
+      b.innerHTML = itemSVG(it, it.kind==='lamp', 34, 110)+'<span class="sym">'+it.sym+'</span><span class="nm">'+it.name+'</span>';
+      if (!inuse) bindDrag(b, id);
+      b.addEventListener('mouseenter', function(){ showInfo(id); });
+      b.addEventListener('focus', function(){ showInfo(id); });
+      b.addEventListener('click', function(e){ if (e.detail===0 && !inuse) toggleSelect(id); });
+      row.appendChild(b);
+    });
+  });
+}
+function showInfo(id){
+  var it=ITEM[id];
+  infoEl.innerHTML = '<b>'+it.name+(it.kind==='tube'&&!it.mystery?' ('+it.sym+')':'')+'.</b> '+it.desc;
+}
+document.getElementById('reveal').addEventListener('click', function(){
+  state.revealed=!state.revealed;
+  this.textContent = state.revealed ? 'Hide the answer' : 'Reveal what is in the mystery flame and tube';
+  document.getElementById('revealText').textContent = state.revealed ?
+    'Mystery flame: '+MA_KEYS.map(function(k){return EL[k].name;}).join(', ')+'.  Mystery tube: '+MB_KEYS.map(function(k){return EL[k].name;}).join(' and ')+'.' : '';
+  update();
+});
+
+// ---------------------------------------------------------------- bench
+var benchEl=document.getElementById('bench');
+var SLOT_LABELS=[['Back of the bench','a light source, or a tube'],['In the beam','tube 1'],['In the beam','tube 2']];
+var slotEls=[], scopeSVGEl;
+function buildBench(){
+  benchEl.innerHTML='';
+  for (var i=0;i<3;i++){
+    var d=document.createElement('div'); d.className='slot'; d.dataset.i=i; d.tabIndex=0;
+    d.setAttribute('role','group'); d.setAttribute('aria-label', SLOT_LABELS[i][0]+', '+SLOT_LABELS[i][1]);
+    d.innerHTML='<div class="slot-h">'+SLOT_LABELS[i][0]+'<small>'+SLOT_LABELS[i][1]+'</small></div>'
+      +'<div class="holder"><div class="beam in"></div><div class="beam out"></div><div class="post"></div>'
+      +'<div class="clamp top"></div><div class="clamp bot"></div><div class="hitem"></div></div><div class="slot-ctrl"></div>';
+    (function(idx, el){
+      el.addEventListener('click', function(e){
+        if (e.target.closest('button, input, label, .slotted')) return;
+        if (state.selected) tryPlace(state.selected, idx);
+      });
+      el.addEventListener('keydown', function(e){
+        if (e.target!==el) return;
+        if ((e.key==='Enter'||e.key===' ') && state.selected){ e.preventDefault(); tryPlace(state.selected, idx); }
+      });
+    })(i, d);
+    benchEl.appendChild(d); slotEls.push(d);
+  }
+  var sc=document.createElement('div'); sc.className='scope';
+  sc.innerHTML='<div class="slot-h">Spectroscope<small>slit, lens and prism</small></div>'
+    +'<div class="holder" id="scopeSVG"></div>';
+  benchEl.appendChild(sc);
+  scopeSVGEl=sc.querySelector('#scopeSVG');
+}
+function renderSlots(){
+  for (var i=0;i<3;i++){
+    var el=slotEls[i], id=state.slots[i], hitem=el.querySelector('.hitem'), ctrl=el.querySelector('.slot-ctrl');
+    var canDrop = state.selected && canPlace(state.selected, i) && state.slots[i]!==state.selected;
+    el.classList.toggle('can-drop', !!canDrop);
+    if (!id){
+      hitem.innerHTML='<div class="empty">'+(i===0?'drop a light or a tube here':'drop a tube here')+'</div>';
+      ctrl.innerHTML='';
+      continue;
+    }
+    var it=ITEM[id], lit = it.kind==='lamp' ? true : state.power[i];
+    hitem.innerHTML='<div class="slotted'+(state.selected===id?' selected':'')+'" title="Drag to move, or off the bench to remove">'+itemSVG(it, lit, 46, 150, lvl(id))+'</div>';
+    bindDrag(hitem.firstChild, id);
+    hitem.firstChild.addEventListener('mouseenter', (function(x){ return function(){ showInfo(x); }; })(id));
+    var h='<div class="nmlabel">'+it.name+'</div><div class="row">';
+    if (it.kind==='tube') h+='<button type="button" class="btn pw'+(state.power[i]?' on':'')+'" aria-pressed="'+state.power[i]+'">&#9889; Exciter '+(state.power[i]?'on':'off')+'</button>';
+    h+='<button type="button" class="btn rm" aria-label="Remove '+it.name+'">&#10005;</button></div>';
+    var lname = id==='lime' ? 'Heat' : (it.kind==='lamp' ? 'Brightness' : 'Glow');
+    h+='<label>'+lname+' <input type="range" class="lvl" min="'+(it.kind==='lamp'?0:5)+'" max="100" value="'+lvl(id)+'" aria-label="'+lname+' of '+it.name+'"> <b class="lvlV">'+lvl(id)+'</b></label>';
+    ctrl.innerHTML=h;
+    (function(idx, ctrl){
+      var pw=ctrl.querySelector('.pw');
+      if (pw) pw.addEventListener('click', function(){ state.power[idx]=!state.power[idx]; renderSlots(); update(); });
+      ctrl.querySelector('.rm').addEventListener('click', function(){ state.slots[idx]=null; render(); });
+      ctrl.querySelector('.lvl').addEventListener('input', function(){
+        var id=state.slots[idx], it=ITEM[id];
+        state.lvl[id]=+this.value; ctrl.querySelector('.lvlV').textContent=this.value;
+        slotEls[idx].querySelector('.slotted').innerHTML=itemSVG(it, it.kind==='lamp' || state.power[idx], 46, 150, lvl(id));
+        update();
+      });
+    })(i, ctrl);
+  }
+}
+function canPlace(id, i){ return ITEM[id].kind==='lamp' ? i===0 : true; }
+function tryPlace(id, i){
+  if (!canPlace(id, i)){
+    infoEl.innerHTML='<b>'+ITEM[id].name+'</b> is a light source, so it goes in the holder at the <b>back</b> of the bench. The holders in the beam take gas tubes.';
+    return;
+  }
+  var from=state.slots.indexOf(id), prev=state.slots[i];
+  if (from===i){ state.selected=null; render(); return; }
+  if (from>=0) state.slots[from]=null;
+  if (prev && from>=0 && canPlace(prev, from)) state.slots[from]=prev;
+  state.slots[i]=id; state.power[i]=true; state.selected=null;
+  render();
+}
+function toggleSelect(id){
+  state.selected = state.selected===id ? null : id;
+  showInfo(id);
+  renderRack(); renderSlots();
+}
+
+// ---------------------------------------------------------------- drag and drop
+var ghost=document.getElementById('ghost'), drag=null;
+function bindDrag(el, id){
+  el.addEventListener('pointerdown', function(e){
+    if (e.pointerType==='mouse' && e.button!==0) return;
+    drag={id:id, x0:e.clientX, y0:e.clientY, started:false, el:el, pid:e.pointerId};
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  el.addEventListener('pointermove', function(e){
+    if (!drag || drag.el!==el) return;
+    if (!drag.started){
+      if (Math.hypot(e.clientX-drag.x0, e.clientY-drag.y0)<6) return;
+      drag.started=true;
+      ghost.innerHTML=itemSVG(ITEM[id], ITEM[id].kind==='lamp', 46, 150);
+      ghost.hidden=false;
+      slotEls.forEach(function(s,i){ s.classList.toggle('can-drop', canPlace(id,i)); });
+    }
+    ghost.style.transform='translate('+(e.clientX-23)+'px,'+(e.clientY-75)+'px)';
+    var over=slotAt(e.clientX, e.clientY);
+    slotEls.forEach(function(s,i){ s.classList.toggle('hover-drop', i===over && canPlace(id,i)); });
+    e.preventDefault();
+  });
+  var finish=function(e, cancel){
+    if (!drag || drag.el!==el) return;
+    var d=drag; drag=null;
+    ghost.hidden=true; ghost.innerHTML='';
+    slotEls.forEach(function(s){ s.classList.remove('hover-drop'); });
+    if (cancel){ renderSlots(); return; }
+    if (!d.started){ toggleSelect(d.id); return; }
+    var over=slotAt(e.clientX, e.clientY), from=state.slots.indexOf(d.id);
+    if (over!==null) tryPlace(d.id, over);
+    else if (from>=0){ state.slots[from]=null; state.selected=null; render(); }
+    else renderSlots();
+  };
+  el.addEventListener('pointerup', function(e){ finish(e, false); });
+  el.addEventListener('pointercancel', function(e){ finish(e, true); });
+}
+function slotAt(x,y){
+  var t=document.elementFromPoint(x,y), s=t && t.closest ? t.closest('.slot') : null;
+  return s ? +s.dataset.i : null;
+}
+document.addEventListener('keydown', function(e){ if (e.key==='Escape' && state.selected){ state.selected=null; renderRack(); renderSlots(); } });
+
+// ---------------------------------------------------------------- presets
+var PRESETS = [
+  ['Kirchhoff&rsquo;s 1859 experiment', function(){ set(['lime','Na',null]); state.magC=589.3; }],
+  ['Sunlight', function(){ set(['sun',null,null]); state.letters=true; state.magC=589.3; }],
+  ['Sunlight through a sodium flame', function(){ set(['sun','Na',null]); state.magC=589.3; }],
+  ['Glowing hydrogen', function(){ set(['H',null,null]); state.magC=656.3; }],
+  ['Hydrogen in front of the limelight', function(){ set(['lime','H',null]); state.magC=656.3; }],
+  ['Cool sodium vapour', function(){ set(['lime','Na',null]); state.power[1]=false; state.magC=589.3; }],
+  ['Mystery flame', function(){ set(['MA',null,null]); state.magC=589.3; }],
+  ['Clear the bench', function(){ set([null,null,null]); }]
+];
+function set(arr){ state.slots=arr.slice(); state.power=[true,true,true]; state.lvl={}; state.selected=null; state.letters=false; }
+var presetsEl=document.getElementById('presets');
+PRESETS.forEach(function(p){
+  var b=document.createElement('button'); b.type='button'; b.className='btn'; b.innerHTML=p[0];
+  b.addEventListener('click', function(){ p[1](); document.getElementById('letters').checked=state.letters; render(); });
+  presetsEl.appendChild(b);
+});
+
+// ---------------------------------------------------------------- spectrum drawing
+var mainCv=document.getElementById('main'), magCv=document.getElementById('mag');
+var MAIN = {top:30, strip:56, gap:6, graph:112, axis:22};
+var MAGL = {top:26, strip:44, gap:6, graph:80, axis:22};
+function lay(L){ return L.top+L.strip+L.gap+L.graph+L.axis; }
+
+function drawSpec(cv, lo, hi, L, minSig, isMag){
+  var dpr=window.devicePixelRatio||1, W=cv.clientWidth||cv.parentNode.clientWidth, H=lay(L);
+  cv.style.height=H+'px';
+  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  var ctx=cv.getContext('2d'); ctx.setTransform(1,0,0,1,0,0);
+  var n=cv.width, lams=new Float64Array(n), step=(hi-lo)/n;
+  for (var i=0;i<n;i++) lams[i]=lo+(i+0.5)*step;
+  var sv=Math.max(minSig, 0.75*step);
+  var I=computeStages(lams, sv)[2];
+  cv._d={lams:lams, I:I, lo:lo, hi:hi};
+  ctx.fillStyle='#070b1f'; ctx.fillRect(0,0,cv.width,cv.height);
+  // colour strip
+  var sh=Math.round(L.strip*dpr), sy=Math.round(L.top*dpr), img=ctx.createImageData(n, sh);
+  for (var x=0;x<n;x++){
+    var c=rgbOf(lams[x]), v=Math.pow(Math.max(0,Math.min(1,I[x]/100)),0.55);
+    var R=c[0]*v*255, G=c[1]*v*255, B=c[2]*v*255;
+    for (var y=0;y<sh;y++){ var o=(y*n+x)*4; img.data[o]=R; img.data[o+1]=G; img.data[o+2]=B; img.data[o+3]=255; }
+  }
+  ctx.putImageData(img, 0, sy);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var X=function(l){ return (l-lo)/(hi-lo)*W; };
+  // graph
+  var gy=L.top+L.strip+L.gap, gh=L.graph;
+  ctx.fillStyle='#0d1434'; ctx.fillRect(0,gy,W,gh);
+  ctx.strokeStyle='rgba(143,156,196,.18)'; ctx.lineWidth=1;
+  [0,50,100].forEach(function(v){ var yy=gy+gh*(1-v/110)+0.5; ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(W,yy); ctx.stroke(); });
+  ctx.fillStyle='rgba(143,156,196,.8)'; ctx.font='10px Georgia'; ctx.textAlign='left';
+  ctx.fillText('brightness', 4, gy+11);
+  ctx.beginPath();
+  for (var k=0;k<n;k++){ var px=(k+0.5)/dpr, py=gy+gh*(1-Math.min(I[k],110)/110); if(k===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+  ctx.lineTo(W,gy+gh); ctx.lineTo(0,gy+gh); ctx.closePath();
+  ctx.fillStyle='rgba(232,169,12,.12)'; ctx.fill();
+  ctx.beginPath();
+  for (k=0;k<n;k++){ px=(k+0.5)/dpr; py=gy+gh*(1-Math.min(I[k],110)/110); if(k===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+  ctx.strokeStyle='#e8a90c'; ctx.lineWidth=1.3; ctx.stroke();
+  // axis
+  var ay=gy+gh;
+  ctx.strokeStyle='rgba(205,214,238,.6)'; ctx.fillStyle='#cdd6ee'; ctx.textAlign='center'; ctx.font='11px Georgia';
+  var minor = isMag ? 1 : 10, major = isMag ? 2 : 50;
+  for (var t=Math.ceil(lo/minor)*minor; t<=hi; t+=minor){
+    var tx=X(t), big = Math.abs(t/major-Math.round(t/major))<1e-6;
+    ctx.beginPath(); ctx.moveTo(tx+0.5, ay); ctx.lineTo(tx+0.5, ay+(big?7:4)); ctx.stroke();
+    if (big && tx>12 && tx<W-12) ctx.fillText(isMag ? t.toFixed(0) : t, tx, ay+18);
+  }
+  ctx.textAlign='right'; ctx.fillStyle='rgba(143,156,196,.9)'; ctx.font='10px Georgia';
+  if (!isMag) ctx.fillText('nm', W-3, ay+18);
+  // overlays
+  ctx.textAlign='center';
+  if (state.letters){
+    ctx.font='bold 12px Georgia'; ctx.fillStyle='#ffd97a';
+    LETTERS.forEach(function(p, i){
+      var lx=X(p[1]); if (lx<0||lx>W) return;
+      var ly = (!isMag && (p[0]==='H')) ? 11 : 12;
+      if (!isMag && p[0]==='K') lx -= 5;
+      if (!isMag && p[0]==='H') lx += 5;
+      ctx.fillText(p[0], lx, ly);
+    });
+  }
+  if (state.compare){
+    var ce=ITEM[state.compare], col=css(ce.glow);
+    ctx.fillStyle=col; ctx.strokeStyle=col;
+    ce.lines.forEach(function(Ln){
+      var lx=X(Ln.l); if (lx<0||lx>W) return;
+      var hgt = 4+6*Math.min(1,Ln.rel*2);
+      ctx.beginPath(); ctx.moveTo(lx, L.top-1); ctx.lineTo(lx-3, L.top-1-hgt); ctx.lineTo(lx+3, L.top-1-hgt); ctx.closePath(); ctx.fill();
+      if (isMag){ ctx.font='10px Georgia'; ctx.fillText(Ln.l.toFixed(1), lx, L.top-14); }
+      ctx.globalAlpha=.45; ctx.beginPath(); ctx.moveTo(lx+0.5, L.top); ctx.lineTo(lx+0.5, L.top+L.strip); ctx.stroke(); ctx.globalAlpha=1;
+    });
+    if (!isMag){ ctx.textAlign='left'; ctx.font='11px Georgia'; ctx.fillText('▼ '+ce.name, 4, 12); }
+  }
+}
+function drawAll(){
+  drawSpec(mainCv, LO, HI, MAIN, 0.12, false);
+  var c=Math.max(LO+MAGW/2, Math.min(HI-MAGW/2, state.magC)); state.magC=c;
+  drawSpec(magCv, c-MAGW/2, c+MAGW/2, MAGL, 0.08, true);
+  var W=mainCv.clientWidth, mb=document.getElementById('magbox');
+  mb.style.left=((c-MAGW/2-LO)/(HI-LO)*W)+'px'; mb.style.width=Math.max(4, MAGW/(HI-LO)*W)+'px';
+  mb.style.top=(MAIN.top-3)+'px'; mb.style.height=(MAIN.strip+6)+'px';
+  document.getElementById('magHint').textContent='showing '+(c-MAGW/2).toFixed(1)+' to '+(c+MAGW/2).toFixed(1)+' nm';
+}
+function hookHover(cv, cursorId, readId, isMain){
+  var cur=document.getElementById(cursorId), rd=document.getElementById(readId);
+  function at(e){ var r=cv.getBoundingClientRect(), x=e.clientX-r.left, d=cv._d; if (!d) return null;
+    var f=Math.max(0,Math.min(0.9999,x/r.width)), idx=Math.floor(f*d.lams.length);
+    return {x:x, l:d.lams[idx], I:d.I[idx]}; }
+  cv.addEventListener('mousemove', function(e){
+    var a=at(e); if (!a) return;
+    cur.style.display='block'; cur.style.left=a.x+'px';
+    rd.textContent='λ = '+a.l.toFixed(isMain?1:2)+' nm · brightness '+Math.round(a.I)+(isMain?'  (click to magnify here)':'');
+  });
+  cv.addEventListener('mouseleave', function(){ cur.style.display='none'; });
+  if (isMain) cv.addEventListener('click', function(e){ var a=at(e); if (a){ state.magC=a.l; drawAll(); } });
+}
+hookHover(mainCv,'mainCursor','mainRead',true);
+hookHover(magCv,'magCursor','magRead',false);
+document.getElementById('magL').addEventListener('click', function(){ state.magC-=4; drawAll(); });
+document.getElementById('magR').addEventListener('click', function(){ state.magC+=4; drawAll(); });
+
+// ---------------------------------------------------------------- beam colours and the prism fan
+function lightColour(I, lams){
+  var r=0,g=0,b=0,mx=0;
+  for (var j=0;j<I.length;j++){ var c=rgbOf(lams[j]); r+=c[0]*I[j]; g+=c[1]*I[j]; b+=c[2]*I[j]; if (I[j]>mx) mx=I[j]; }
+  var m=Math.max(r,g,b);
+  if (m<=0 || mx<1) return 'transparent';
+  var a=Math.min(1, mx/70);
+  return css([0.3+0.7*r/m, 0.3+0.7*g/m, 0.3+0.7*b/m], 0.15+0.8*a);
+}
+function updateBeams(){
+  var lams=[]; for (var l=LO;l<=HI;l+=1) lams.push(l);
+  var st=computeStages(lams, 0.9), zero=new Float64Array(lams.length);
+  for (var i=0;i<3;i++){
+    var inI = i===0 ? zero : st[i-1];
+    slotEls[i].querySelector('.beam.in').style.background = i===0 ? 'transparent' : lightColour(inI, lams);
+    slotEls[i].querySelector('.beam.out').style.background = lightColour(st[i], lams);
+  }
+  var fin=st[2];
+  // spectroscope: one SVG whose middle line (y = C) sits on the beam of the holders.
+  // xMinYMid keeps that line on the holder's centre at any width.
+  var fc=lightColour(fin, lams), C=100, VH=200;
+  var s='<svg viewBox="0 0 260 '+VH+'" preserveAspectRatio="xMinYMid meet" aria-hidden="true">';
+  s+='<rect x="0" y="'+(C-5)+'" width="32" height="10" fill="'+fc+'"/>';                       // beam arriving
+  s+='<rect x="28" y="'+(C-30)+'" width="5" height="27" fill="#59607a"/><rect x="28" y="'+(C+3)+'" width="5" height="27" fill="#59607a"/>'; // slit
+  s+='<rect x="33" y="'+(C-2.5)+'" width="104" height="5" fill="'+fc+'"/>';                    // narrow beam to the prism
+  s+='<ellipse cx="72" cy="'+C+'" rx="5" ry="24" fill="rgba(170,200,255,.22)" stroke="rgba(220,235,255,.6)"/>'; // lens
+  // prism: apex (152,TOP), base corners (120,BOT) and (184,BOT)
+  var TOP=C-46, BOT=C+46, Hp=BOT-TOP;
+  var enter=[120+(BOT-C)/Hp*32, C], exitY=C+6, exit=[152+(exitY-TOP)/Hp*32, exitY];
+  s+='<polygon points="120,'+BOT+' 152,'+TOP+' 184,'+BOT+'" fill="rgba(170,200,255,.16)" stroke="rgba(220,235,255,.75)" stroke-width="1.4"/>';
+  s+='<line x1="'+(enter[0]-1).toFixed(1)+'" y1="'+C+'" x2="'+exit[0].toFixed(1)+'" y2="'+exitY+'" stroke="'+fc+'" stroke-width="4"/>'; // inside the glass
+  // every colour bends down toward the prism's base: red a little, violet the most
+  var RED_END=C+42, VIO_END=C+94;
+  for (var k=0;k<lams.length;k+=2){
+    var w=lams[k], v=0; for (var q=k;q<Math.min(k+2,lams.length);q++) v=Math.max(v, fin[q]);
+    if (v<1) continue;
+    var y2 = RED_END + (HI-w)/(HI-LO)*(VIO_END-RED_END);
+    s+='<line x1="'+exit[0].toFixed(1)+'" y1="'+exitY+'" x2="260" y2="'+y2.toFixed(1)+'" stroke="'+css(rgbOf(w))+'" stroke-opacity="'+Math.min(1, v/55).toFixed(2)+'" stroke-width="2"/>';
+  }
+  s+='<line x1="'+exit[0].toFixed(1)+'" y1="'+exitY+'" x2="258" y2="'+exitY+'" stroke="rgba(205,214,238,.35)" stroke-width="1" stroke-dasharray="3 3"/>';
+  s+='<text x="256" y="'+(C-2)+'" text-anchor="end" font-size="10" fill="#8f9cc4" font-family="Georgia">straight on</text>';
+  s+='<text x="258" y="'+(C+17)+'" text-anchor="end" font-size="9" fill="#ffb3a0" font-family="Georgia">red bends least</text>';
+  s+='<text x="256" y="'+(VH-2)+'" text-anchor="end" font-size="9" fill="#c6a8ff" font-family="Georgia">violet bends most</text>';
+  scopeSVGEl.innerHTML = s+'</svg>';
+}
+
+// ---------------------------------------------------------------- explanation
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function strongest(lines){ var b=null; lines.forEach(function(L){ if (!b || L.rel>b.rel) b=L; }); return b; }
+function explain(){
+  var s=state.slots, out=[];
+  if (!s[0] && !s[1] && !s[2]) return '<p>The bench is empty. Drag a light source or a glowing tube into the holder at the back, or try one of the ready-made set-ups.</p>';
+  var lit=false;
+  for (var k=0;k<3;k++){
+    var id=s[k]; if (!id) continue;
+    var it=ITEM[id], nm=displayName(it);
+    if (!it.mystery) nm=nm.toLowerCase();
+    if (it.kind==='lamp'){
+      lit=true;
+      if (lvl(id)<3) { out.push('The '+it.name.toLowerCase()+' is turned right down, so it gives no light. Slide its '+(id==='lime'?'heat':'brightness')+' up.'); continue; }
+      if (id==='lime') out.push('The <b>limelight</b> glows at every colour, so it gives an unbroken rainbow (a <b>continuous spectrum</b>). The hotter it is, the brighter it shines, and the more blue and violet it gives.');
+      else if (id==='sun') out.push('<b>Sunlight</b>: a rainbow crossed by dark lines. Gases in the Sun&rsquo;s outer layers glow less brightly than the hot surface behind them, so they take away their own colours. (Lines A and B are made by oxygen in Earth&rsquo;s own air.)');
+      else if (it.flame) out.push(cap(nm)+' glows only at a few sharp colours: <b>bright lines</b> from whatever was sprinkled into it (an <b>emission spectrum</b>). Each element in it adds its own set of lines.');
+      else out.push('The <b>candle</b> gives a dim rainbow from glowing soot, strongest in the orange and red, with no lines.');
+      continue;
+    }
+    var on=state.power[k];
+    var lines = on ? it.lines : it.resLines, L=strongest(lines);
+    var inc=0;
+    if (k>0 && L){ var st=computeStages([L.l], 0.08); inc=st[k-1][0]; }
+    if (!on){
+      if (k===0){ out.push(cap(nm)+' has its exciter <b>off</b>, so it does not glow.'); continue; }
+      if (it.resLines.length && inc<2){ out.push('Cool '+nm+' does not glow, and none of the light reaching it is at its colours, so it has nothing to absorb.'); continue; }
+      if (!it.resLines.length){ out.push('Cool '+nm+' is in the beam with its exciter off. Cool '+nm.replace(/^the /,'')+' does not absorb any colours you can see (its atoms must be excited first), so the light passes straight through. Switch its exciter on.'); continue; }
+      out.push('Cool '+nm+' does not glow, but it still soaks up its strongest colours from the light behind it: <b>dark lines</b> at '+it.resLines.map(function(x){return x.l.toFixed(1);}).join(', ')+' nm.');
+      continue;
+    }
+    if (inc<2){
+      out.push(lit ? cap(nm)+' is glowing, and none of the light behind it is at its colours, so its own <b>bright lines</b> are simply added to the spectrum. The strongest is at <b>'+L.l.toFixed(1)+' nm</b>.'
+                   : cap(nm)+' is glowing with no light behind it, so you see only its own <b>bright lines</b> (an <b>emission spectrum</b>). The strongest is at <b>'+L.l.toFixed(1)+' nm</b>.');
+      lit=true; continue;
+    }
+    var S=lvl(id);
+    if (inc>S*1.06) out.push(cap(nm)+' glows less brightly (<b>'+S+'</b>) than the light reaching it (<b>'+Math.round(inc)+'</b> at '+L.l.toFixed(1)+' nm). It soaks up more of its own colours than it gives out, so its lines show up <b>dark</b>. This is Kirchhoff&rsquo;s reversal.');
+    else if (inc<S*0.94) out.push(cap(nm)+' glows more brightly (<b>'+S+'</b>) than the light behind it (<b>'+Math.round(inc)+'</b> at '+L.l.toFixed(1)+' nm), so its lines show up <b>bright</b> on top of the rainbow.');
+    else out.push(cap(nm)+' glows about as brightly as the light behind it, so its lines almost <b>vanish</b>: what it soaks up, it gives back.');
+    lit=true;
+  }
+  var tip='';
+  if (s[0]==='lime' && s[1] && ITEM[s[1]].kind==='tube' && state.power[1])
+    tip='<p><i>Try it:</i> slide the limelight&rsquo;s <b>heat</b> below the tube&rsquo;s <b>glow</b> and watch the dark lines turn bright. Kirchhoff and Bunsen saw exactly this in October 1859.</p>';
+  else if (s[0]==='sun' && !s[1])
+    tip='<p><i>Try it:</i> drag sodium into the beam, or pick a gas under &ldquo;Compare with&rdquo; to see which dark lines it matches.</p>';
+  else if (s[0] && ITEM[s[0]].mystery)
+    tip='<p><i>Try it:</i> pick elements under &ldquo;Compare with&rdquo;. An element is in the tube only if <b>all</b> of its strong lines are there.</p>';
+  return out.map(function(x){ return '<p>'+x+'</p>'; }).join('')+tip;
+}
+
+// ---------------------------------------------------------------- controls
+var cmp=document.getElementById('compare');
+cmp.innerHTML='<option value="">(nothing)</option>'+ORDER.map(function(k){ return '<option value="'+k+'">'+EL[k].name+' ('+k+')</option>'; }).join('');
+cmp.addEventListener('change', function(){ state.compare=this.value; drawAll(); });
+document.getElementById('letters').addEventListener('change', function(){ state.letters=this.checked; drawAll(); });
+var rt=null;
+window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(drawAll, 120); });
+
+// ---------------------------------------------------------------- go
+function update(){
+  updateBeams(); drawAll();
+  document.getElementById('explain').innerHTML=explain();
+}
+function render(){ renderRack(); renderSlots(); update(); }
+buildBench();
+PRESETS[0][1]();
+render();
+})();
+</script>
+</body>
+</html>

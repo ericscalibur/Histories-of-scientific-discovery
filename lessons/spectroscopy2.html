@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heidelberg Spectroscope</title>
+<style>
+  :root{
+    --wall:#d7caa9; --wall2:#c9b98f; --wood:#6e4524; --wood2:#8d5c2f; --woodDark:#3f2510; --woodLite:#a9733d;
+    --brass:#b8873b; --brassLite:#e6c27a; --paper:#f3e9d1; --paper2:#e9dcbd; --ink:#3a2615; --ink2:#6b4b2c;
+    --sepia:#7a4a1e; --rule:rgba(70,100,150,.22); --margin:rgba(170,60,50,.45);
+    --serif:'Baskerville','Hoefler Text','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+    --hand:'Snell Roundhand','Apple Chancery','Segoe Script','Lucida Handwriting','Bradley Hand',cursive;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--serif); color:var(--ink); background-color:#17100a;
+    background-image:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,186,110,.17), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 12% 45%, rgba(255,170,90,.07), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 88% 60%, rgba(255,170,90,.06), transparent 70%),
+      radial-gradient(circle at 30% 70%, rgba(255,230,190,.035) 0 2px, transparent 3px),
+      radial-gradient(circle at 70% 40%, rgba(0,0,0,.25) 0 1px, transparent 2px);
+    background-size:auto, auto, auto, 37px 41px, 23px 29px; background-attachment:fixed, scroll, scroll, scroll, scroll; min-height:100vh;}
+  .wrap{max-width:1180px; margin:0 auto; padding:18px 14px 50px;}
+
+  /* ---------- brass plaque ---------- */
+  .plaque{margin:4px auto 16px; max-width:760px; text-align:center; padding:12px 22px 11px; border-radius:6px;
+    background:linear-gradient(160deg,#8a6224,#e2bd72 35%,#b8873b 55%,#f0d495 75%,#8f6526);
+    box-shadow:0 3px 0 #5a3e14, 0 8px 18px rgba(60,40,10,.45), inset 0 1px 0 rgba(255,255,255,.5);
+    border:1px solid #6a4a18; position:relative;}
+  .plaque:before,.plaque:after{content:''; position:absolute; top:50%; width:9px; height:9px; margin-top:-4.5px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff3cf, #8a6224 70%); box-shadow:inset 0 0 0 1px #5a3e14;}
+  .plaque:before{left:9px;} .plaque:after{right:9px;}
+  .plaque h1{font-size:clamp(1.3rem,3.4vw,2rem); letter-spacing:3px; text-transform:uppercase; color:#3b2708;
+    text-shadow:0 1px 0 rgba(255,240,200,.7), 0 -1px 0 rgba(60,30,0,.4);}
+  .plaque .sub{font-style:italic; color:#4b3410; font-size:.98rem; margin-top:2px;}
+
+  .note{background:var(--paper); border:1px solid #cbb98d; padding:11px 16px; margin:0 auto 14px; max-width:900px;
+    box-shadow:0 4px 10px rgba(60,40,10,.25); transform:rotate(-.3deg); line-height:1.5; font-size:.98rem; position:relative;}
+  .note:before{content:''; position:absolute; top:-7px; left:50%; width:14px; height:14px; margin-left:-7px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #ff8b7a, #8a1d10 70%); box-shadow:0 2px 3px rgba(0,0,0,.4);}
+
+  /* ---------- shelves ---------- */
+  .shelves{display:flex; flex-wrap:wrap; justify-content:center; gap:18px 26px; margin:8px 0 6px;}
+  .unit{position:relative; padding:0 6px;}
+  .unit .utag{display:inline-block; font-family:var(--hand); font-size:1.05rem; color:var(--ink); background:var(--paper);
+    padding:1px 10px 2px; border:1px solid #bfae83; box-shadow:0 2px 4px rgba(0,0,0,.2); transform:rotate(-1.2deg); margin:0 0 4px 6px;}
+  .unit .row{display:flex; align-items:flex-end; gap:2px; padding:0 6px; min-height:120px;}
+  .unit .board{height:15px; margin:0 -4px; border-radius:2px;
+    background:repeating-linear-gradient(90deg, rgba(0,0,0,.06) 0 3px, transparent 3px 11px), linear-gradient(#a36d38, #6e4524 60%, #4f3015);
+    box-shadow:0 7px 9px rgba(50,30,10,.4);}
+  .unit .bracket{position:absolute; bottom:-22px; width:10px; height:22px; background:linear-gradient(90deg,#3f2510,#6e4524); clip-path:polygon(0 0,100% 0,100% 100%);}
+  .unit .bracket.l{left:14px;} .unit .bracket.r{right:14px;}
+  .sep{width:1px; align-self:stretch; margin:10px 6px 4px; border-left:1px dashed rgba(240,220,180,.3); position:relative;}
+  .sep span{position:absolute; bottom:4px; left:4px; writing-mode:vertical-rl; transform:rotate(180deg); font-size:.62rem;
+    letter-spacing:1px; text-transform:uppercase; color:#c9b68c; white-space:nowrap;}
+  .item{all:unset; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; width:62px; cursor:grab;
+    touch-action:none; user-select:none; -webkit-user-select:none; border-radius:6px; padding:2px 0 0;}
+  .item:hover{background:rgba(255,230,180,.08);}
+  .item:focus-visible{outline:2px solid #e6c27a; outline-offset:1px;}
+  .item.selected{background:rgba(255,200,110,.18); outline:2px solid #e6c27a;}
+  .item.inuse{opacity:.3; cursor:default;}
+  .item svg{display:block; pointer-events:none;}
+  .item .lbl{font-size:.68rem; line-height:1.1; text-align:center; color:#eadcbb; min-height:2.2em; margin-top:1px; pointer-events:none;}
+  .item .lbl b{font-size:.8rem;}
+  .label-card{max-width:900px; margin:30px auto 6px; background:var(--paper); border:1px solid #bfae83; padding:9px 14px 9px 40px;
+    position:relative; box-shadow:0 3px 8px rgba(60,40,10,.25); min-height:3.2em; line-height:1.5; font-size:.95rem;}
+  .label-card:before{content:''; position:absolute; left:13px; top:50%; width:12px; height:12px; margin-top:-6px; border-radius:50%;
+    border:2px solid #8a7a58; background:#e9dcbd;}
+  .reveal{max-width:900px; margin:6px auto 0; font-size:.88rem; display:flex; gap:10px; align-items:center; flex-wrap:wrap; color:#eadcbb;}
+
+  /* ---------- buttons, sliders ---------- */
+  .btn{font-family:var(--serif); cursor:pointer; font-size:.84rem; color:var(--ink); background:var(--paper);
+    border:1px solid #a8956a; border-radius:3px; padding:4px 9px; box-shadow:0 2px 0 #a8956a;}
+  .btn:hover{background:#fff6dd;}
+  .btn:active{transform:translateY(1px); box-shadow:0 1px 0 #a8956a;}
+  .btn:focus-visible{outline:2px solid #7a4a1e; outline-offset:1px;}
+  .lever{font-family:var(--serif); cursor:pointer; font-size:.8rem; color:#f3e2b8; background:#2b1a0c; border:1px solid #b8873b;
+    border-radius:12px; padding:3px 10px 3px 6px; display:inline-flex; align-items:center; gap:6px;}
+  .lever i{display:inline-block; width:22px; height:12px; border-radius:6px; background:#555; position:relative; transition:background .2s;}
+  .lever i:after{content:''; position:absolute; top:1px; left:1px; width:10px; height:10px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff3cf, #9a7028); transition:left .2s;}
+  .lever.on i{background:#7a5a10;} .lever.on i:after{left:11px;}
+  .lever:focus-visible{outline:2px solid #e6c27a; outline-offset:1px;}
+  input[type=range].knob{-webkit-appearance:none; appearance:none; width:110px; height:16px; background:transparent; cursor:pointer;}
+  input[type=range].knob::-webkit-slider-runnable-track{height:6px; border-radius:3px; background:linear-gradient(#1c1007,#3f2510); box-shadow:inset 0 1px 2px #000, 0 1px 0 rgba(255,220,160,.25);}
+  input[type=range].knob::-moz-range-track{height:6px; border-radius:3px; background:linear-gradient(#1c1007,#3f2510);}
+  input[type=range].knob::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; margin-top:-5px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff3cf, #c99a45 45%, #6a4a18); box-shadow:0 1px 2px rgba(0,0,0,.6);}
+  input[type=range].knob::-moz-range-thumb{width:16px; height:16px; border:none; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff3cf, #c99a45 45%, #6a4a18);}
+  input[type=range].knob:focus-visible{outline:2px solid #e6c27a; outline-offset:2px;}
+
+  /* ---------- the bench ---------- */
+  .experiments{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin:22px 0 10px; align-items:center;}
+  .experiments .t{font-family:var(--hand); font-size:1.1rem; margin-right:4px; color:#eadcbb;}
+  .slip{font-family:var(--serif); cursor:pointer; font-size:.82rem; color:var(--ink); background:var(--paper); border:1px solid #c7b48a;
+    padding:4px 10px; box-shadow:0 2px 4px rgba(60,40,10,.25); transform:rotate(var(--r,0deg));}
+  .slip:hover{background:#fff6dd;}
+  .slip:focus-visible{outline:2px solid #7a4a1e;}
+  .bench{display:grid; grid-template-columns:minmax(0,.62fr) repeat(3,minmax(0,1fr)) minmax(0,1.55fr); margin-top:4px;
+    border-radius:4px; overflow:hidden; box-shadow:0 14px 26px rgba(0,0,0,.6);
+    background:radial-gradient(ellipse 60% 90% at 50% 100%, rgba(255,190,110,.10), transparent 70%);}
+  .col{position:relative; display:flex; flex-direction:column; min-width:0; outline:none;}
+  .col .ptag{align-self:center; font-family:var(--hand); font-size:.98rem; background:var(--paper); border:1px solid #bfae83;
+    padding:0 9px 1px; margin:6px 0 2px; box-shadow:0 2px 3px rgba(0,0,0,.18); white-space:nowrap; max-width:96%; overflow:hidden; text-overflow:ellipsis;}
+  .col .ptag.ghosted{visibility:hidden;}
+  .holder{position:relative; height:190px; margin:0 -1px;}
+  .holder .stage{position:absolute; left:50%; top:0; width:80px; height:190px; margin-left:-40px; z-index:2;}
+  .holder .stage.on{cursor:grab; touch-action:none;}
+  .holder .stage svg{display:block; pointer-events:none;}
+  .holder .empty{position:absolute; left:50%; top:20px; width:76px; height:160px; margin-left:-38px; z-index:2; border:2px dashed rgba(240,220,180,.3);
+    border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:.72rem; color:#c9b68c; padding:5px; font-style:italic;}
+  .col.can-drop .holder .empty{border-color:#e6c27a; background:rgba(255,200,110,.1); color:#f3e2b8;}
+  .col.hover-drop .holder{background:rgba(255,200,110,.13);}
+  .col:focus-visible .holder{box-shadow:inset 0 0 0 2px #e6c27a;}
+  .beam{position:absolute; top:90px; height:10px; z-index:1; pointer-events:none; transition:background .25s;}
+  .beam.in{left:0; width:50%;} .beam.out{right:-1px; width:50%;}
+  .table{flex:1; min-height:92px; padding:8px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:5px; color:#f3e2b8;
+    background:repeating-linear-gradient(178deg, rgba(0,0,0,.07) 0 2px, transparent 2px 9px), linear-gradient(#a06a36, #7a4b24 30%, #5f391b);
+    border-top:3px solid #b98049; box-shadow:inset 0 2px 0 rgba(255,220,170,.25);}
+  .table .row{display:flex; gap:5px; flex-wrap:wrap; justify-content:center; align-items:center;}
+  .table label{font-size:.76rem; display:flex; align-items:center; gap:5px; flex-wrap:wrap; justify-content:center;}
+  .table .tbtn{font-family:var(--serif); cursor:pointer; font-size:.74rem; color:#f3e2b8; background:rgba(0,0,0,.28); border:1px solid rgba(230,194,122,.6);
+    border-radius:3px; padding:2px 7px;}
+  .table .tbtn:hover{background:rgba(0,0,0,.45);}
+  .table .tbtn:focus-visible{outline:2px solid #e6c27a;}
+  .table .caption{font-size:.72rem; font-style:italic; text-align:center; color:#f0dcb0; line-height:1.3; max-width:180px;}
+  .scope .holder svg{position:absolute; inset:0; width:100%; height:100%;}
+  .scope .holder{cursor:pointer;}
+
+  /* ---------- eyepiece and notebook ---------- */
+  .viewer{display:grid; grid-template-columns:minmax(300px, 420px) minmax(0,1fr); gap:20px; margin-top:28px; align-items:start;}
+  .eyepanel{background:radial-gradient(circle at 50% 35%, #3a2414, #1c1008 75%); border-radius:8px; padding:14px 14px 12px;
+    box-shadow:0 10px 22px rgba(30,15,5,.5), inset 0 0 0 1px #6a4a18; color:#f0dcb0; text-align:center;}
+  .eyepanel h2, .notebook h2{font-family:var(--hand); font-weight:normal; font-size:1.45rem; margin-bottom:4px;}
+  .eyepanel h2{color:#f3e2b8;}
+  #eye{display:block; margin:4px auto 6px; width:100%; max-width:380px; aspect-ratio:1/1; cursor:crosshair;}
+  .eyectl{display:flex; flex-wrap:wrap; gap:6px 10px; justify-content:center; align-items:center; font-size:.82rem;}
+  .eyectl .tbtn{font-family:var(--serif); cursor:pointer; font-size:.8rem; color:#f3e2b8; background:rgba(0,0,0,.3); border:1px solid rgba(230,194,122,.6); border-radius:3px; padding:3px 9px;}
+  .eyectl .tbtn.on{background:#6a4a18; color:#fff3cf;}
+  .eyectl .tbtn:focus-visible{outline:2px solid #e6c27a;}
+  .eyeread{font-size:.9rem; margin-top:6px; min-height:1.3em; font-variant-numeric:tabular-nums;}
+  .notebook{background-color:var(--paper);
+    background-image:linear-gradient(90deg, transparent 0 46px, var(--margin) 46px 47px, transparent 47px),
+      repeating-linear-gradient(transparent 0 27px, var(--rule) 27px 28px);
+    border:1px solid #cdbb8f; padding:14px 18px 18px 58px; box-shadow:0 10px 22px rgba(60,40,10,.35); position:relative; min-width:0;}
+  .notebook .date{position:absolute; right:16px; top:14px; font-family:var(--hand); font-size:1rem; color:var(--ink2);}
+  .mapwrap{position:relative; margin:6px 0 2px;}
+  .mapwrap canvas{display:block; width:100%; cursor:crosshair;}
+  .mapcur{position:absolute; top:0; bottom:0; width:1px; background:rgba(58,38,21,.7); pointer-events:none; display:none;}
+  .eyebox{position:absolute; border:1.5px solid #7a4a1e; border-radius:2px; pointer-events:none;}
+  .mapread{font-size:.85rem; color:var(--ink2); min-height:1.3em; font-variant-numeric:tabular-nums;}
+  .notes{font-style:italic; font-size:1rem; line-height:28px; margin-top:8px; color:#2e1f10;}
+  .notes p{margin:0 0 0;}
+  .notes p + p{margin-top:0;}
+  .notes .tip{color:#6b3a10;}
+  .cards{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; align-items:center;}
+  .cards .t{font-family:var(--hand); font-size:1.05rem; margin-right:4px;}
+  .card{font-family:var(--serif); cursor:pointer; background:#fffaf0; border:1px solid #c9b78c; padding:3px 7px 2px; font-size:.8rem;
+    box-shadow:0 2px 3px rgba(0,0,0,.15); line-height:1.1; min-width:40px; text-align:center; color:var(--ink);}
+  .card b{display:block; font-size:.95rem;}
+  .card.on{background:#ffe7b0; border-color:#8a5a1a; box-shadow:0 0 0 2px #c99a45;}
+  .card:focus-visible{outline:2px solid #7a4a1e;}
+  .rule{margin-top:14px; border-top:1px solid #c9b78c; padding-top:8px; font-size:.93rem; line-height:1.5;}
+  footer{text-align:center; font-size:.8rem; color:#b9a67e; margin-top:24px; line-height:1.6;}
+  .ghost{position:fixed; left:0; top:0; z-index:60; pointer-events:none; filter:drop-shadow(0 10px 12px rgba(0,0,0,.45));}
+
+  @media (max-width:980px){
+    .viewer{grid-template-columns:1fr;}
+    .eyepanel{max-width:440px; margin:0 auto; width:100%;}
+  }
+  @media (max-width:720px){
+    .bench{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .bench .coilcol{display:none;}
+    .bench .scope{grid-column:1 / -1;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .flicker{animation:flick 1.8s ease-in-out infinite; transform-origin:40px 118px;}
+    @keyframes flick{0%,100%{transform:scale(1,1)} 30%{transform:scale(1.02,.97)} 60%{transform:scale(.98,1.03)}}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="brass" x1="0" x2="1"><stop offset="0" stop-color="#6e4c18"/><stop offset=".4" stop-color="#e6c27a"/><stop offset=".6" stop-color="#c99a45"/><stop offset="1" stop-color="#6a4a18"/></linearGradient>
+    <linearGradient id="brassV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6c27a"/><stop offset=".5" stop-color="#b8873b"/><stop offset="1" stop-color="#6a4a18"/></linearGradient>
+    <linearGradient id="steel" x1="0" x2="1"><stop offset="0" stop-color="#5e6370"/><stop offset=".45" stop-color="#d5d9e2"/><stop offset="1" stop-color="#4e535e"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a36d38"/><stop offset="1" stop-color="#5f391b"/></linearGradient>
+    <linearGradient id="cigar" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a5f2c"/><stop offset=".5" stop-color="#7a4622"/><stop offset="1" stop-color="#5a3216"/></linearGradient>
+    <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="rgba(255,255,255,.35)"/><stop offset=".3" stop-color="rgba(255,255,255,.08)"/><stop offset="1" stop-color="rgba(255,255,255,.2)"/></linearGradient>
+    <radialGradient id="mirror" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c9ced8"/><stop offset="1" stop-color="#7d8390"/></radialGradient>
+    <filter id="glowF" x="-150%" y="-60%" width="400%" height="220%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softF" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="plaque">
+    <h1>Heidelberg &middot; 1859</h1>
+    <div class="sub">The spectroscope bench of Professors Bunsen and Kirchhoff</div>
+  </div>
+
+  <div class="note">
+    <b>You are in the laboratory.</b> Take things down from the shelves and set them up on the bench: a lamp at the back, then burners or glowing tubes in the path of its light. To colour a burner&rsquo;s flame, drag a <b>salt jar</b> onto it (a platinum wire carries a pinch into the flame). The light runs into the spectroscope on the right, a prism in a cigar box between two old telescope tubes, and you look through the eyepiece below. (You can also click a thing, then click a stand.)
+  </div>
+
+  <div class="shelves" id="shelves"></div>
+  <div class="label-card" id="info" aria-live="polite">Point at anything on the shelves to read its label.</div>
+  <div class="reveal"><button class="btn" type="button" id="reveal">Peek at the hidden labels</button><span id="revealText"></span></div>
+
+  <div class="experiments" id="experiments"><span class="t">Experiments from the notebook:</span></div>
+  <div class="bench" id="bench"></div>
+
+  <div class="viewer">
+    <div class="eyepanel">
+      <h2>Through the eyepiece</h2>
+      <canvas id="eye" width="380" height="380" aria-label="The view through the spectroscope's telescope" role="img"></canvas>
+      <div class="eyectl">
+        <button class="tbtn" type="button" id="eyeL" aria-label="Turn the telescope toward violet">&#9664;</button>
+        <label>Turn the telescope <input type="range" class="knob" id="eyeTurn" min="380" max="790" step="0.1" value="589.3" aria-label="Telescope position"></label>
+        <button class="tbtn" type="button" id="eyeR" aria-label="Turn the telescope toward red">&#9654;</button>
+      </div>
+      <div class="eyectl" style="margin-top:6px;">
+        <button class="tbtn" type="button" id="powLow">Low power</button>
+        <button class="tbtn on" type="button" id="powHigh">High power</button>
+      </div>
+      <div class="eyeread" id="eyeRead"></div>
+    </div>
+
+    <div class="notebook">
+      <div class="date">Heidelberg, October 1859</div>
+      <h2>Observations</h2>
+      <div class="mapwrap" id="mapWrap">
+        <canvas id="map" aria-label="Map of the whole spectrum with a brightness graph" role="img"></canvas>
+        <div class="mapcur" id="mapCur"></div>
+        <div class="eyebox" id="eyeBox"></div>
+      </div>
+      <div class="mapread" id="mapRead">Move over the map to read wavelengths. Click it to point the telescope there.</div>
+      <div class="notes" id="notes"></div>
+      <div class="cards" id="cards"><span class="t">Reference cards:</span></div>
+      <div class="rule"><b>The rule we found.</b> A glowing gas or flame gives <b>bright lines</b> at its own colours. Put a <b>brighter</b> light behind it and the same lines turn <b>dark</b>, because it soaks up more of those colours than it gives out. Put a <b>dimmer</b> light behind it and they stay bright. Each element always shows the same lines.</div>
+    </div>
+  </div>
+
+  <footer>Wavelengths are given in modern nanometres (nm), a unit nobody used in 1859; Kirchhoff read his lines off an arbitrary scale.<br>Line positions are measured values. Brightnesses are simplified, and real lines are far thinner than drawn.<br>Helium, neon and argon sit on the shelf for comparison: they were not discovered until 1868 to 1898.</footer>
+</div>
+
+<div class="ghost" id="ghost" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var LO=380, HI=790, BEAM=95;
+
+// ================================================================ data
+// [nm, relative brightness]; res = lines absorbed from the ground state
+var EL = {
+  H:{name:'Hydrogen', lines:[[656.28,1],[486.13,.45],[434.05,.22],[410.17,.12],[397.01,.06]], res:[]},
+  He:{name:'Helium', lines:[[706.52,.35],[667.82,.45],[587.56,1],[504.77,.08],[501.57,.4],[492.19,.2],[471.31,.18],[447.15,.5],[438.79,.1],[402.62,.15],[388.87,.4]], res:[]},
+  Ne:{name:'Neon', lines:[[534.11,.1],[540.06,.2],[585.25,.5],[588.19,.3],[594.48,.4],[597.55,.2],[603.0,.3],[607.43,.4],[609.62,.4],[614.31,.6],[616.36,.3],[621.73,.3],[626.65,.4],[630.48,.3],[633.44,.5],[638.3,.5],[640.22,1],[650.65,.6],[659.9,.3],[667.83,.3],[692.95,.4],[703.24,.5]], res:[]},
+  Ar:{name:'Argon', lines:[[404.44,.1],[415.86,.3],[419.83,.2],[420.07,.3],[425.94,.25],[427.22,.2],[430.01,.2],[451.07,.15],[549.59,.08],[560.67,.1],[603.21,.1],[696.54,.6],[706.72,.5],[714.7,.2],[738.4,.4],[750.39,.8],[763.51,.9],[772.38,.5]], res:[]},
+  Hg:{name:'Mercury', lines:[[404.66,.5],[407.78,.15],[435.83,1],[491.6,.08],[546.07,.9],[576.96,.45],[579.07,.45],[623.44,.05]], res:[]},
+  Na:{name:'Sodium', lines:[[588.995,1],[589.592,.55],[568.82,.04],[568.27,.03],[615.42,.03],[616.08,.03],[498.28,.02],[497.85,.02]], res:[588.995,589.592]},
+  Li:{name:'Lithium', lines:[[670.78,1],[610.36,.25],[460.29,.06],[413.26,.03]], res:[670.78]},
+  K:{name:'Potassium', lines:[[766.49,1],[769.9,.6],[404.41,.15],[404.72,.08],[580.18,.02],[583.19,.02],[691.11,.03],[693.88,.03]], res:[766.49,769.9,404.41,404.72]},
+  Ca:{name:'Calcium', lines:[[422.67,1],[442.54,.12],[443.5,.15],[445.48,.25],[527.03,.1],[558.88,.2],[585.75,.12],[612.22,.25],[616.22,.3],[643.91,.3],[646.26,.25],[649.38,.2]], res:[422.67],
+     // calcium that has lost one electron (Ca II): too hot for a Bunsen flame, so these appear on the reference card only
+     ion:{label:'Ca\u207A', lines:[[393.37,1,'K'],[396.85,1,'H']]}},
+  Sr:{name:'Strontium', lines:[[460.73,1],[483.21,.1],[496.23,.1],[640.85,.3],[650.4,.25],[687.83,.35],[707.01,.4]], res:[460.73]},
+  Cs:{name:'Caesium', lines:[[455.53,1],[459.32,.55],[672.33,.1],[697.33,.1]], res:[455.53,459.32]},
+  Rb:{name:'Rubidium', lines:[[420.18,.3],[421.56,.2],[775.77,.1],[776.16,.1],[780.03,1]], res:[420.18,421.56,780.03]}
+};
+var SUN_LINES = [[759.37,.75,.9],[686.72,.65,.5],[656.28,.6,.35],[589.59,.6,.2],[589.0,.7,.2],[527.04,.4,.15],
+  [518.36,.5,.2],[517.27,.5,.2],[516.73,.35,.15],[486.13,.55,.3],[434.05,.45,.25],[430.79,.45,.3],[410.17,.4,.25],
+  [396.85,.85,.7],[393.37,.85,.7],[422.67,.5,.2],[438.35,.4,.15],[440.48,.35,.15],[404.58,.4,.15],[406.36,.3,.12],
+  [407.17,.3,.12],[425.08,.25,.12],[427.18,.35,.12],[432.58,.35,.12],[495.76,.25,.1],[532.8,.25,.1],[537.15,.2,.1],[526.95,.3,.1]];
+var LETTERS = [['A',759.4],['B',686.7],['C',656.3],['D',589.3],['E',527.0],['b',517.3],['F',486.1],['G',430.8],['h',410.2],['H',396.8],['K',393.4]];
+var CARD_ORDER = ['Na','Li','K','Ca','Sr','Cs','Rb','H','Hg','He','Ne','Ar'];
+
+// ================================================================ colour and light
+function rgbOf(w){
+  var r=0,g=0,b=0;
+  if (w<440){ r=-(w-440)/60; b=1; } else if (w<490){ g=(w-440)/50; b=1; } else if (w<510){ g=1; b=-(w-510)/20; }
+  else if (w<580){ r=(w-510)/70; g=1; } else if (w<645){ r=1; g=-(w-645)/65; } else { r=1; }
+  var f = w<420 ? 0.3+0.7*(w-380)/40 : (w<=700 ? 1 : 0.3+0.7*(790-w)/90);
+  f=Math.max(0.12, Math.min(1,f));
+  return [Math.max(0,r)*f, Math.max(0,g)*f, Math.max(0,b)*f];
+}
+function css(c,a){ return 'rgba('+Math.round(c[0]*255)+','+Math.round(c[1]*255)+','+Math.round(c[2]*255)+','+(a==null?1:a)+')'; }
+function planck(nm,T){ var l=nm*1e-9; return 1/(Math.pow(l,5)*(Math.exp(1.4388e-2/(l*T))-1)); }
+function mixColour(lines, eye){
+  var r=0,g=0,b=0;
+  lines.forEach(function(L){ var c=rgbOf(L.l), v=L.rel*(eye ? Math.exp(-0.5*Math.pow((L.l-557)/45,2)) : 1); r+=c[0]*v; g+=c[1]*v; b+=c[2]*v; });
+  var m=Math.max(r,g,b)||1; return [r/m, g/m, b/m];
+}
+function lighten(c,k){ return [k+(1-k)*c[0], k+(1-k)*c[1], k+(1-k)*c[2]]; }
+
+// ================================================================ things in the lab
+var ITEM={};
+function mkLines(weights){
+  var out=[], res=[];
+  Object.keys(weights).forEach(function(k){
+    EL[k].lines.forEach(function(l){ var rel=l[1]*weights[k]; out.push({l:l[0], rel:rel, a:0.85*Math.pow(Math.min(1,rel),0.6)}); });
+    res = res.concat(EL[k].res);
+  });
+  return {lines:out, res:out.filter(function(L){ return res.some(function(r){ return Math.abs(r-L.l)<0.05; }); })};
+}
+function pick(list, n){ var p=list.slice(), out=[]; while(out.length<n) out.push(p.splice(Math.floor(Math.random()*p.length),1)[0]); return out; }
+
+// lamps
+ITEM.lime={id:'lime', kind:'light', name:'Limelight', ctl:'Oxygen tap', def:100,
+  desc:'<b>Drummond&rsquo;s limelight.</b> A stick of quicklime heated by a jet of burning hydrogen and oxygen until it glows white: the brightest lamp of the day, used in theatres. A glowing solid gives <b>every</b> colour, so its spectrum is an unbroken rainbow. Open the oxygen tap to make it hotter and brighter.'};
+ITEM.sun={id:'sun', kind:'light', name:'Sunlight', ctl:'Shutter', def:85,
+  desc:'<b>Sunlight</b>, steered into the room by a mirror on a stand (a heliostat) through a slit in the window shutter. A rainbow crossed by <b>Fraunhofer&rsquo;s dark lines</b>, which nobody could explain until this bench.'};
+ITEM.candle={id:'candle', kind:'light', name:'Candle', ctl:'Wick', def:30,
+  desc:'<b>A candle.</b> Its yellow light comes from tiny specks of glowing soot, so it gives a dim rainbow, heavy on orange and red, with no lines at all.'};
+// burners
+['b1','b2'].forEach(function(id, i){
+  ITEM[id]={id:id, kind:'burner', name:'Bunsen burner No. '+(i+1), ctl:'Gas tap', def:40,
+    desc:'<b>Bunsen&rsquo;s burner</b> (1855). It mixes air into the coal gas before it burns, so the flame is hot and almost colourless: perfect for seeing the colour a salt gives. Drag a salt jar onto it once it is on the bench.'};
+});
+// salts
+var SALTS = [
+  ['Na','NaCl','Common salt', {Na:1}, '#f4f1ea', 'Common salt (sodium chloride). Its flame is strong yellow: two lines at <b>589.0</b> and <b>589.6</b> nm, right where Fraunhofer&rsquo;s dark <b>D</b> lines sit in sunlight.'],
+  ['Li','LiCl','Lithium chloride', {Li:1}, '#f1ece6', 'Lithium chloride. A crimson flame: a strong line at <b>670.8</b> nm and a weaker orange one at 610.4.'],
+  ['K','KCl','Potassium chloride', {K:1}, '#eeeae4', 'Potassium chloride. A pale lilac flame. Its strongest pair, 766.5 and 769.9 nm, is at the very edge of sight; there is a faint violet pair near 404.5 nm too.'],
+  ['Ca','CaCl&#8322;','Calcium chloride', {Ca:1}, '#ece6dc', 'Calcium chloride. An orange-red flame, with a strong violet line at <b>422.7</b> nm. In the far hotter Sun, calcium atoms lose an electron and make Fraunhofer&rsquo;s darkest violet lines, <b>H</b> and <b>K</b>; a Bunsen flame is too cool for that.'],
+  ['Sr','SrCl&#8322;','Strontium chloride', {Sr:1}, '#efe9e3', 'Strontium chloride, the red of fireworks: a blue line at <b>460.7</b> nm and several red ones.'],
+  ['DUR','D&uuml;rkh.','D&uuml;rkheim residue', {Na:.8, Li:.5, K:.35, Ca:.35, Cs:.7}, '#bfb3a0', '<b>Residue from D&uuml;rkheim spring water (1860).</b> Bunsen boiled down tens of thousands of litres to get this. Mostly common salt, with lithium, potassium and calcium. But look in the blue: two lines that belonged to nothing known. They named the new element <b>caesium</b>, &ldquo;sky blue&rdquo;.'],
+  ['LEP','Lepid.','Lepidolite', {Li:1, K:.5, Rb:.7, Na:.15}, '#c9a9cf', '<b>Lepidolite</b>, a lilac mineral ground to powder (1861). Lithium and potassium are in it, plus deep red lines near <b>780</b> nm and a violet pair near 421 that matched nothing known: <b>rubidium</b>, &ldquo;deep red&rdquo;.'],
+  ['UNK','?','Unlabelled jar', null, '#dcd6cc', 'An <b>unlabelled jar</b>: two salts, chosen at random each time the page loads. Put it in a flame and identify it with the reference cards.']
+];
+var UNK_KEYS = pick(['Na','Li','K','Ca','Sr','Cs','Rb'], 2);
+SALTS.forEach(function(s){
+  var w = s[3] || (function(){ var o={}; UNK_KEYS.forEach(function(k){ o[k]=.85; }); return o; })();
+  var L = mkLines(w);
+  ITEM['s_'+s[0]] = {id:'s_'+s[0], kind:'salt', name:s[2], tag:s[1], powder:s[4], desc:s[5], lines:L.lines, res:L.res, mystery:s[0]==='UNK',
+    flame: lighten(mixColour(L.lines, true), 0.05)};
+});
+// Geissler tubes
+var MT_KEYS = pick(['H','Hg','He','Ne','Ar'], 2);
+var TUBES = [
+  ['H','H','Hydrogen', {H:1}, false, 'A <b>Geissler tube of hydrogen</b>, like those Julius Pl&uuml;cker studied in Bonn in 1858 and 1859. Wired to the induction coil it glows pink: red <b>656.3</b>, blue-green <b>486.1</b> and two violet lines. Cool hydrogen absorbs no visible light at all; it must be excited first.'],
+  ['Hg','Hg','Mercury', {Hg:1}, false, 'A <b>mercury-vapour tube</b>. Violet 404.7, blue <b>435.8</b>, green <b>546.1</b> and a yellow pair at 577.0 and 579.1 nm.'],
+  ['He','He','Helium', {He:1}, true, '<b>Helium</b>, from the future. Its yellow line at <b>587.6</b> nm was seen in the Sun in 1868; the gas was found on Earth only in 1895.'],
+  ['Ne','Ne','Neon', {Ne:1}, true, '<b>Neon</b>, from the future (1898). Dozens of red and orange lines: the glow of a neon sign.'],
+  ['Ar','Ar','Argon', {Ar:1}, true, '<b>Argon</b>, from the future (1894). Most of its strongest lines are deep red, past 690 nm.'],
+  ['MT','?','Mystery tube', null, true, 'A <b>mystery tube</b>: two gases, chosen at random each time the page loads. Match every line before you peek.']
+];
+TUBES.forEach(function(t){
+  var w = t[3] || (function(){ var o={}; MT_KEYS.forEach(function(k){ o[k]=.85; }); return o; })();
+  var L = mkLines(w);
+  ITEM['t_'+t[0]] = {id:'t_'+t[0], kind:'tube', name:t[2], tag:t[1], later:t[4], desc:t[5], lines:L.lines, res:L.res, mystery:t[0]==='MT',
+    ctl:'Coil strength', def:60, glow: lighten(mixColour(L.lines,false), 0.15)};
+});
+
+// ================================================================ state
+var state={pos:[null,null,null], coil:{}, lvl:{}, salt:{b1:null,b2:null}, selected:null,
+  eyeC:589.3, power:'high', letters:false, card:'', revealed:false};
+function lvl(id){ return state.lvl[id]!=null ? state.lvl[id] : ITEM[id].def; }
+function coilOn(id){ return state.coil[id]!==false; }
+function nameOf(id){ var it=ITEM[id]; if (it.kind==='burner'){ var s=state.salt[id]; return s ? 'the '+saltName(s)+' flame' : 'the bare burner flame'; } return it.mystery && !state.revealed ? 'the '+it.name.toLowerCase() : it.name.toLowerCase(); }
+function saltName(sid){ var s=ITEM[sid]; return s.mystery && !state.revealed ? 'unlabelled-jar' : s.name.toLowerCase(); }
+
+// ================================================================ physics (Kirchhoff)
+function lampSpectrum(it, lams, sv){
+  var n=lams.length, I=new Float64Array(n), b=lvl(it.id), T = it.id==='lime' ? 2000+12*b : (it.id==='sun' ? 5800 : 1900);
+  var ref=0; for (var q=LO;q<=HI;q+=5) ref=Math.max(ref, planck(q,T));
+  for (var j=0;j<n;j++){
+    var v=b*planck(lams[j],T)/ref;
+    if (it.id==='sun') for (var k=0;k<SUN_LINES.length;k++){ var L=SUN_LINES[k], s=Math.max(L[2],sv), d=lams[j]-L[0]; if (d>5*s||d<-5*s) continue; v*=1-L[1]*Math.exp(-0.5*d*d/(s*s)); }
+    I[j]=v;
+  }
+  return I;
+}
+function applyLines(lines, S, I, lams, sv){
+  var n=lams.length, out=new Float64Array(n);
+  for (var j=0;j<n;j++){
+    var T=1;
+    for (var k=0;k<lines.length;k++){ var d=lams[j]-lines[k].l; if (d>5*sv||d<-5*sv) continue; T*=1-lines[k].a*Math.exp(-0.5*d*d/(sv*sv)); }
+    var A=1-T; out[j]=I[j]*(1-A)+A*S;
+  }
+  return out;
+}
+function stageEffect(id){            // {lines, S} describing what this thing does to light passing through it
+  var it=ITEM[id];
+  if (it.kind==='burner'){ var s=state.salt[id], g=lvl(id); return (s && g>0) ? {lines:ITEM[s].lines, S:g} : null; }
+  if (it.kind==='tube') return coilOn(id) ? {lines:it.lines, S:lvl(id)} : {lines:it.res, S:0};
+  return null;
+}
+function computeStages(lams, sv){
+  var I=new Float64Array(lams.length), st=[];
+  for (var k=0;k<3;k++){
+    var id=state.pos[k];
+    if (id){
+      var it=ITEM[id];
+      if (it.kind==='light') I=lampSpectrum(it, lams, sv);
+      else { var e=stageEffect(id); if (e && e.lines.length) I=applyLines(e.lines, e.S, I, lams, sv); }
+    }
+    st.push(I);
+  }
+  return st;
+}
+
+// ================================================================ drawings (viewBox 0 0 80 190, beam at y=95)
+function svgOpen(w,h,vb){ return '<svg viewBox="'+(vb||'0 0 80 190')+'" width="'+w+'" height="'+h+'" aria-hidden="true">'; }
+function limeSVG(b, w, h){
+  var t=b/100, col=[0.5+0.5*t, 0.2+0.75*t, 0.08+0.8*t*t];
+  var s=svgOpen(w,h);
+  s+='<rect x="18" y="176" width="44" height="9" rx="2" fill="url(#wood)"/>';
+  s+='<rect x="38" y="108" width="4" height="70" fill="url(#steel)"/>';
+  s+='<path d="M4 186 C6 150 2 120 6 98" stroke="#6b2a1a" stroke-width="3.5" fill="none"/><path d="M10 186 C14 160 8 126 10 100" stroke="#3d2a1f" stroke-width="3.5" fill="none"/>';
+  s+='<rect x="2" y="91" width="22" height="8" rx="2" fill="url(#brass)"/>';
+  if (b>2) s+='<path d="M24 92 Q33 95 24 98 Z" fill="#7fb0ff" opacity="'+(0.4+0.5*t).toFixed(2)+'"/>';
+  s+='<g'+(t>0.12?' filter="url(#glowF)"':'')+'><rect x="30" y="80" width="18" height="30" rx="4" fill="'+css(col)+'"/></g>';
+  s+='<rect x="32" y="82" width="3" height="24" rx="1.5" fill="#fff" opacity="'+(0.2+0.5*t).toFixed(2)+'"/>';
+  return s+'</svg>';
+}
+function sunSVG(b, w, h){
+  var t=Math.min(1,b/85), s=svgOpen(w,h);
+  s+='<g opacity="'+(0.15+0.85*t).toFixed(2)+'">';
+  for (var i=0;i<4;i++) s+='<line x1="'+(-4+i*6)+'" y1="0" x2="'+(30+i*2)+'" y2="'+(84+i*4)+'" stroke="#ffe08a" stroke-width="3" opacity=".55"/>';
+  s+='</g>';
+  s+='<rect x="38" y="118" width="4" height="60" fill="url(#brass)"/><ellipse cx="40" cy="181" rx="16" ry="4" fill="url(#brass)"/>';
+  s+='<path d="M28 95 h24" stroke="#6a4a18" stroke-width="2"/>';
+  s+='<g'+(t>0.1?' filter="url(#glowF)"':'')+'><ellipse cx="40" cy="95" rx="9" ry="25" fill="url(#mirror)" stroke="#8a6224" stroke-width="2.5"/></g>';
+  s+='<ellipse cx="38" cy="86" rx="2.5" ry="9" fill="#fff" opacity="'+(0.3+0.5*t).toFixed(2)+'"/>';
+  return s+'</svg>';
+}
+function candleSVG(b, w, h){
+  var t=Math.min(1,b/30), sc=0.45+0.55*t, s=svgOpen(w,h);
+  s+='<ellipse cx="40" cy="181" rx="17" ry="5" fill="url(#brass)"/><rect x="36" y="150" width="8" height="30" fill="url(#brass)"/><ellipse cx="40" cy="150" rx="13" ry="3.5" fill="url(#brass)"/>';
+  s+='<rect x="34" y="104" width="12" height="46" rx="2" fill="#efe3c4"/><path d="M34 106 q3 6 0 10" stroke="#e0d0a8" fill="none"/>';
+  s+='<line x1="40" y1="104" x2="40" y2="98" stroke="#222" stroke-width="1.4"/>';
+  if (b>1) s+='<g class="flicker" style="transform-origin:40px 100px"><g transform="translate(40 100) scale('+sc.toFixed(2)+') translate(-40 -100)" opacity="'+(0.3+0.7*t).toFixed(2)+'"><g filter="url(#glowF)"><ellipse cx="40" cy="86" rx="6.5" ry="14" fill="#ff9d2e"/><ellipse cx="40" cy="90" rx="3" ry="7" fill="#fff3c0"/></g></g></g>';
+  return s+'</svg>';
+}
+function burnerSVG(id, onBench, w, h){
+  var g = onBench ? lvl(id) : 0, t=g/100, sid=state.salt[id], s=svgOpen(w,h);
+  s+='<path d="M30 180 C16 182 10 186 -2 188" stroke="#6b2a1a" stroke-width="4" fill="none"/>';
+  s+='<ellipse cx="40" cy="181" rx="15" ry="4.5" fill="url(#brass)"/><rect x="35" y="118" width="10" height="62" fill="url(#brass)"/>';
+  s+='<rect x="33" y="160" width="14" height="7" rx="1.5" fill="url(#brass)"/><circle cx="40" cy="163.5" r="2" fill="#2a1a08"/>';
+  if (g>0){
+    var hgt=22+52*t, fc = sid ? ITEM[sid].flame : [0.55,0.68,1], op = sid ? 0.5+0.45*t : 0.28+0.2*t;
+    s+='<g class="flicker"><g filter="url(#glowF)" opacity="'+op.toFixed(2)+'"><ellipse cx="40" cy="'+(118-hgt/2).toFixed(1)+'" rx="'+(6+4*t).toFixed(1)+'" ry="'+(hgt/2).toFixed(1)+'" fill="'+css(fc)+'"/></g>';
+    s+='<ellipse cx="40" cy="'+(118-hgt*0.17).toFixed(1)+'" rx="3.4" ry="'+(hgt*0.17).toFixed(1)+'" fill="rgba(90,140,255,.75)"/></g>';
+  }
+  if (sid && onBench){
+    // retort stand + clamp holding a glass rod; a platinum wire loop fused into its tip carries a bead of salt into the flame
+    var it=ITEM[sid], fc=it.flame, label=(it.mystery&&!state.revealed?'?':it.tag);
+    s+='<rect x="64" y="182" width="16" height="4" rx="1" fill="#4a4f5a"/><rect x="71" y="100" width="3" height="83" fill="url(#steel)"/>';
+    s+='<rect x="67.5" y="105" width="10" height="7" rx="1.5" fill="url(#brass)"/><circle cx="78.5" cy="108.5" r="1.8" fill="url(#brass)"/>';
+    s+='<line x1="70" y1="108.5" x2="54" y2="103.5" stroke="rgba(215,235,245,.75)" stroke-width="4" stroke-linecap="round"/>';
+    s+='<line x1="70" y1="107.3" x2="54.5" y2="102.4" stroke="rgba(255,255,255,.7)" stroke-width="1"/>';
+    s+='<line x1="54.5" y1="103.4" x2="46.6" y2="100.6" stroke="#e9ebf0" stroke-width="1.1"/>';
+    if (g>0) s+='<g filter="url(#glowF)"><circle cx="44.2" cy="99.8" r="4.5" fill="'+css(fc,.85)+'"/></g>';
+    s+='<circle cx="44.2" cy="99.8" r="2.6" fill="none" stroke="#f2f3f6" stroke-width="1"/>';
+    s+='<ellipse cx="44.2" cy="100.4" rx="2.2" ry="1.7" fill="'+(g>0?css(lighten(fc,.55)):it.powder)+'"/>';
+    // watch glass with the powder, and its label
+    s+='<ellipse cx="58" cy="183.5" rx="10" ry="2.6" fill="rgba(225,238,245,.55)" stroke="rgba(120,140,150,.6)" stroke-width=".6"/>';
+    s+='<ellipse cx="58" cy="182.2" rx="6" ry="1.8" fill="'+it.powder+'"/>';
+    s+='<line x1="72.5" y1="112" x2="70" y2="146" stroke="#8a7a58" stroke-width=".7"/>';
+    s+='<rect x="59" y="146" width="21" height="12" fill="#f3e9d1" stroke="#a8956a" stroke-width=".6"/>';
+    s+='<text x="69.5" y="155" text-anchor="middle" font-size="'+(label.length>5?6:7)+'" font-family="Georgia" fill="#3a2615">'+label+'</text>';
+  }
+  return s+'</svg>';
+}
+function tubeSVG(id, lit, w, h){
+  var it=ITEM[id], op = 0.25+0.75*lvl(id)/100, c=css(it.glow), soft=css(it.glow,.15), s=svgOpen(w,h);
+  s+='<rect x="64" y="20" width="5" height="160" fill="url(#wood)"/><rect x="56" y="178" width="22" height="7" rx="2" fill="url(#wood)"/>';
+  s+='<rect x="46" y="40" width="20" height="5" fill="url(#wood)"/><rect x="46" y="146" width="20" height="5" fill="url(#wood)"/>';
+  s+='<path d="M40 18 C52 10 76 14 74 30 L74 186" stroke="#b5652d" stroke-width="1.3" fill="none"/><path d="M40 172 C48 182 60 186 74 186" stroke="#b5652d" stroke-width="1.3" fill="none"/>';
+  s+='<rect x="34" y="16" width="12" height="12" rx="2" fill="url(#steel)"/><rect x="34" y="162" width="12" height="12" rx="2" fill="url(#steel)"/>';
+  if (lit){
+    s+='<g opacity="'+op.toFixed(2)+'"><g filter="url(#glowF)"><rect x="27" y="28" width="26" height="30" rx="12" fill="'+css(it.glow,.55)+'"/><rect x="27" y="132" width="26" height="30" rx="12" fill="'+css(it.glow,.55)+'"/>'
+      +'<rect x="36" y="56" width="8" height="78" rx="4" fill="'+c+'"/></g><rect x="38.5" y="58" width="3" height="74" rx="1.5" fill="#fff" opacity=".75"/></g>';
+  } else {
+    s+='<rect x="27" y="28" width="26" height="30" rx="12" fill="'+soft+'"/><rect x="27" y="132" width="26" height="30" rx="12" fill="'+soft+'"/><rect x="36" y="56" width="8" height="78" rx="4" fill="'+soft+'"/>';
+  }
+  s+='<g fill="none" stroke="rgba(235,240,255,.7)" stroke-width="1.1"><rect x="26" y="27" width="28" height="32" rx="12"/><rect x="26" y="131" width="28" height="32" rx="12"/><rect x="35.5" y="56" width="9" height="78" rx="4.5"/></g>';
+  s+='<line x1="30" y1="34" x2="30" y2="52" stroke="rgba(255,255,255,.45)" stroke-width="1.4" stroke-linecap="round"/>';
+  if (it.mystery) s+='<text x="40" y="152" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff" font-family="Georgia">?</text>';
+  return s+'</svg>';
+}
+function jarSVG(sid, w, h){
+  var it=ITEM[sid], s=svgOpen(w,h,'0 0 60 80');
+  s+='<rect x="18" y="4" width="24" height="9" rx="2" fill="#a57a4a"/><rect x="18" y="4" width="24" height="3" rx="1.5" fill="#c49a68"/>';
+  s+='<path d="M14 14 h32 q4 0 4 4 v52 q0 6 -6 6 h-28 q-6 0 -6 -6 v-52 q0 -4 4 -4z" fill="rgba(225,235,240,.25)" stroke="rgba(90,110,120,.55)" stroke-width="1.2"/>';
+  s+='<path d="M12 48 q18 -4 36 0 v20 q0 6 -6 6 h-24 q-6 0 -6 -6z" fill="'+it.powder+'"/>';
+  s+='<rect x="15" y="24" width="30" height="18" fill="#f3e9d1" stroke="#9c8a62" stroke-width=".7"/>';
+  s+='<text x="30" y="37" text-anchor="middle" font-size="'+(it.tag.length>5?8:10)+'" font-family="Georgia" fill="#3a2615">'+(it.mystery?'?':it.tag)+'</text>';
+  s+='<line x1="17" y1="18" x2="17" y2="66" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>';
+  return s+'</svg>';
+}
+function itemSVG(id, onBench, w, h, posIdx){
+  var it=ITEM[id];
+  if (it.kind==='light') return id==='lime' ? limeSVG(onBench?lvl(id):70, w, h) : id==='sun' ? sunSVG(onBench?lvl(id):85, w, h) : candleSVG(onBench?lvl(id):30, w, h);
+  if (it.kind==='burner') return burnerSVG(id, onBench, w, h);
+  if (it.kind==='tube') return tubeSVG(id, onBench && coilOn(id), w, h);
+  return jarSVG(id, w, h);
+}
+function coilSVG(){
+  var s='<svg viewBox="0 0 110 190" width="100%" height="190" preserveAspectRatio="xMidYMax meet" aria-hidden="true">';
+  for (var i=0;i<2;i++){ var x=6+i*24;
+    s+='<rect x="'+x+'" y="120" width="20" height="58" rx="3" fill="rgba(210,225,230,.35)" stroke="rgba(80,100,110,.6)"/>';
+    s+='<rect x="'+(x+3)+'" y="138" width="14" height="38" fill="rgba(120,150,170,.35)"/><rect x="'+(x+8)+'" y="108" width="4" height="62" fill="#7d8088"/><rect x="'+(x+4)+'" y="112" width="3" height="14" fill="#2a2a2a"/>'; }
+  s+='<rect x="54" y="168" width="54" height="12" rx="2" fill="url(#wood)"/>';
+  s+='<rect x="60" y="140" width="42" height="28" rx="6" fill="#9b5a26"/>';
+  for (var k=0;k<14;k++) s+='<line x1="'+(62+k*3)+'" y1="141" x2="'+(62+k*3)+'" y2="167" stroke="#d48a4a" stroke-width="1.4"/>';
+  s+='<rect x="56" y="138" width="6" height="32" rx="1" fill="url(#wood)"/><rect x="100" y="138" width="6" height="32" rx="1" fill="url(#wood)"/>';
+  s+='<circle cx="64" cy="134" r="2.5" fill="url(#brass)"/><circle cx="98" cy="134" r="2.5" fill="url(#brass)"/>';
+  s+='<path d="M16 108 C20 96 40 100 64 132" stroke="#b5652d" stroke-width="1.3" fill="none"/><path d="M98 134 C108 120 112 160 112 186" stroke="#b5652d" stroke-width="1.3" fill="none"/>';
+  s+='<path d="M40 108 C46 100 56 112 64 132" stroke="#b5652d" stroke-width="1.3" fill="none"/>';
+  return s+'</svg>';
+}
+
+// ================================================================ shelves
+var shelvesEl=document.getElementById('shelves'), infoEl=document.getElementById('info');
+var UNITS = [
+  ['Lamps and burners', [['lime','sun','candle'],['b1','b2']]],
+  ['Salts', [['s_Na','s_Li','s_K','s_Ca','s_Sr'],['s_DUR','s_LEP','s_UNK']]],
+  ['Geissler tubes', [['t_H','t_Hg'],['t_He','t_Ne','t_Ar','t_MT']]]
+];
+var SEP_LABELS = {'Lamps and burners':'burners', 'Salts':'from the field', 'Geissler tubes':'later discoveries'};
+function inUse(id){ return state.pos.indexOf(id)>=0; }
+function renderShelves(){
+  shelvesEl.innerHTML='';
+  UNITS.forEach(function(u){
+    var unit=document.createElement('div'); unit.className='unit';
+    unit.innerHTML='<div class="utag">'+u[0]+'</div>';
+    var row=document.createElement('div'); row.className='row';
+    u[1].forEach(function(group, gi){
+      if (gi>0){ var sp=document.createElement('div'); sp.className='sep'; sp.innerHTML='<span>'+SEP_LABELS[u[0]]+'</span>'; row.appendChild(sp); }
+      group.forEach(function(id){
+        var it=ITEM[id], used=inUse(id), small = it.kind==='salt';
+        var b=document.createElement('button'); b.type='button'; b.className='item'+(used?' inuse':'')+(state.selected===id?' selected':'');
+        b.setAttribute('aria-label', it.name+(used?' (on the bench)':''));
+        var label = it.kind==='salt' ? '<b>'+(it.mystery&&!state.revealed?'?':it.tag)+'</b><br>'+it.name : (it.kind==='tube' ? '<b>'+it.tag+'</b><br>'+it.name : it.name);
+        b.innerHTML = (small ? itemSVG(id,false,46,62) : itemSVG(id,false,44,104)) + '<span class="lbl">'+label+'</span>';
+        if (!used) bindDrag(b, id);
+        b.addEventListener('mouseenter', function(){ showInfo(id); });
+        b.addEventListener('focus', function(){ showInfo(id); });
+        b.addEventListener('click', function(e){ if (e.detail===0 && !used) toggleSelect(id); });
+        row.appendChild(b);
+      });
+    });
+    unit.appendChild(row);
+    unit.insertAdjacentHTML('beforeend','<div class="board"></div><div class="bracket l"></div><div class="bracket r"></div>');
+    shelvesEl.appendChild(unit);
+  });
+}
+function showInfo(id){ infoEl.innerHTML = ITEM[id].desc; }
+document.getElementById('reveal').addEventListener('click', function(){
+  state.revealed=!state.revealed;
+  this.textContent = state.revealed ? 'Cover the labels again' : 'Peek at the hidden labels';
+  document.getElementById('revealText').innerHTML = state.revealed ?
+    'Unlabelled jar: <b>'+UNK_KEYS.map(function(k){return EL[k].name;}).join(' and ')+'</b>. Mystery tube: <b>'+MT_KEYS.map(function(k){return EL[k].name;}).join(' and ')+'</b>.' : '';
+  render();
+});
+
+// ================================================================ bench
+var benchEl=document.getElementById('bench'), posEls=[], scopeEl;
+var POS_TAGS=['Stand 1 · lamp','Stand 2','Stand 3'];
+function buildBench(){
+  var coil=document.createElement('div'); coil.className='col coilcol';
+  coil.innerHTML='<div class="ptag ghosted">.</div><div class="holder">'+coilSVG()+'</div><div class="table"><div class="caption">Induction coil and two Bunsen cells: the power for the glass tubes</div></div>';
+  benchEl.appendChild(coil);
+  for (var i=0;i<3;i++){
+    var c=document.createElement('div'); c.className='col pos'; c.dataset.i=i; c.tabIndex=0;
+    c.setAttribute('role','group'); c.setAttribute('aria-label', POS_TAGS[i]);
+    c.innerHTML='<div class="ptag">'+POS_TAGS[i]+'</div><div class="holder"><div class="beam in"></div><div class="beam out"></div><div class="hitem"></div></div><div class="table"></div>';
+    (function(idx, el){
+      el.addEventListener('click', function(e){ if (e.target.closest('button,input,label,.stage')) return; if (state.selected) tryPlace(state.selected, idx); });
+      el.addEventListener('keydown', function(e){ if (e.target!==el) return; if ((e.key==='Enter'||e.key===' ') && state.selected){ e.preventDefault(); tryPlace(state.selected, idx); } });
+    })(i, c);
+    benchEl.appendChild(c); posEls.push(c);
+  }
+  scopeEl=document.createElement('div'); scopeEl.className='col scope';
+  scopeEl.innerHTML='<div class="ptag">The spectroscope</div><div class="holder" id="scopeHolder" title="Look through the eyepiece"></div>'
+    +'<div class="table"><div class="caption">A prism in a cigar box, lined black, between two old telescope tubes. Click it to look through the eyepiece.</div></div>';
+  benchEl.appendChild(scopeEl);
+  scopeEl.querySelector('.holder').addEventListener('click', function(){ document.querySelector('.viewer').scrollIntoView({behavior:'smooth', block:'start'}); });
+}
+function renderBench(){
+  for (var i=0;i<3;i++){
+    var el=posEls[i], id=state.pos[i], hitem=el.querySelector('.hitem'), tbl=el.querySelector('.table');
+    el.classList.toggle('can-drop', !!(state.selected && canPlace(state.selected, i)));
+    el.querySelector('.ptag').textContent = id ? ITEM[id].name : POS_TAGS[i];
+    if (!id){
+      hitem.innerHTML='<div class="empty">'+(i===0?'a lamp, burner or tube':'a burner or a tube')+'</div>';
+      tbl.innerHTML='<div class="caption">'+(i===0?'The back of the bench: put a light here.':'In the path of the light.')+'</div>';
+      continue;
+    }
+    var it=ITEM[id];
+    hitem.innerHTML='<div class="stage on'+(state.selected===id?' sel':'')+'" title="Drag to move it, or back to the shelves">'+itemSVG(id,true,80,190,i)+'</div>';
+    bindDrag(hitem.firstChild, id);
+    hitem.firstChild.addEventListener('mouseenter', (function(x){ return function(){ showInfo(x); }; })(id));
+    var h='';
+    if (it.kind==='tube') h+='<div class="row"><button type="button" class="lever'+(coilOn(id)?' on':'')+'" aria-pressed="'+coilOn(id)+'"><i></i>Coil '+(coilOn(id)?'on':'off')+'</button></div>';
+    h+='<label>'+it.ctl+' <input type="range" class="knob lvl" min="'+(it.kind==='tube'?5:0)+'" max="100" value="'+lvl(id)+'" aria-label="'+it.ctl+' of '+it.name+'"></label>';
+    h+='<div class="row">';
+    if (it.kind==='burner' && state.salt[id]) h+='<button type="button" class="tbtn clean">Clean the wire</button>';
+    h+='<button type="button" class="tbtn back">Back to the shelf</button></div>';
+    if (it.kind==='burner' && !state.salt[id]) h+='<div class="caption">Drag a salt jar onto the flame</div>';
+    if (it.kind==='burner' && state.salt[id]) h+='<div class="caption">A platinum wire loop, dipped in the salt, holds a pinch of it in the flame</div>';
+    tbl.innerHTML=h;
+    (function(idx, tbl){
+      var lv=tbl.querySelector('.lever');
+      if (lv) lv.addEventListener('click', function(){ var id=state.pos[idx]; state.coil[id]=!coilOn(id); renderBench(); update(); });
+      tbl.querySelector('.lvl').addEventListener('input', function(){
+        var id=state.pos[idx]; state.lvl[id]=+this.value;
+        posEls[idx].querySelector('.stage').innerHTML=itemSVG(id,true,80,190,idx);
+        update();
+      });
+      var cl=tbl.querySelector('.clean'); if (cl) cl.addEventListener('click', function(){ state.salt[state.pos[idx]]=null; render(); });
+      tbl.querySelector('.back').addEventListener('click', function(){ var id=state.pos[idx]; state.pos[idx]=null; if (ITEM[id].kind==='burner') state.salt[id]=null; render(); });
+    })(i, tbl);
+  }
+}
+function freeBurner(){ return ['b1','b2'].filter(function(b){ return !inUse(b); })[0]; }
+function canPlace(id, i){
+  var it=ITEM[id], here=state.pos[i];
+  if (it.kind==='light') return i===0;
+  if (it.kind==='salt') return (here && ITEM[here].kind==='burner') || (!here && !!freeBurner());
+  return true;
+}
+function tryPlace(id, i){
+  var it=ITEM[id], here=state.pos[i];
+  if (!canPlace(id, i)){
+    infoEl.innerHTML = it.kind==='light' ? '<b>'+it.name+'</b> is a lamp: it goes on <b>Stand 1</b>, at the back of the bench.' :
+      'A salt needs a <b>flame</b>. Drop it onto a Bunsen burner on the bench, or onto an empty stand (a free burner will be set up for it).';
+    return;
+  }
+  if (it.kind==='salt'){
+    if (!here){ here=freeBurner(); state.pos[i]=here; }
+    state.salt[here]=id; if (lvl(here)<5) state.lvl[here]=40;
+    state.selected=null; render(); return;
+  }
+  var from=state.pos.indexOf(id);
+  if (from===i){ state.selected=null; render(); return; }
+  if (from>=0) state.pos[from]=null;
+  if (here && from>=0 && canPlace(here, from)) state.pos[from]=here;
+  else if (here && ITEM[here].kind==='burner') state.salt[here]=null;
+  state.pos[i]=id; state.selected=null;
+  render();
+}
+function toggleSelect(id){ state.selected = state.selected===id ? null : id; showInfo(id); renderShelves(); renderBench(); }
+
+// ================================================================ drag and drop
+var ghost=document.getElementById('ghost'), drag=null;
+function bindDrag(el, id){
+  el.addEventListener('pointerdown', function(e){
+    if (e.pointerType==='mouse' && e.button!==0) return;
+    drag={id:id, x0:e.clientX, y0:e.clientY, started:false, el:el};
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+  });
+  el.addEventListener('pointermove', function(e){
+    if (!drag || drag.el!==el) return;
+    if (!drag.started){
+      if (Math.hypot(e.clientX-drag.x0, e.clientY-drag.y0)<6) return;
+      drag.started=true;
+      ghost.innerHTML = ITEM[id].kind==='salt' ? itemSVG(id,false,60,80) : itemSVG(id, inUse(id), 80, 190);
+      ghost.hidden=false;
+      posEls.forEach(function(p,i){ p.classList.toggle('can-drop', canPlace(id,i)); });
+    }
+    var big = ITEM[id].kind!=='salt';
+    ghost.style.transform='translate('+(e.clientX-(big?40:30))+'px,'+(e.clientY-(big?110:40))+'px)';
+    var over=posAt(e.clientX, e.clientY);
+    posEls.forEach(function(p,i){ p.classList.toggle('hover-drop', i===over && canPlace(id,i)); });
+    e.preventDefault();
+  });
+  function finish(e, cancel){
+    if (!drag || drag.el!==el) return;
+    var d=drag; drag=null; ghost.hidden=true; ghost.innerHTML='';
+    posEls.forEach(function(p){ p.classList.remove('hover-drop'); });
+    if (cancel){ renderBench(); return; }
+    if (!d.started){ toggleSelect(d.id); return; }
+    var over=posAt(e.clientX, e.clientY), from=state.pos.indexOf(d.id);
+    if (over!==null) tryPlace(d.id, over);
+    else if (from>=0){ state.pos[from]=null; if (ITEM[d.id].kind==='burner') state.salt[d.id]=null; state.selected=null; render(); }
+    else renderBench();
+  }
+  el.addEventListener('pointerup', function(e){ finish(e,false); });
+  el.addEventListener('pointercancel', function(e){ finish(e,true); });
+}
+function posAt(x,y){ var t=document.elementFromPoint(x,y), p=t&&t.closest?t.closest('.pos'):null; return p?+p.dataset.i:null; }
+document.addEventListener('keydown', function(e){ if (e.key==='Escape' && state.selected){ state.selected=null; renderShelves(); renderBench(); } });
+
+// ================================================================ experiments
+var EXPS = [
+  ['Limelight through a salt flame (Oct 1859)', function(){ setup(['lime','b1',null], {b1:'s_Na'}); state.eyeC=589.3; state.power='high'; }, '-1deg'],
+  ['Sunlight', function(){ setup(['sun',null,null]); state.letters=true; state.eyeC=589.3; state.power='low'; }, '.8deg'],
+  ['Sunlight through a salt flame', function(){ setup(['sun','b1',null], {b1:'s_Na'}); state.eyeC=589.3; state.power='high'; }, '-.6deg'],
+  ['Plücker’s hydrogen tube', function(){ setup(['t_H',null,null]); state.eyeC=656.3; state.power='high'; }, '1deg'],
+  ['Hydrogen tube before the limelight', function(){ setup(['lime','t_H',null]); state.eyeC=486.1; state.power='high'; }, '-.8deg'],
+  ['Dürkheim water (1860)', function(){ setup(['b1',null,null], {b1:'s_DUR'}); state.eyeC=457.4; state.power='high'; }, '.6deg'],
+  ['Lepidolite (1861)', function(){ setup(['b1',null,null], {b1:'s_LEP'}); state.eyeC=421; state.power='high'; }, '-.4deg'],
+  ['Clear the bench', function(){ setup([null,null,null]); }, '.9deg']
+];
+function setup(pos, salts){ state.pos=pos.slice(); state.salt={b1:null,b2:null}; if (salts) Object.keys(salts).forEach(function(k){ state.salt[k]=salts[k]; }); state.lvl={}; state.coil={}; state.selected=null; state.letters=false; state.card=''; }
+var expEl=document.getElementById('experiments');
+EXPS.forEach(function(x){
+  var b=document.createElement('button'); b.type='button'; b.className='slip'; b.textContent=x[0]; b.style.setProperty('--r', x[2]);
+  b.addEventListener('click', function(){ x[1](); render(); });
+  expEl.appendChild(b);
+});
+
+// ================================================================ spectroscope drawing
+function updateScope(fin, lams){
+  var C=BEAM, fc=lightColour(fin, lams);
+  var s='<svg viewBox="0 0 300 190" preserveAspectRatio="xMinYMid meet" aria-hidden="true">';
+  // stand legs
+  s+='<rect x="40" y="104" width="4" height="82" fill="url(#brass)"/><rect x="250" y="138" width="4" height="48" fill="url(#brass)"/>';
+  s+='<ellipse cx="42" cy="186" rx="12" ry="3" fill="#4a2c14"/><ellipse cx="252" cy="186" rx="12" ry="3" fill="#4a2c14"/>';
+  // collimator tube with slit
+  s+='<rect x="0" y="'+(C-4)+'" width="8" height="8" fill="'+fc+'"/>';
+  s+='<rect x="6" y="'+(C-16)+'" width="5" height="32" fill="#2a1a0c"/><rect x="7.5" y="'+(C-1)+'" width="2" height="2" fill="'+(fc==='transparent'?'#2a1a0c':fc)+'"/>';
+  s+='<rect x="11" y="'+(C-9)+'" width="90" height="18" rx="3" fill="url(#brassV)"/><rect x="11" y="'+(C-9)+'" width="90" height="4" rx="2" fill="rgba(255,240,200,.35)"/>';
+  s+='<rect x="30" y="'+(C-11)+'" width="4" height="22" fill="#8a6224"/><rect x="80" y="'+(C-11)+'" width="4" height="22" fill="#8a6224"/>';
+  // cigar box
+  s+='<polygon points="98,52 208,52 220,24 110,20" fill="#a86b35" stroke="#5a3216" stroke-width="1"/>';
+  s+='<polygon points="134,44 190,44 196,30 140,28" fill="#efe0b8" stroke="#8a6a3a" stroke-width=".7"/>';
+  s+='<text x="165" y="40" text-anchor="middle" font-size="9" font-family="Georgia" font-style="italic" fill="#6a2a14">Havana</text>';
+  s+='<rect x="98" y="52" width="110" height="108" fill="url(#cigar)" stroke="#4a2810" stroke-width="1"/>';
+  for (var gx=0; gx<6; gx++) s+='<path d="M98 '+(60+gx*17)+' q55 '+(gx%2?4:-4)+' 110 0" stroke="rgba(60,30,10,.25)" fill="none"/>';
+  s+='<rect x="108" y="62" width="90" height="88" fill="#0e0905" stroke="#3a1e0c" stroke-width="2"/>';
+  s+='<polygon points="134,138 153,'+(C-22)+' 172,138" fill="rgba(170,200,255,.22)" stroke="rgba(230,240,255,.8)" stroke-width="1.1"/>';
+  s+='<line x1="108" y1="'+C+'" x2="146" y2="'+C+'" stroke="'+fc+'" stroke-width="2.5"/>';
+  // fan to telescope
+  for (var k=0;k<lams.length;k+=3){
+    var w=lams[k], v=0; for (var q=k;q<Math.min(k+3,lams.length);q++) v=Math.max(v, fin[q]);
+    if (v<1) continue;
+    var y2 = C+16+(HI-w)/(HI-LO)*22;
+    s+='<line x1="160" y1="'+(C+3)+'" x2="198" y2="'+y2.toFixed(1)+'" stroke="'+css(rgbOf(w))+'" stroke-opacity="'+Math.min(1,v/55).toFixed(2)+'" stroke-width="1.6"/>';
+  }
+  // viewing telescope (angled), eyepiece
+  s+='<g transform="rotate(14 206 124)"><rect x="200" y="114" width="78" height="17" rx="3" fill="url(#brassV)"/><rect x="200" y="114" width="78" height="4" rx="2" fill="rgba(255,240,200,.35)"/>'
+    +'<rect x="276" y="111" width="14" height="23" rx="3" fill="#2b1a0c"/><rect x="288" y="114" width="6" height="17" rx="2" fill="#151008"/></g>';
+  s+='<text x="150" y="176" text-anchor="middle" font-size="9" font-family="Georgia" font-style="italic" fill="#e6d3a8">look here &#8600;</text>';
+  s+='</svg>';
+  document.getElementById('scopeHolder').innerHTML=s;
+}
+function lightColour(I, lams){
+  var r=0,g=0,b=0,mx=0;
+  for (var j=0;j<I.length;j++){ var c=rgbOf(lams[j]); r+=c[0]*I[j]; g+=c[1]*I[j]; b+=c[2]*I[j]; if (I[j]>mx) mx=I[j]; }
+  var m=Math.max(r,g,b); if (m<=0 || mx<1) return 'transparent';
+  return css([0.35+0.65*r/m, 0.35+0.65*g/m, 0.35+0.65*b/m], 0.2+0.75*Math.min(1, mx/70));
+}
+function updateBeams(){
+  var lams=[]; for (var l=LO;l<=HI;l+=1) lams.push(l);
+  var st=computeStages(lams, 0.9), zero=new Float64Array(lams.length);
+  for (var i=0;i<3;i++){
+    posEls[i].querySelector('.beam.in').style.background = i===0 ? 'transparent' : lightColour(st[i-1], lams);
+    posEls[i].querySelector('.beam.out').style.background = lightColour(st[i], lams);
+  }
+  updateScope(st[2], lams);
+}
+
+// ================================================================ notebook map
+var mapCv=document.getElementById('map');
+var ML={top:24, strip:44, gap:8, graph:96, axis:20};
+function drawMap(){
+  var dpr=window.devicePixelRatio||1, W=mapCv.clientWidth||mapCv.parentNode.clientWidth, H=ML.top+ML.strip+ML.gap+ML.graph+ML.axis;
+  mapCv.style.height=H+'px'; mapCv.width=Math.round(W*dpr); mapCv.height=Math.round(H*dpr);
+  var ctx=mapCv.getContext('2d'), n=mapCv.width, lams=new Float64Array(n), step=(HI-LO)/n;
+  for (var i=0;i<n;i++) lams[i]=LO+(i+0.5)*step;
+  var I=computeStages(lams, Math.max(0.12, 0.75*step))[2];
+  mapCv._d={lams:lams, I:I};
+  ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,mapCv.width,mapCv.height);
+  // the coloured strip, like a watercolour pasted into the book
+  var sy=Math.round(ML.top*dpr), sh=Math.round(ML.strip*dpr), img=ctx.createImageData(n, sh);
+  for (var x=0;x<n;x++){
+    var c=rgbOf(lams[x]), v=Math.pow(Math.max(0,Math.min(1,I[x]/100)),0.55);
+    for (var y=0;y<sh;y++){ var o=(y*n+x)*4; img.data[o]=c[0]*v*255+12*(1-v); img.data[o+1]=c[1]*v*255+8*(1-v); img.data[o+2]=c[2]*v*255+4*(1-v); img.data[o+3]=255; }
+  }
+  ctx.putImageData(img, 0, sy);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var X=function(l){ return (l-LO)/(HI-LO)*W; };
+  ctx.strokeStyle='rgba(58,38,21,.6)'; ctx.lineWidth=1; ctx.strokeRect(0.5, ML.top+0.5, W-1, ML.strip-1);
+  // ink graph
+  var gy=ML.top+ML.strip+ML.gap, gh=ML.graph;
+  ctx.strokeStyle='rgba(70,100,150,.25)';
+  [0,50,100].forEach(function(v){ var yy=gy+gh*(1-v/110)+.5; ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(W,yy); ctx.stroke(); });
+  ctx.beginPath();
+  for (var k=0;k<n;k++){ var px=(k+.5)/dpr, py=gy+gh*(1-Math.min(I[k],110)/110); if(!k) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+  ctx.strokeStyle='#5a3414'; ctx.lineWidth=1.4; ctx.stroke();
+  ctx.fillStyle='#6b4b2c'; ctx.font='italic 11px Georgia'; ctx.textAlign='left'; ctx.fillText('brightness', 3, gy+11);
+  // axis
+  var ay=gy+gh; ctx.strokeStyle='rgba(58,38,21,.7)'; ctx.fillStyle='#3a2615'; ctx.font='11px Georgia'; ctx.textAlign='center';
+  ctx.beginPath(); ctx.moveTo(0,ay+.5); ctx.lineTo(W,ay+.5); ctx.stroke();
+  for (var t=Math.ceil(LO/10)*10; t<=HI; t+=10){ var tx=X(t), big=t%50===0; ctx.beginPath(); ctx.moveTo(tx+.5,ay); ctx.lineTo(tx+.5,ay+(big?6:3)); ctx.stroke(); if (big && tx>12 && tx<W-14) ctx.fillText(t, tx, ay+17); }
+  ctx.textAlign='right'; ctx.fillText('nm', W-2, ay+17);
+  // overlays
+  ctx.textAlign='center';
+  if (state.letters){ ctx.font='bold 12px Georgia'; ctx.fillStyle='#7a2a10';
+    LETTERS.forEach(function(p){ var lx=X(p[1]); if (p[0]==='K') lx-=5; if (p[0]==='H') lx+=5; ctx.fillText(p[0], lx, 12); }); }
+  if (state.card){ var ce=EL[state.card]; ctx.fillStyle='#2a4a8a'; ctx.strokeStyle='rgba(42,74,138,.55)';
+    ce.lines.forEach(function(L){ var lx=X(L[0]), hg=4+6*Math.min(1,L[1]*2);
+      ctx.beginPath(); ctx.moveTo(lx, ML.top-1); ctx.lineTo(lx-3, ML.top-1-hg); ctx.lineTo(lx+3, ML.top-1-hg); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(lx+.5, ML.top); ctx.lineTo(lx+.5, ML.top+ML.strip); ctx.stroke(); });
+    if (ce.ion){ ctx.strokeStyle='#2a4a8a'; ctx.lineWidth=1.3;
+      ce.ion.lines.forEach(function(L){ var lx=X(L[0]);
+        ctx.beginPath(); ctx.moveTo(lx, ML.top-1); ctx.lineTo(lx-3.5, ML.top-11); ctx.lineTo(lx+3.5, ML.top-11); ctx.closePath(); ctx.stroke();
+        ctx.save(); ctx.setLineDash([2,2]); ctx.beginPath(); ctx.moveTo(lx+.5, ML.top); ctx.lineTo(lx+.5, ML.top+ML.strip); ctx.stroke(); ctx.restore(); });
+      ctx.lineWidth=1; }
+    ctx.textAlign='right'; ctx.font='italic 11px Georgia';
+    ctx.fillText('▼ '+ce.name+(ce.ion?'   ▽ '+ce.ion.label+' (lost an electron): H and K, seen in the Sun':''), W-3, ML.top+ML.strip+ML.gap+11); }
+  // where the telescope is pointing
+  var win = state.power==='high' ? 12 : 70, eb=document.getElementById('eyeBox');
+  eb.style.left=X(state.eyeC-win/2)+'px'; eb.style.width=Math.max(4, win/(HI-LO)*W)+'px'; eb.style.top=(ML.top-3)+'px'; eb.style.height=(ML.strip+6)+'px';
+}
+(function(){
+  var cur=document.getElementById('mapCur'), rd=document.getElementById('mapRead');
+  function at(e){ var r=mapCv.getBoundingClientRect(), x=e.clientX-r.left, d=mapCv._d; if (!d) return null; var f=Math.max(0,Math.min(.9999,x/r.width)), i=Math.floor(f*d.lams.length); return {x:x, l:d.lams[i], I:d.I[i]}; }
+  mapCv.addEventListener('mousemove', function(e){ var a=at(e); if (!a) return; cur.style.display='block'; cur.style.left=a.x+'px'; rd.textContent='λ = '+a.l.toFixed(1)+' nm · brightness '+Math.round(a.I)+'  (click to point the telescope here)'; });
+  mapCv.addEventListener('mouseleave', function(){ cur.style.display='none'; });
+  mapCv.addEventListener('click', function(e){ var a=at(e); if (a){ aim(a.l); } });
+})();
+
+// ================================================================ eyepiece
+var eyeCv=document.getElementById('eye'), turn=document.getElementById('eyeTurn');
+function aim(l){ var win = state.power==='high' ? 12 : 70; state.eyeC=Math.max(LO+win/2, Math.min(HI-win/2, l)); turn.value=state.eyeC; drawEye(); drawMap(); }
+function drawEye(){
+  var dpr=window.devicePixelRatio||1, S=eyeCv.clientWidth||380;
+  eyeCv.width=Math.round(S*dpr); eyeCv.height=Math.round(S*dpr);
+  var ctx=eyeCv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  var cx=S/2, cy=S/2, R=S/2-14, win = state.power==='high' ? 12 : 70;
+  var c=Math.max(LO+win/2, Math.min(HI-win/2, state.eyeC)); state.eyeC=c;
+  var lo=c-win/2, hi=c+win/2;
+  // brass ring
+  var rg=ctx.createRadialGradient(cx-R*0.3, cy-R*0.3, R*0.2, cx, cy, R+14);
+  rg.addColorStop(0,'#f0d495'); rg.addColorStop(.6,'#b8873b'); rg.addColorStop(1,'#5a3e14');
+  ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(cx,cy,R+12,0,2*Math.PI); ctx.fill();
+  ctx.fillStyle='#050302'; ctx.beginPath(); ctx.arc(cx,cy,R,0,2*Math.PI); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,2*Math.PI); ctx.clip();
+  // spectrum band (the image of the slit, spread into colours)
+  var n=Math.round(2*R), lams=new Float64Array(n);
+  for (var i=0;i<n;i++) lams[i]=lo+(i+.5)*(hi-lo)/n;
+  var I=computeStages(lams, state.power==='high' ? 0.08 : Math.max(0.12, 0.75*(hi-lo)/n))[2];
+  eyeCv._d={lams:lams, I:I, x0:cx-R, w:2*R};
+  var bh=R*0.42, by=cy-bh/2;
+  for (var x=0;x<n;x++){
+    var col=rgbOf(lams[x]), v=Math.pow(Math.max(0,Math.min(1,I[x]/100)),0.55);
+    var g=ctx.createLinearGradient(0,by,0,by+bh);
+    var cs=css([col[0]*v,col[1]*v,col[2]*v]);
+    g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(.12,cs); g.addColorStop(.88,cs); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fillRect(cx-R+x, by, 1.2, bh);
+  }
+  // scale above the band (modern nm)
+  var X=function(l){ return cx-R+(l-lo)/(hi-lo)*2*R; };
+  ctx.strokeStyle='rgba(240,220,176,.7)'; ctx.fillStyle='rgba(240,220,176,.9)'; ctx.font='11px Georgia'; ctx.textAlign='center';
+  var minor = state.power==='high' ? 1 : 5, major = state.power==='high' ? 2 : 10;
+  for (var t=Math.ceil(lo/minor)*minor; t<=hi; t+=minor){
+    var tx=X(t), big=Math.abs(t/major-Math.round(t/major))<1e-6;
+    ctx.beginPath(); ctx.moveTo(tx+.5, by-6-(big?8:4)); ctx.lineTo(tx+.5, by-6); ctx.stroke();
+    if (big) ctx.fillText(t.toFixed(0), tx, by-18);
+  }
+  // reference card ticks and Fraunhofer letters
+  if (state.card){ ctx.fillStyle='#8fb4ff'; EL[state.card].lines.forEach(function(L){ if (L[0]<lo||L[0]>hi) return; var lx=X(L[0]);
+    ctx.beginPath(); ctx.moveTo(lx, by+bh+4); ctx.lineTo(lx-4, by+bh+12); ctx.lineTo(lx+4, by+bh+12); ctx.closePath(); ctx.fill();
+    if (state.power==='high'){ ctx.font='10px Georgia'; ctx.fillText(L[0].toFixed(1), lx, by+bh+24); } });
+    var ion=EL[state.card].ion;
+    if (ion){ ctx.strokeStyle='#8fb4ff'; ctx.lineWidth=1.3; ion.lines.forEach(function(L){ if (L[0]<lo||L[0]>hi) return; var lx=X(L[0]);
+      ctx.beginPath(); ctx.moveTo(lx, by+bh+4); ctx.lineTo(lx-4, by+bh+12); ctx.lineTo(lx+4, by+bh+12); ctx.closePath(); ctx.stroke();
+      ctx.font='10px Georgia'; ctx.fillText(state.power==='high' ? ion.label+' '+L[2]+' '+L[0].toFixed(1) : ion.label+' '+L[2], lx, by+bh+24); });
+      ctx.lineWidth=1; } }
+  if (state.letters){ ctx.fillStyle='#ffcf7a'; ctx.font='bold 13px Georgia'; LETTERS.forEach(function(p){ if (p[1]<lo||p[1]>hi) return; ctx.fillText(p[0], X(p[1]), by+bh+(state.card?38:22)); }); }
+  // crosshair wire
+  ctx.strokeStyle='rgba(20,15,10,.85)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(cx+.5, cy-R); ctx.lineTo(cx+.5, cy+R); ctx.stroke();
+  ctx.strokeStyle='rgba(240,220,176,.35)'; ctx.beginPath(); ctx.moveTo(cx+1.5, by-4); ctx.lineTo(cx+1.5, by+bh+4); ctx.stroke();
+  // vignette
+  var vg=ctx.createRadialGradient(cx,cy,R*0.55,cx,cy,R);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.85)');
+  ctx.fillStyle=vg; ctx.fillRect(cx-R,cy-R,2*R,2*R);
+  ctx.restore();
+  var mid=I[Math.floor(n/2)];
+  document.getElementById('eyeRead').textContent='Crosshair on '+c.toFixed(state.power==='high'?2:1)+' nm · brightness '+Math.round(mid)+(state.power==='high'?' · high power, '+win+' nm across':' · low power, '+win+' nm across');
+}
+eyeCv.addEventListener('click', function(e){
+  var r=eyeCv.getBoundingClientRect(), d=eyeCv._d; if (!d) return;
+  var sx=(e.clientX-r.left)*(eyeCv.clientWidth/r.width), f=(sx-d.x0)/d.w; if (f<0||f>1) return;
+  aim(d.lams[Math.min(d.lams.length-1, Math.floor(f*d.lams.length))]);
+});
+turn.addEventListener('input', function(){ aim(+this.value); });
+document.getElementById('eyeL').addEventListener('click', function(){ aim(state.eyeC-(state.power==='high'?2:10)); });
+document.getElementById('eyeR').addEventListener('click', function(){ aim(state.eyeC+(state.power==='high'?2:10)); });
+function setPower(p){ state.power=p; document.getElementById('powLow').classList.toggle('on',p==='low'); document.getElementById('powHigh').classList.toggle('on',p==='high'); aim(state.eyeC); }
+document.getElementById('powLow').addEventListener('click', function(){ setPower('low'); });
+document.getElementById('powHigh').addEventListener('click', function(){ setPower('high'); });
+
+// ================================================================ reference cards
+var cardsEl=document.getElementById('cards');
+function renderCards(){
+  cardsEl.querySelectorAll('.card').forEach(function(c){ c.remove(); });
+  var f=document.createElement('button'); f.type='button'; f.className='card'+(state.letters?' on':''); f.innerHTML='<b>A&ndash;K</b>Fraunhofer';
+  f.setAttribute('aria-pressed', state.letters); f.addEventListener('click', function(){ state.letters=!state.letters; renderCards(); drawMap(); drawEye(); });
+  cardsEl.appendChild(f);
+  CARD_ORDER.forEach(function(k){
+    var b=document.createElement('button'); b.type='button'; b.className='card'+(state.card===k?' on':''); b.innerHTML='<b>'+k+'</b>'+EL[k].name;
+    b.setAttribute('aria-pressed', state.card===k);
+    b.addEventListener('click', function(){ state.card = state.card===k ? '' : k; renderCards(); drawMap(); drawEye(); });
+    cardsEl.appendChild(b);
+  });
+}
+
+// ================================================================ the notes
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function strongest(lines){ var b=null; lines.forEach(function(L){ if (!b||L.rel>b.rel) b=L; }); return b; }
+function notes(){
+  var p=state.pos, out=[], lit=false;
+  if (!p[0]&&!p[1]&&!p[2]) return '<p>The bench is bare. Take a lamp, a burner or a tube from the shelves and set it on Stand 1.</p>';
+  for (var k=0;k<3;k++){
+    var id=p[k]; if (!id) continue;
+    var it=ITEM[id], nm=nameOf(id);
+    if (it.kind==='light'){
+      if (lvl(id)<3){ out.push('The '+it.name.toLowerCase()+' is turned right down and gives no light.'); continue; }
+      lit=true;
+      if (id==='lime') out.push('<b>Limelight</b>: an unbroken rainbow. A glowing solid gives every colour, and the hotter it burns, the brighter it is and the more violet it shows.');
+      else if (id==='sun') out.push('<b>Sunlight</b>: a rainbow crossed by Fraunhofer&rsquo;s dark lines. (A and B come from the oxygen in our own air.)');
+      else out.push('<b>Candle</b>: a dim rainbow from glowing soot, strongest in the orange and red. No lines.');
+      continue;
+    }
+    if (it.kind==='burner' && !state.salt[id]){ out.push(cap(nm)+' is almost colourless and adds nothing you can see. Put a salt in it.'); continue; }
+    if (it.kind==='burner' && lvl(id)<1){ out.push('The gas to '+nm.replace(/^the /,'the ')+' is shut off.'); continue; }
+    var e=stageEffect(id);
+    if (it.kind==='tube' && !coilOn(id)){
+      out.push(e.lines.length ? 'The coil is off, so '+nm+' does not glow; it still soaks up its strongest lines from the light behind it.' :
+        'The coil is off. Cool '+it.name.toLowerCase().replace(/^mystery tube$/,'gas')+' absorbs no colour you can see, so the light passes straight through.');
+      continue;
+    }
+    var L=strongest(e.lines), inc=0;
+    if (k>0 && L) inc=computeStages([L.l],0.08)[k-1][0];
+    if (inc<2){
+      out.push(lit ? cap(nm)+' glows, but none of the light behind it is at its colours, so its <b>bright lines</b> are simply added. Strongest at <b>'+L.l.toFixed(1)+' nm</b>.'
+                   : cap(nm)+' shines alone: only <b>bright lines</b>, its own colours and nothing between. Strongest at <b>'+L.l.toFixed(1)+' nm</b>.');
+      lit=true; continue;
+    }
+    var S=e.S;
+    if (inc>S*1.06) out.push(cap(nm)+' glows less brightly (<b>'+Math.round(S)+'</b>) than the light behind it (<b>'+Math.round(inc)+'</b> at '+L.l.toFixed(1)+' nm). It takes away more of its own colours than it adds: its lines stand out <b>dark</b>. This is the reversal.');
+    else if (inc<S*0.94) out.push(cap(nm)+' glows more brightly (<b>'+Math.round(S)+'</b>) than the light behind it (<b>'+Math.round(inc)+'</b>), so its lines stay <b>bright</b> on top of the rainbow.');
+    else out.push(cap(nm)+' glows about as brightly as the light behind it, so its lines almost <b>vanish</b>: what it takes, it gives back.');
+    lit=true;
+  }
+  var tip='';
+  if (p[0]==='lime' && p[1] && ITEM[p[1]].kind!=='light') tip='Try turning the limelight&rsquo;s oxygen tap below the flame or tube in front of it, and watch the dark lines turn bright.';
+  else if (p[0]==='sun' && !p[1]) tip='Try a reference card: which element matches the dark D lines?';
+  else if (p.some(function(id){ return id && ITEM[id].kind==='burner' && state.salt[id] && (state.salt[id]==='s_DUR'||state.salt[id]==='s_LEP'||state.salt[id]==='s_UNK'); }))
+    tip='Hold up the reference cards one at a time. An element is present only if <b>all</b> its strong lines are there. Any line left over is something new.';
+  return out.map(function(x){ return '<p>'+x+'</p>'; }).join('') + (tip?'<p class="tip">'+tip+'</p>':'');
+}
+
+// ================================================================ go
+function update(){ updateBeams(); drawMap(); drawEye(); document.getElementById('notes').innerHTML=notes(); }
+function render(){ renderShelves(); renderBench(); renderCards(); document.getElementById('powLow').classList.toggle('on',state.power==='low'); document.getElementById('powHigh').classList.toggle('on',state.power==='high'); turn.value=state.eyeC; update(); }
+var rt=null; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ drawMap(); drawEye(); }, 120); });
+buildBench();
+EXPS[0][1]();
+render();
+})();
+</script>
+</body>
+</html>
