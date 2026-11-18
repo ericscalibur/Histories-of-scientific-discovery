@@ -699,7 +699,7 @@ EUCLID_FIGS = [
     # ---- Chapter Seven · algebra made of squares ----
     (6, dict(
         img="P_Oxy_I_29_Euclid_II_5.jpg",
-        side="right", top=1440,
+        side="right", top=0, beside="In the 1890s two young scholars",
         alt="A torn, brown papyrus fragment with eight lines of Greek handwriting and, at the lower right, a small ink diagram of a rectangle beside a square",
         title="Euclid on papyrus: P.Oxy. I 29",
         scroll=("<b>P.Oxy. I 29</b>, a scrap of papyrus pulled from the ancient rubbish "
@@ -788,6 +788,164 @@ DESCARTES_FIGS = [
                 "fifties. Look at the plain black clothes and the white collar: this is a "
                 "thinker, not a courtier. It is the face most people picture when they "
                 "hear his name."))),
+    # ---- Chapter Two · a soldier, a stove, and three dreams ----
+    (1, dict(
+        img="Maurice_of_Nassau_Mierevelt_Rijksmuseum.jpg",
+        side="left", top=0, beside="the twenty-two-year-old Descartes joined the army",
+        alt="Full-length portrait of a bearded man in a white ruff and gilded armour, holding a baton, beside a table with a plumed helmet and gauntlets, under green curtains",
+        title="Prince Maurice of Nassau, by Michiel van Mierevelt",
+        scroll=("<b>Maurice of Nassau</b>, Prince of Orange, painted by <b>Michiel van "
+                "Mierevelt</b> around <b>1613 to 1620</b>, so about the time Descartes "
+                "joined his army. It hangs in the <b>Rijksmuseum</b>, Amsterdam, and you can "
+                "find the painter&rsquo;s name at the bottom left: <i>M. Miereveld</i>. "
+                "Maurice was famous for turning soldiering into something close to a science, "
+                "with drill, engineering and careful siege-works, and his own math tutor was "
+                "the Dutch mathematician <b>Simon Stevin</b>. For a young man who loved "
+                "mathematics, it was an interesting army to join. Look at the baton in his "
+                "hand: it is the sign of a commander."))),
+    (1, dict(
+        img="Descartes_Compendium_Musicae_1650_p35.jpg",
+        side="right", top=0, beside="One story, again from Baillet",
+        alt="A printed book page headed MUSICAE 35, with a diagram of three circles divided like a wheel, labelled with note names and numbers, above a block of Latin text",
+        title="Descartes's music book, the Compendium Musicae",
+        scroll=("A page from Descartes&rsquo;s <b>first</b> piece of writing, the "
+                "<i>Compendium Musicae</i> (&ldquo;A Short Book on Music&rdquo;). He wrote "
+                "it in Breda in <b>1618</b> and gave it to <b>Isaac Beeckman</b> as a gift "
+                "at the very end of that year, asking him to keep it private. It was not "
+                "printed until <b>1650</b>, the year Descartes died; this page is from that "
+                "Utrecht edition. The wheel arranges the notes of the scale (<i>ut, re, mi, "
+                "fa, sol, la</i>) around a circle, and the numbers on the rim, such as "
+                "<b>540</b>, <b>480</b>, <b>432</b> and <b>360</b>, are lengths of string. "
+                "A longer string gives a lower note. Even music, he thought, could be turned "
+                "into numbers."))),
+    # ---- Chapter Three · can I trust my eyes? ----
+    (2, dict(
+        img="Saenredam_Old_Town_Hall_Amsterdam_1657.jpg",
+        side="left", top=0, beside="In <b>1628</b> Descartes moved to the Dutch Republic",
+        alt="Painting of an old brick and stone town hall on a sunny square, with a tall square tower, a green roof, an arched porch where men in black hats stand talking, and small market stalls at the right",
+        title="Amsterdam's old town hall, by Pieter Saenredam",
+        scroll=("The <b>old town hall</b> of Amsterdam, on the square called the "
+                "<b>Dam</b>, painted by <b>Pieter Saenredam</b> in <b>1657</b>. He worked "
+                "from a drawing he made on the spot in <b>1641</b>, while Descartes was "
+                "living in the Dutch Republic, so this is the Amsterdam Descartes knew. By "
+                "the time the painting was finished the building was gone: it burned down "
+                "in <b>1652</b>. Look at the men in black hats talking under the arches and "
+                "the little shops along the right. This was the busy crowd Descartes said "
+                "he could walk through as calmly as through a forest. (Rijksmuseum, "
+                "Amsterdam.)"))),
+    (2, dict(
+        img="Descartes_Meditationes_1641_title_page.jpg",
+        side="right", top=0, beside="His own words, from the <b>Meditations on First Philosophy</b>",
+        alt="Title page of a Latin book printed in red and black: RENATI DES-CARTES, MEDITATIONES DE PRIMA PHILOSOPHIA, with an engraved emblem of a phoenix rising from flames, and PARISIIS and M. DC. XLI at the foot",
+        title="The 1641 title page of the Meditations",
+        scroll=("The title page of the <b>first edition</b> of the <i>Meditations</i>, "
+                "printed in <b>Paris</b> in <b>1641</b>. It is in <b>Latin</b>, the language "
+                "scholars all over Europe could read. The top lines say <i>Renati "
+                "Des-Cartes, Meditationes de Prima Philosophia</i>: &ldquo;René Descartes, "
+                "Meditations on First Philosophy.&rdquo; The bird rising from the flames is "
+                "a <b>phoenix</b>, the sign of the printer, Michel Soly, whose shop was "
+                "&ldquo;at the sign of the Phoenix.&rdquo; Try the date at the bottom: "
+                "<b>M. DC. XLI</b> is 1000 + 500 + 100 + 40 + 1. The red round stamp is "
+                "the mark of the French royal library, where this copy still is."))),
+    (2, dict(
+        img="Lu_Zhi_Zhuangzi_Butterfly_Dream.jpg",
+        side="left", top=0, beside="That is the <b>dream argument</b>",
+        alt="Chinese ink painting of a man asleep on a flat rock beneath hanging willow branches, with two small butterflies above him and red seals and two characters in the upper left",
+        title="Zhuangzi dreaming of a butterfly, attributed to Lu Zhi",
+        scroll=("<b>Zhuangzi dreaming of a butterfly</b>, an ink painting on silk "
+                "attributed to the Chinese artist <b>Lu Zhi</b>, from the middle of the "
+                "<b>1500s</b>. So it was painted roughly 1,800 years after Zhuangzi lived, "
+                "and about fifty years before Descartes was born. Find the sleeper on the "
+                "rock under the willow, and then the <b>two butterflies</b> fluttering above "
+                "him. The two characters at the top left read <i>meng die</i>, &ldquo;dream "
+                "of a butterfly.&rdquo; The red squares are seals, stamped by the artist and "
+                "by later owners."))),
+    # ---- Chapter Four · the evil demon ----
+    (3, dict(
+        img="Bosch_workshop_The_Conjurer_Saint-Germain.jpg",
+        side="right", top=0, beside="Descartes was not satisfied. He imagined",
+        alt="Painting of a crowd in colourful clothes watching a man in a red robe and tall black hat do a cups-and-balls trick at a table, while one man leans far over the table to look",
+        title="The Conjurer, from the workshop of Hieronymus Bosch",
+        scroll=("<i>The Conjurer</i>, painted around <b>1500</b> by <b>Hieronymus "
+                "Bosch</b> or, more likely, by his workshop or a follower. It hangs in the "
+                "museum of <b>Saint-Germain-en-Laye</b>, near Paris. The trickster in the "
+                "tall black hat is doing the old <b>cups and balls</b> trick, and the crowd "
+                "cannot take its eyes off the table. Now look at the man leaning so far "
+                "forward. While he stares at the trick, the man in black behind him is "
+                "quietly stealing his <b>purse</b>. Everyone is being fooled, and nobody "
+                "feels fooled. That is exactly the worry behind Descartes&rsquo;s "
+                "demon."))),
+    # ---- Chapter Five · I think, therefore I am ----
+    (4, dict(
+        img="Descartes_Principia_1644_ego_cogito.jpg",
+        side="right", top=0, beside="Put into one sentence, that is the most famous line",
+        alt="Close-up of an old printed Latin page with notes in the left margin; the words ego cogito, ergo sum are highlighted in yellow",
+        title="&ldquo;Ego cogito, ergo sum&rdquo; in print, 1644",
+        scroll=("The famous words in the <b>first edition</b> of the <i>Principles of "
+                "Philosophy</i>, printed in Amsterdam in <b>1644</b>. Find the yellow "
+                "highlight: <i>ego cogito, ergo sum</i>, &ldquo;I think, therefore I "
+                "am.&rdquo; (The yellow was added by whoever scanned the page, to help you "
+                "find it.) The sentence goes on to call this the <i>prima &amp; "
+                "certissima</i>, &ldquo;the first and most certain&rdquo; thing anyone "
+                "will meet who thinks in order. The small notes in the left margin are a "
+                "summary printed with the book, so readers could find their place. Notice "
+                "the long <b>&#383;</b> that looks like an f: <i>&#383;um</i> is "
+                "<i>sum</i>."))),
+    (4, dict(
+        img="Botticelli_Saint_Augustine_Ognissanti.jpg",
+        side="left", top=0, beside="That is exactly what Euclid does",
+        alt="Fresco of a bearded man in a red cloak and white robe at a desk, one hand on his chest, looking up, with books, a clock and a brass model of the heavens on the shelf behind him",
+        title="Saint Augustine in his study, by Botticelli",
+        scroll=("<b>Saint Augustine</b> in his study, a wall painting (fresco) by "
+                "<b>Sandro Botticelli</b> from about <b>1480</b>, in the church of "
+                "Ognissanti in Florence. Augustine lived from AD 354 to 430, so Botticelli "
+                "never saw him; he painted the scholar he imagined. Look at the shelf: a "
+                "brass model of the heavens (an <b>armillary sphere</b>), a clock, and "
+                "open books. One open book on the shelf is filled with geometry figures "
+                "and scribbles. Augustine, hand on his heart, looks up as if a thought has "
+                "just arrived. His own thought, <i>si fallor, sum</i>, &ldquo;if I am "
+                "mistaken, I am,&rdquo; came about 1,200 years before Descartes&rsquo;s."))),
+    # ---- Chapter Seven · La Géométrie (Fermat) ----
+    (6, dict(
+        img="Fermat_Poilly_engraving.jpg",
+        side="left", top=0, beside="The French lawyer and mathematician <b>Pierre de Fermat</b>",
+        alt="Engraved oval portrait of a man with long wavy hair and a broad white collar over a dark robe",
+        title="Pierre de Fermat, engraved by Fran&ccedil;ois de Poilly",
+        scroll=("<b>Pierre de Fermat</b> (about 1607 to 1665), engraved by <b>Fran&ccedil;ois "
+                "de Poilly</b> in the 1600s. Fermat was a <b>lawyer and judge</b> in "
+                "Toulouse, and mathematics was his spare-time passion. He hardly ever "
+                "published. He shared his ideas in letters, or scribbled them in the margins "
+                "of his books. One margin note claimed he had a proof that was &ldquo;too "
+                "large for this margin to contain.&rdquo; That puzzle, now called "
+                "<b>Fermat&rsquo;s Last Theorem</b>, defeated mathematicians for over 350 "
+                "years until Andrew Wiles solved it in the <b>1990s</b>."))),
+    # ---- Chapter Eight · the man who hid ----
+    (7, dict(
+        img="Elisabeth_of_Bohemia_Honthorst_1636.jpg",
+        side="right", top=0, beside="A clever young woman, <b>Princess Elisabeth of Bohemia</b>",
+        alt="Oval portrait of a young woman with dark curls, a pearl necklace and an orange dress with a wide lace collar",
+        title="Princess Elisabeth of Bohemia, by Gerard van Honthorst",
+        scroll=("<b>Princess Elisabeth of Bohemia</b>, painted in <b>1636</b> by the Dutch "
+                "painter <b>Gerard van Honthorst</b>, when she was about eighteen. Her "
+                "family had lost its kingdom in the Thirty Years&rsquo; War, the same war "
+                "Descartes had joined as a young man, and lived in exile in The Hague. She "
+                "read mathematics and philosophy with a sharp eye, and Descartes later "
+                "dedicated his <i>Principles of Philosophy</i> to her. Their letters "
+                "survive, and philosophers still read them: her question about how the mind "
+                "moves the body has never been fully answered."))),
+    (7, dict(
+        img="Descartes_Queen_Christina_Forsberg_after_Dumesnil.jpg",
+        side="left", top=0, beside="In 1649, <b>Queen Christina of Sweden</b>",
+        alt="Painting of a grand hall full of courtiers; at a red-covered table on the right a young woman in a pale dress sits beside a man in black with a white collar who points at a paper",
+        title="Descartes at the court of Queen Christina",
+        scroll=("An <b>imagined</b> scene: Descartes at the court of <b>Queen Christina</b> "
+                "of Sweden. The original was painted in the <b>1700s</b> by the French "
+                "artist Pierre-Louis Dumesnil, long after both had died, and this is a copy "
+                "made in <b>1884</b> by Nils Forsberg. Find the red table on the right: the "
+                "young queen sits there, and Descartes, in black with a white collar, is "
+                "explaining something on a paper. Notice the globe and the armillary sphere "
+                "on the floor. The painter imagined a crowded, sunny hall. The real lessons, "
+                "the story says, were at <b>five in the morning</b> in the cold."))),
     # ---- Chapter Seven · La Géométrie ----
     (6, dict(
         img="Descartes_Discours_de_la_methode_1637_title_page.jpg",

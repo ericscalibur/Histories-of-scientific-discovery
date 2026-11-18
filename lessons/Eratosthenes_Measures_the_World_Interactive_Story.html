@@ -491,6 +491,18 @@
       return;
     }
   });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !t.closest) return;
+    var row = t.closest('.answer-row');
+    if (!row) return;
+    var btn = row.querySelector('.check-btn');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    btn.click();
+  });
   // ---- review quiz ----
   var QUIZ = null;
   var qAnswered = 0, qScore = 0;

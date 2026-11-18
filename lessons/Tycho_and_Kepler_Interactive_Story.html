@@ -763,6 +763,19 @@
     var nm = (document.getElementById('playerName').value || '').trim();
     document.getElementById('certName').textContent = nm !== '' ? nm : 'Astronomer';
   }
+
+  // Enter (or Return) in an answer box presses that row's Check button.
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !t.closest) return;
+    var row = t.closest('.answer-row');
+    if (!row) return;
+    var btn = row.querySelector('.check-btn');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    btn.click();
+  });
 })();
 </script>
 <script>

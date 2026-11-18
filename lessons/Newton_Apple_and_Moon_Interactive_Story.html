@@ -282,7 +282,7 @@
 <div class="cp-kicker">&#9733; Checkpoint 5 &middot; Use Galileo's law like Newton did</div>
 <div class="question">Use Δy = ½ a t² with a = 9.8 m/s². How many meters does a dropped stone fall in <b>4 seconds</b>?</div>
 <div class="answer-row">
-<input type="text" inputmode="numeric" id="a5" aria-label="answer 5">
+<input type="text" inputmode="decimal" id="a5" aria-label="answer 5">
 <span class="unit">meters</span>
 <button class="check-btn" onclick="check(5)">Check &#10022;</button>
 <button class="hint-btn" onclick="document.getElementById('h5').style.display='block'">Hint?</button>
@@ -566,6 +566,18 @@
       }
       return;
     }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !t.closest) return;
+    var row = t.closest('.answer-row');
+    if (!row) return;
+    var btn = row.querySelector('.check-btn');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    btn.click();
   });
   // ---- review quiz ----
   var QUIZ = null;

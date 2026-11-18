@@ -31,6 +31,18 @@ def fig_html(fig, media_dir):
         '<div class="mn-title">%s &middot; hover to unroll &middot; click to enlarge</div>\n'
         '  </aside>' % (fig["side"], fig["top"], disp, full, fig["alt"], fig["scroll"], fig["title"]))
 
+def _place_beside(html, fig, media_dir):
+    """Pin a margin figure next to one paragraph instead of the top of the chapter.
+
+    fig["beside"] is text from that paragraph. The paragraph is wrapped in a
+    positioned div, so fig["top"] is measured from the paragraph, not the chapter.
+    """
+    i = html.index(fig["beside"])
+    p0 = html.rindex("<p>", 0, i)
+    p1 = html.index("</p>", i) + len("</p>")
+    return (html[:p0] + '<div style="position:relative; margin:0 -30px; padding:0 30px;">\n'
+            + fig_html(fig, media_dir) + '\n' + html[p0:p1] + '\n</div>' + html[p1:])
+
 CSS = """
   :root{
     --night:#0b1230; --night2:#141c42; --parchment:#f9f3e4; --parchment2:#f1e7cf;
@@ -304,7 +316,7 @@ JS = """
       var v = QUIZ.verdicts, msg = v[v.length-1];
       for (var k = 0; k < v.length; k++){ if (qScore >= v[k].min){ msg = v[k]; break; } }
       var box = document.getElementById('qResult');
-      box.querySelector('.verdict').innerHTML = withName(msg.title).replace(/\{score\}/g, qScore + ' out of ' + QUIZ.n);
+      box.querySelector('.verdict').innerHTML = withName(msg.title).replace(/\\{score\\}/g, qScore + ' out of ' + QUIZ.n);
       box.querySelector('.qtext').innerHTML = withName(msg.text);
       box.style.display = 'block';
       document.getElementById('qLeft').textContent = 'finished';
@@ -399,6 +411,22 @@ PAGE = """<!DOCTYPE html>
 <script>@@JS@@</script>
 </body>
 </html>
+"""
+
+# Enter (or Return) in an answer box presses that row's Check / Lock-it-in button,
+# so the button's own rules (e.g. a locked quiz answer) still apply.
+ENTER_JS = """
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !t.closest) return;
+    var row = t.closest('.answer-row');
+    if (!row) return;
+    var btn = row.querySelector('.check-btn');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    btn.click();
+  });
 """
 
 # Teacher shortcut, on in every story: each press of the backslash or | key solves the
@@ -515,11 +543,15 @@ def build(story, outpath, media_dir=None):
     for ch_i, ch in enumerate(story["chapters"]):
         lock = "" if ch_i == 0 else " locked"
         body.append('<section class="card%s" id="ch%d">' % (lock, ch_i + 1))
+        html = ch["html"]
         for fig in ch.get("figs", []):
-            body.append(fig_html(fig, media_dir))
+            if fig.get("beside"):
+                html = _place_beside(html, fig, media_dir)
+            else:
+                body.append(fig_html(fig, media_dir))
         body.append('<div class="chap-kicker">%s</div>' % ch["kicker"])
         body.append('<h2>%s</h2>' % ch["title"])
-        body.append(ch["html"])
+        body.append(html)
         for cp_i, cp in enumerate(ch["cps"]):
             body.append(cp_html(cp, cp_i == 0))
         body.append('</section>')
@@ -546,7 +578,7 @@ def build(story, outpath, media_dir=None):
             .replace("@@MCMSGS@@", json.dumps(mcmsgs))
             .replace("@@STARORDER@@", json.dumps([cp["n"] for _, _, cp in cps]))
             .replace("@@QUIZ@@", json.dumps(quiz_data(story["quiz"])) if story.get("quiz") else "null"))
-    js = js.replace("  // ---- review quiz ----", DEV_SKIP_JS + "  // ---- review quiz ----")
+    js = js.replace("  // ---- review quiz ----", DEV_SKIP_JS + ENTER_JS + "  // ---- review quiz ----")
     # unlocks keys are numbers in JS lookups; JSON string keys work with JS obj[n] coercion
     html = (PAGE.replace("@@TITLE@@", story["title"])
                 .replace("@@CSS@@", CSS)

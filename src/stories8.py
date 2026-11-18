@@ -1027,6 +1027,202 @@ PROP2 = ('<details style="%s">\n  <summary style="cursor:pointer; font-weight:bo
 PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS, BRIDGE, PROP2 = map(_styled, (PROP1, CROSSING, SEMICIRCLE, ALGORITHM, CORNERS, BRIDGE, PROP2))
 
 # ---------------------------------------------------------------------------
+
+# ---- Proposition 5 as a quadratic: graph + Euclid's figure, draggable D (ported from the
+#      hand-edited lesson, commit 36c5b3f) ----
+EP5_WIDGET = r'''
+<p><b>First, why bother?</b> Say you want to know where the curve y = x&#178; &#8722; 10x + 21 crosses the x-axis. To find out, you factor it into (x &#8722; a)(x &#8722; b), because the crossings are at x = a and x = b. Factoring means finding two numbers that <b>add to 10</b> and <b>multiply to 21</b>. Guessing works for small numbers, but is there a method that always works? Euclid had no x, no equations and no graphs, only lines and areas. So he turned the question into a picture: the sum is a line AB, the product is a rectangle, and the two numbers you want are the two pieces the line is cut into. Proposition 5 tells you where to cut. As you step through the animation, watch the small hole near the end. Its size is the key to the whole method.</p>
+<div style="background:#fdf9ee; border:1.5px solid #c9b57e; border-radius:12px; padding:14px 16px; margin:14px 0; box-sizing:border-box; position:relative; left:50%; transform:translateX(-50%); width:max(100%, min(1100px, calc(100vw - 64px)));">
+  <div style="text-align:center; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; color:#8a6400; font-weight:bold; margin-bottom:10px;">Proposition 5 &middot; build your own quadratic</div>
+  <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; align-items:flex-start;">
+    <div style="flex:1 1 320px; max-width:540px; background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; padding:10px;">
+      <div style="text-align:center; font-size:.75rem; letter-spacing:1.5px; text-transform:uppercase; color:#8a6400; margin-bottom:2px;">The function</div>
+      <div id="ep5-eq" style="text-align:center; font-size:1.3rem; font-weight:bold; color:#22304f; margin-bottom:4px;"></div>
+      <svg id="ep5-graph" width="380" height="250" viewBox="0 0 380 250" font-family="Georgia,serif" style="width:100%; height:auto; display:block;" role="img" aria-label="Graph of y = x squared minus b x plus c. A gold dot at x = AD rides on the curve and reaches the x-axis when AD times DB equals c."></svg>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:6px;"><label for="ep5-b" style="width:5.2em; font-size:.95rem; color:#22304f;"><b>b</b> = <span id="ep5-bv"></span></label><input id="ep5-b" type="range" min="1" max="10" step="1" value="10" style="flex:1;"></div>
+      <div style="display:flex; align-items:center; gap:8px;"><label for="ep5-c" style="width:5.2em; font-size:.95rem; color:#22304f;"><b>c</b> = <span id="ep5-cv"></span></label><input id="ep5-c" type="range" min="0" max="30" step="1" value="21" style="flex:1;"></div>
+    </div>
+    <div style="flex:1 1 320px; max-width:540px; background:#fffdf4; border:1px solid #d9c9a3; border-radius:10px; padding:10px;">
+      <div style="text-align:center; font-size:.75rem; letter-spacing:1.5px; text-transform:uppercase; color:#8a6400; margin-bottom:2px;">Euclid's picture</div>
+      <div id="ep5-pill" style="text-align:center; font-size:1rem; color:#22304f; margin-bottom:4px;"></div>
+      <svg id="ep5-svg" tabindex="0" width="380" height="250" viewBox="0 0 380 250" font-family="Georgia,serif" style="width:100%; height:auto; display:block;" role="img" aria-label="Interactive figure: a line AB is cut in half at C, the square on half the line is drawn, and the point D can be dragged along CB. The rectangle on AD and DB changes size as D moves. Use the left and right arrow keys to move D."></svg>
+      <div id="ep5-live" style="text-align:center; font-size:.95rem; color:#22304f; margin:6px 0; min-height:3.6em; line-height:1.45;"></div>
+      <div style="text-align:center; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+        <button type="button" id="ep5-play" style="background:#e8a90c; color:#2a2005; font-weight:bold; font-size:.95rem; border:none; border-radius:8px; padding:8px 16px; font-family:Georgia,serif; cursor:pointer;">Next &#9654;</button>
+        <button type="button" id="ep5-move" style="display:none; font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.88rem; color:#5a4a1a;">Rearrange the pieces</button>
+        <button type="button" id="ep5-ans" style="display:none; font-family:Georgia,serif; cursor:pointer; background:#fff8e6; border:1.5px solid #c9b57e; border-radius:8px; padding:7px 12px; font-size:.88rem; color:#5a4a1a;">Show where D goes</button>
+      </div>
+    </div>
+  </div>
+  <div id="ep5-step" style="text-align:center; font-weight:bold; font-size:1.02rem; color:#22304f; margin:12px 0 2px; min-height:1.3em;"></div>
+  <div id="ep5-why" style="text-align:center; font-size:.95rem; color:#3d3320; margin:0 auto; min-height:4.4em; line-height:1.45; max-width:620px;"></div>
+</div>
+<script>
+(function(){
+  var svg = document.getElementById('ep5-svg'), gsvg = document.getElementById('ep5-graph');
+  if (!svg) return;
+  function $(id){ return document.getElementById(id); }
+  var nextBtn = $('ep5-play'), moveBtn = $('ep5-move'), ansBtn = $('ep5-ans');
+  var stepEl = $('ep5-step'), whyEl = $('ep5-why'), liveEl = $('ep5-live'), pillEl = $('ep5-pill'), eqEl = $('ep5-eq');
+  var bIn = $('ep5-b'), cIn = $('ep5-c');
+  var OX = 30, OY = 45;
+  var b = 10, c = 21, tt = 0, stage = 0, dv = 8, m = 0, mGoal = 0, raf = null, last = 0, showAns = false;
+  function ease(k){ return k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; }
+  function clamp(k){ return Math.max(0, Math.min(1, k)); }
+  function f(n){ return String(Math.round(n * 100) / 100); }
+  function resetD(){ dv = b * 0.8; showAns = false; }
+  // ---------- the graph ----------
+  function drawGraph(ad, db, show){
+    var GX0 = 34, GX1 = 368, GY0 = 10, GY1 = 238, XMIN = -1, XMAX = 11, YMIN = -27, YMAX = 33;
+    function gx(x){ return GX0 + (x - XMIN) / (XMAX - XMIN) * (GX1 - GX0); }
+    function gy(y){ return GY1 - (y - YMIN) / (YMAX - YMIN) * (GY1 - GY0); }
+    var h = '<defs><clipPath id="ep5-clip"><rect x="' + GX0 + '" y="' + GY0 + '" width="' + (GX1 - GX0) + '" height="' + (GY1 - GY0) + '"/></clipPath></defs>';
+    var i;
+    for (i = 0; i <= 10; i++) h += '<line x1="' + gx(i) + '" y1="' + GY0 + '" x2="' + gx(i) + '" y2="' + GY1 + '" stroke="#e6dcc0" stroke-width="1"/>';
+    for (i = -25; i <= 30; i += 5) h += '<line x1="' + GX0 + '" y1="' + gy(i) + '" x2="' + GX1 + '" y2="' + gy(i) + '" stroke="#e6dcc0" stroke-width="1"/>';
+    h += '<line x1="' + GX0 + '" y1="' + gy(0) + '" x2="' + GX1 + '" y2="' + gy(0) + '" stroke="#22304f" stroke-width="1.8"/>';
+    h += '<line x1="' + gx(0) + '" y1="' + GY0 + '" x2="' + gx(0) + '" y2="' + GY1 + '" stroke="#22304f" stroke-width="1.8"/>';
+    for (i = 2; i <= 10; i += 2) h += '<text x="' + gx(i) + '" y="' + (gy(0) + 13) + '" font-size="10" fill="#4a5878" text-anchor="middle">' + i + '</text>';
+    [-20, -10, 10, 20, 30].forEach(function(v){ h += '<text x="' + (gx(0) - 4) + '" y="' + (gy(v) + 3.5) + '" font-size="10" fill="#4a5878" text-anchor="end">' + v + '</text>'; });
+    var d = '';
+    for (var x = XMIN; x <= XMAX + 0.001; x += 0.1) d += (d ? 'L' : 'M') + gx(x).toFixed(1) + ',' + gy(x * x - b * x + c).toFixed(1);
+    h += '<g clip-path="url(#ep5-clip)"><path d="' + d + '" fill="none" stroke="#3a5da8" stroke-width="2.6" stroke-linejoin="round"/></g>';
+    var disc = b * b / 4 - c;
+    if (disc >= -1e-9) {
+      var sq = Math.sqrt(Math.max(0, disc)), r1 = b / 2 - sq, r2 = b / 2 + sq;
+      [r1, r2].forEach(function(r, k){
+        if (k === 1 && sq < 1e-6) return;
+        h += '<circle cx="' + gx(r) + '" cy="' + gy(0) + '" r="4.5" fill="#1e7d43" stroke="#fffdf4" stroke-width="1.5"/>' +
+          '<text x="' + gx(r) + '" y="' + (gy(0) - 9) + '" font-size="11" font-weight="bold" fill="#1e7d43" text-anchor="middle" stroke="#fffdf4" stroke-width="3" paint-order="stroke">x = ' + f(r) + '</text>';
+      });
+    } else {
+      h += '<text x="' + gx(8.2) + '" y="' + gy(c + 3) + '" font-size="11" fill="#b03030" text-anchor="middle" font-style="italic" stroke="#fffdf4" stroke-width="3" paint-order="stroke">never touches the x-axis</text>';
+    }
+    if (show > 0.01) {
+      var yy = c - ad * db, hit = Math.abs(yy) < 0.005;
+      h += '<g opacity="' + show + '"><line x1="' + gx(ad) + '" y1="' + gy(yy) + '" x2="' + gx(ad) + '" y2="' + gy(0) + '" stroke="#8a6400" stroke-width="1.5" stroke-dasharray="4 3"/>' +
+        '<circle cx="' + gx(ad) + '" cy="' + gy(yy) + '" r="6" fill="' + (hit ? '#1e7d43' : '#e8a90c') + '" stroke="#22304f" stroke-width="2"/></g>';
+    }
+    gsvg.innerHTML = h;
+  }
+  // ---------- Euclid's figure ----------
+  function draw(){
+    var s = b, hf = b / 2, S = 320 / s;
+    function X(x){ return OX + x * S; }
+    function Y(y){ return OY + y * S; }
+    function rect(x0, y0, x1, y1, fill, stroke, sw, dash, op){
+      return '<rect x="' + X(x0) + '" y="' + Y(y0) + '" width="' + Math.max(0, (x1 - x0) * S) + '" height="' + Math.max(0, (y1 - y0) * S) + '" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"' +
+        (dash ? ' stroke-dasharray="' + dash + '"' : '') + (op !== undefined ? ' opacity="' + op + '"' : '') + ' stroke-linejoin="round"/>';
+    }
+    function txt(x, y, t, size, fill, halo, op, italic){
+      return '<text x="' + x.toFixed(1) + '" y="' + (y + size * 0.35).toFixed(1) + '" font-size="' + size + '" text-anchor="middle" fill="' + fill + '"' +
+        (italic ? ' font-style="italic"' : '') +
+        (halo ? ' font-weight="bold" stroke="#fffdf4" stroke-width="4" paint-order="stroke" stroke-linejoin="round"' : '') + (op !== undefined ? ' opacity="' + op + '"' : '') + '>' + t + '</text>';
+    }
+    var cc = ease(clamp(tt)), sq = ease(clamp(tt - 1)), rc = ease(clamp(tt - 2));
+    var g = dv - hf, ad = dv, db = s - dv, hole = g * g, prod = ad * db, bh = hf - g, H2 = hf * hf;
+    var h = '';
+    h += rect(hf, 0, s, hf, 'none', '#22304f', 2.5, '7 4', sq);
+    h += txt(X(hf + hf / 2) + 20, Y(hf) + 18, 'square on half the line: ' + f(hf) + ' by ' + f(hf) + ' = ' + f(H2), 12, '#22304f', false, sq, true);
+    h += rect(hf + g, 0, s, hf, 'rgba(58,93,168,.06)', '#3a5da8', 1.5, '4 4', rc * (1 - m));
+    h += rect(hf, bh, hf + g, hf, 'rgba(176,48,48,.06)', '#b03030', 1.5, '4 4', rc * (1 - m));
+    h += rect(hf, 0, hf + g, bh, 'rgba(232,169,12,.30)', '#8a6400', 2, '', rc);
+    h += rect(hf, bh, hf + g, hf, 'rgba(176,48,48,.18)', '#b03030', 2, '', m);
+    var cx = X(hf / 2 + ((3 * hf + g) / 2 - hf / 2) * m), cy = Y(bh / 2 + (hf / 2 - bh / 2) * m);
+    h += '<g opacity="' + rc + '" transform="translate(' + cx.toFixed(1) + ',' + cy.toFixed(1) + ') rotate(' + (90 * m).toFixed(1) + ')">' +
+      '<rect x="' + (-hf * S / 2) + '" y="' + (-bh * S / 2) + '" width="' + hf * S + '" height="' + bh * S + '" fill="rgba(58,93,168,.22)" stroke="#3a5da8" stroke-width="2" stroke-linejoin="round"/></g>';
+    h += rect(0, 0, ad, bh, 'none', '#b03030', 3.5, '', rc * (1 - m));
+    if (bh * S > 26 && hf * S > 26) h += txt(cx, cy, f(hf * bh), 15, '#3a5da8', true, rc);
+    if (g * S > 26 && bh * S > 26) h += txt(X(hf + g / 2), Y(bh / 2), f(g * bh), 14, '#8a6400', true, rc);
+    if (g * S > 26) h += txt(X(hf + g / 2), Y(hf - g / 2), f(hole), 14, '#b03030', true, rc);
+    if (bh * S > 22) h += txt(X(hf / 2) , Y(bh) + 18, 'rectangle ' + f(ad) + ' by ' + f(db) + ' = ' + f(prod), 12, '#22304f', false, rc * (1 - m), true);
+    h += '<line x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(s) + '" y2="' + Y(0) + '" stroke="#22304f" stroke-width="3" stroke-linecap="round"/>';
+    [['A', 0, 1], ['B', s, 1], ['C', hf, cc]].forEach(function(p){
+      h += '<g opacity="' + p[2] + '"><circle cx="' + X(p[1]) + '" cy="' + Y(0) + '" r="3.5" fill="#22304f"/>' + txt(X(p[1]), Y(0) - 17, p[0], 15, '#22304f', true) + '</g>';
+    });
+    h += txt(X(hf), Y(0) - 12, f(s), 12, '#4a5878', false, 1 - cc);
+    h += txt(X(hf / 2), Y(0) - 12, f(hf), 12, '#4a5878', false, cc * (1 - rc));
+    h += txt(X(hf * 1.5), Y(0) - 12, f(hf), 12, '#4a5878', false, cc * (1 - rc));
+    if (ad * S > 30) h += txt(X(ad / 2), Y(0) - 12, f(ad), 12, '#4a5878', false, rc);
+    if (db * S > 30) h += txt(X(ad + db / 2), Y(0) - 12, f(db), 12, '#4a5878', false, rc);
+    h += '<g opacity="' + rc + '">' + txt(X(dv), Y(0) - (g * S < 22 ? 33 : 19), 'D', 15, '#8a6400', true) +
+      '<circle data-h="1" cx="' + X(dv) + '" cy="' + Y(0) + '" r="17" fill="transparent" style="cursor:grab;touch-action:none"/>' +
+      '<circle cx="' + X(dv) + '" cy="' + Y(0) + '" r="8" fill="#e8a90c" stroke="#22304f" stroke-width="2.5" pointer-events="none"/></g>';
+    svg.innerHTML = '<g>' + h + '</g>';
+    drawGraph(ad, db, rc);
+    eqEl.innerHTML = 'y = x&#178;' + (b > 0 ? ' &#8722; ' + (b === 1 ? '' : b) + 'x' : '') + (c > 0 ? ' + ' + c : '');
+    $('ep5-bv').textContent = b; $('ep5-cv').textContent = c;
+    pillEl.innerHTML = '<b>AB = ' + b + '</b> <span style="color:#4a5878;">(sum)</span> &nbsp;&middot;&nbsp; <b>AD &#215; DB = ' + c + '</b> <span style="color:#4a5878;">(target)</span>';
+    if (stage >= 3) {
+      var st;
+      if (c > H2 + 1e-9) st = '<span style="color:#b03030;">Even in the middle the rectangle is only ' + f(H2) + '. No D can reach ' + c + ', and the graph never touches the x-axis.</span>';
+      else if (Math.abs(prod - c) < 0.005) st = '<b style="color:#1e7d43;">Exactly ' + c + '.</b> The two numbers are ' + f(ad) + ' and ' + f(db) + ', the x-intercepts.';
+      else if (prod < c) st = '<span style="color:#b03030;">Too small, ' + f(c - prod) + ' short of ' + c + '.</span> Slide D toward the middle.';
+      else st = '<span style="color:#b03030;">Too big, ' + f(prod - c) + ' over ' + c + '.</span> Slide D toward B.';
+      var extra = '<span style="font-size:.88rem;color:#4a5878;">rectangle + hole: ' + f(prod) + ' + ' + f(hole) + ' = ' + f(prod + hole) + '</span>';
+      if (showAns && c <= H2 + 1e-9) extra = '<span style="font-size:.88rem;color:#4a5878;">hole = ' + f(H2) + ' &#8722; ' + c + ' = ' + f(H2 - c) + ', so the gap is &#8730;' + f(H2 - c) + ' = ' + f(Math.sqrt(H2 - c)) + '</span>';
+      liveEl.innerHTML = 'AD = <b>' + f(ad) + '</b> &nbsp; DB = <b>' + f(db) + '</b> &nbsp; AD &#215; DB = <b>' + f(prod) + '</b><br>' + st + '<br>' + extra;
+    } else liveEl.innerHTML = '';
+    var t, w;
+    if (stage === 0) { t = 'We start with just a line, AB';
+      w = 'Its length is b, the sum of the two numbers we want. Change b with the slider and the line changes. Nothing else is drawn yet. We will cut it twice and watch what the cuts tell us about areas.'; }
+    else if (stage === 1) { t = 'Cut it in half at C';
+      w = 'C is the exact middle, so AC and CB are both b ÷ 2.'; }
+    else if (stage === 2) { t = 'Build the square on half the line';
+      w = 'A square standing on CB. Its area, (b ÷ 2)², is the goal shape, and we can always build it from AB alone. It is also the biggest rectangle any cut can make.'; }
+    else { t = 'Cut again at D: drag D until AD × DB = c';
+      w = 'The rectangle on AD and DB is outlined in red (blue piece plus gold piece). The gold dot on the graph sits at x = AD, and its height is c − AD × DB. So it touches the x-axis exactly when the product matches. Press Rearrange to see the hole the rectangle leaves, and notice that rectangle + hole is always the big square. Change b and c to build any quadratic you like.'; }
+    stepEl.textContent = t; whyEl.textContent = w;
+    nextBtn.innerHTML = stage >= 3 ? '&#8635; Start over' : 'Next &#9654;';
+    moveBtn.style.display = ansBtn.style.display = stage >= 3 ? '' : 'none';
+    moveBtn.textContent = mGoal ? 'Put the pieces back' : 'Rearrange the pieces';
+  }
+  function tick(now){
+    var dt = now - last; last = now;
+    var go = false;
+    if (tt < stage) { tt = Math.min(stage, tt + dt / 700); go = true; }
+    if (m !== mGoal) { m = mGoal > m ? Math.min(mGoal, m + dt / 900) : Math.max(mGoal, m - dt / 900); go = true; }
+    draw();
+    raf = go ? requestAnimationFrame(tick) : null;
+  }
+  function run(){ if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } }
+  nextBtn.addEventListener('click', function(){
+    if (stage >= 3) { stage = 0; tt = 0; m = 0; mGoal = 0; resetD(); draw(); return; }
+    stage++; draw(); run();
+  });
+  moveBtn.addEventListener('click', function(){ mGoal = mGoal ? 0 : 1; draw(); run(); });
+  ansBtn.addEventListener('click', function(){
+    var hf = b / 2;
+    dv = c <= hf * hf ? hf + Math.sqrt(hf * hf - c) : hf;
+    showAns = true; draw();
+  });
+  bIn.addEventListener('input', function(){ b = +bIn.value; resetD(); draw(); });
+  cIn.addEventListener('input', function(){ c = +cIn.value; resetD(); draw(); });
+  var dragging = false;
+  function setD(e){
+    var r = svg.getBoundingClientRect(), S = 320 / b;
+    var x = (e.clientX - r.left) * (380 / r.width);
+    dv = Math.max(b / 2, Math.min(b, Math.round((x - OX) / S * 20) / 20));
+    showAns = false; draw();
+  }
+  svg.addEventListener('pointerdown', function(e){
+    if (stage < 3 || !(e.target.getAttribute && e.target.getAttribute('data-h'))) return;
+    dragging = true; svg.setPointerCapture(e.pointerId); e.preventDefault(); setD(e);
+  });
+  svg.addEventListener('pointermove', function(e){ if (dragging) setD(e); });
+  svg.addEventListener('pointerup', function(){ dragging = false; });
+  svg.addEventListener('pointercancel', function(){ dragging = false; });
+  svg.addEventListener('keydown', function(e){
+    if (stage < 3) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      dv = Math.max(b / 2, Math.min(b, Math.round((dv + (e.key === 'ArrowRight' ? 0.05 : -0.05)) * 20) / 20)); showAns = false; draw(); e.preventDefault();
+    }
+  });
+  draw();
+})();
+</script>
+'''
+
 EUCLID = dict(
     title="No Royal Road: Euclid and the Elements",
     h1="✦ No Royal Road ✦",
@@ -1222,10 +1418,10 @@ EUCLID = dict(
 <div class="bigidea">(a + b)&#178; = a&#178; + 2ab + b&#178;</div>
 <p>You can use it to square numbers in your head. Take 12 &#215; 12. Split 12 into 10 + 2. The big square is 10 &#215; 10 = 100, the small one 2 &#215; 2 = 4, and the two rectangles are 10 &#215; 2 = 20 each, so 40. Add them: 100 + 40 + 4 = 144.</p>
 <p>The very next proposition, number 5, is a cousin. Cut a straight line exactly in half, then cut it again somewhere else. Euclid says: the <b>rectangle</b> made from the two unequal pieces, together with the <b>square on the gap</b> between the two cuts, equals the <b>square on half the line</b>.</p>
-""" + _ii5() + """
-<p>Here the line AB is 10 long. C cuts it in half, 5 and 5. D cuts it again into unequal pieces, 7 and 3, leaving a gap CD of 2. The rectangle 7 by 3 is a blue piece plus a gold piece. The square on half the line, 5 by 5, holds the same gold piece, a blue piece of the same size (3 by 5 standing up instead of 5 by 3 lying down), and one more little red square: the square on the gap, 2 by 2. So 7 &#215; 3 + 2 &#215; 2 = 5 &#215; 5, or 21 + 4 = 25. With half the line called h and the gap called d:</p>
+""" + _ii5() + EP5_WIDGET + """<p>Here the line AB is 10 long. C cuts it in half, 5 and 5. D cuts it again into unequal pieces, 7 and 3, leaving a gap CD of 2. The rectangle 7 by 3 is a blue piece plus a gold piece. The square on half the line, 5 by 5, holds the same gold piece, a blue piece of the same size (3 by 5 standing up instead of 5 by 3 lying down), and one more little red square: the square on the gap, 2 by 2. So 7 &#215; 3 + 2 &#215; 2 = 5 &#215; 5, or 21 + 4 = 25. With half the line called h and the gap called d:</p>
 <div class="bigidea">(h + d) &#215; (h &#8722; d) + d&#178; = h&#178; &nbsp;so&nbsp; (h + d) &#215; (h &#8722; d) = h&#178; &#8722; d&#178;</div>
 <p>This is a mental-math trick too. When two numbers sit the same distance either side of a round number, square the round number and take away the square of the distance. 19 &#215; 21: both are 1 away from 20, so the answer is 20 &#215; 20 &#8722; 1 &#215; 1 = 400 &#8722; 1 = 399.</p>
+<p><b>How the trick solves the puzzle.</b> Half the line gives a square you can build from the sum alone: 5 &#215; 5 = 25. The rectangle you want, 21, falls short of that square by exactly the square on the gap, so the gap squared is 25 &#8722; 21 = 4, the gap is 2, and the two numbers are 5 + 2 = 7 and 5 &#8722; 2 = 3. Greek geometers solved what we now call quadratic equations this way, with no algebra symbols at all (historians still argue about how much of Euclid's Book II was really meant that way). It also shows that for a fixed line, cutting at the exact middle makes the biggest possible rectangle, because every other cut loses a gap square.</p>
 <p>In the 1890s two young scholars from Oxford, <b>Bernard Grenfell</b> and <b>Arthur Hunt</b>, dug through the ancient rubbish heaps of an Egyptian town called <b>Oxyrhynchus</b>, where the dry sand had preserved thousands of scraps of papyrus. One scrap, catalogued as <b>P.Oxy. I 29</b>, has the words of this very proposition, Book II, Proposition 5, along with its diagram of a rectangle and a square. Compare it with the figure above. Experts disagree about its age; guesses run from about AD 75 to about AD 300. It is one of the oldest pieces of the <i>Elements</i> that survive, and it is now in the Penn Museum in Philadelphia.</p>""",
             cps=[dict(
                 type="num",

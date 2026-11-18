@@ -1180,6 +1180,18 @@
       return;
     }
   });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' || e.isComposing) return;
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT' || !t.closest) return;
+    var row = t.closest('.answer-row');
+    if (!row) return;
+    var btn = row.querySelector('.check-btn');
+    if (!btn || btn.disabled) return;
+    e.preventDefault();
+    btn.click();
+  });
   // ---- review quiz ----
   var QUIZ = {"n": 10, "items": {"1": {"type": "num", "why": "2 &times; 300,000 = 600,000 km. In 500 seconds it would reach the Sun&rsquo;s distance.", "answers": [600000]}, "2": {"type": "num", "why": "80,000 &#247; 400 = 200.", "answers": [200]}, "3": {"type": "num", "why": "574 &#8722; 7 = 567.", "answers": [567]}, "4": {"type": "num", "why": "1859 &#8722; 1802 = 57.", "answers": [57]}, "5": {"type": "mc", "why": "Only sodium has a pair of lines at 589.0 and 589.6 nm: the pair that matches Fraunhofer&rsquo;s dark D lines."}, "6": {"type": "num", "why": "100 &times; 0.5 = 50 and 0.5 &times; 40 = 20. 50 + 20 = 70.", "answers": [70]}, "7": {"type": "mc", "why": "70 is less than 100, so the line is a dark line. That is the case for the Sun: a glowing surface hotter than the gas above it."}, "8": {"type": "num", "why": "459.3 &#8722; 455.5 = 3.8.", "answers": [3.8]}, "9": {"type": "num", "why": "589.0 &#8722; 587.6 = 1.4. Close enough to confuse a careless eye, far enough to prove a new element.", "answers": [1.4]}, "10": {"type": "num", "why": "364.6 &times; 16 = 5833.6, and 5833.6 &#247; 12 = 486.13, which rounds to 486. It is hydrogen&rsquo;s blue-green line, Fraunhofer&rsquo;s F.", "answers": [486, 486.1, 486.13]}}, "verdicts": [{"min": 10, "title": "{score}: A perfect spectrum", "text": "Flawless, {name}. Fraunhofer, Kirchhoff and Bunsen would let you hold the prism."}, {"min": 7, "title": "{score}: A sharp-eyed analyst", "text": "Strong work, {name}. Read the explanations under the ones that got away, and play with the widgets once more."}, {"min": 4, "title": "{score}: Lines coming into focus", "text": "You have the idea, {name}. Go back to the Kirchhoff chapter, slide the lamp, and try again."}, {"min": 0, "title": "{score}: Back to the slit", "text": "Every one of these can be learned, {name}. Return to Newton&rsquo;s prism, then wipe the slate and try again."}]};
   var qAnswered = 0, qScore = 0;

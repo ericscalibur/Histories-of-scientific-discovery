@@ -88,6 +88,37 @@ redistribution:
   domain, 2321 x 3133 scan; it carries a round red royal-library stamp). Both fetched
   from the Commons API and direct upload.wikimedia.org links with a descriptive
   User-Agent. The caption reads the date off the page: CIↃ IↃ C XXXVII = 1637.
+  Chapter Two adds Michiel van Mierevelt's full-length Maurice of Nassau in armour
+  (`Maurice_of_Nassau_Mierevelt_Rijksmuseum.jpg`; Rijksmuseum SK-A-255, about 1613 to
+  1620, signed "M. Miereveld" lower left; Commons: public domain, 960px thumb of the
+  3744 x 5792 scan) and p. 35 of the 1650 Utrecht first printing of the *Compendium
+  Musicae* (`Descartes_Compendium_Musicae_1650_p35.jpg`; Commons `Cartesio
+  Compendium.jpg`, public domain, 625 x 750, the only size available). Caption checks:
+  the rim numbers are read as string lengths with bigger numbers on lower notes; the
+  caption claims nothing about which intervals they form.
+  Chapter Three adds Saenredam's *Old Town Hall of Amsterdam* (`Saenredam_Old_Town_Hall_Amsterdam_1657.jpg`;
+  Rijksmuseum SK-C-1409, painted 1657 from his 1641 drawing; the building burned in
+  1652; Commons: public domain, 960px thumb), the title page of the 1641 Paris first
+  edition of the *Meditationes* (`Descartes_Meditationes_1641_title_page.jpg`; BnF
+  Gallica scan via Commons, public domain, printer Michel Soly "sub signo Phoenicis"),
+  and the ink painting of Zhuangzi's butterfly dream attributed to Lu Zhi, mid-1500s
+  (`Lu_Zhi_Zhuangzi_Butterfly_Dream.jpg`; Commons: public domain; the caption says
+  "attributed to" since Commons gives a weak source, an asianart.com exhibition page).
+  Chapters Four to Eight add: *The Conjurer* (`Bosch_workshop_The_Conjurer_Saint-Germain.jpg`;
+  Musée de Saint-Germain-en-Laye, about 1496 to 1525, Commons credits Bosch and/or
+  workshop/follower, so the caption hedges); the "ego cogito, ergo sum" passage of the
+  1644 Amsterdam *Principia philosophiae* (`Descartes_Principia_1644_ego_cogito.jpg`;
+  the yellow highlight is the uploader's, and the caption says so); Botticelli's
+  Ognissanti fresco of Saint Augustine, about 1480 (`Botticelli_Saint_Augustine_Ognissanti.jpg`;
+  the WGA scan, public domain; the in-church photo on Commons is CC BY 3.0 and was
+  passed over); François de Poilly's engraved portrait of Fermat
+  (`Fermat_Poilly_engraving.jpg`); Honthorst's 1636 Elisabeth of Bohemia
+  (`Elisabeth_of_Bohemia_Honthorst_1636.jpg`); and Nils Forsberg's 1884 copy of
+  Dumesnil's 18th-century imagined scene of Descartes at Queen Christina's court
+  (`Descartes_Queen_Christina_Forsberg_after_Dumesnil.jpg`; the caption calls it
+  imagined and later). All public domain on Commons. Chapter Four's text gained one
+  sentence pointing to the conjurer. Chapter Six (the fly) has no margin art: its fly
+  widget and three checkpoint diagrams carry it.
   Passed over: `DescartesLaGeometrieIntroPage.jpg` (CC BY-SA 4.0, would need a credit
   line and share-alike).
 
