@@ -258,3 +258,9 @@ These files sit in this folder but are deliberately **not** used in any lesson:
   Pringsheim, Hertz, and the front row as Sponer, Einstein, Ingrid Franck, James Franck,
   Meitner, Haber, Hahn; the image matches (Hertz far right at the back, bald; Franck in
   the centre of the front row with a buttonhole flower).
+- **Franck–Hertz lab, real-tube photos** (embedded as data URLs, resized/cropped):
+  `Franck_Hertz_mercury_tube_Easchiff.jpg` (Commons `FranckHertzHgTube.jpg`, by Easchiff,
+  CC BY-SA 3.0; a 3B Scientific teaching tube with C, G, A labelled) and
+  `Franck_Hertz_glowing_layers_Kirsch.jpg` (Commons `Franck-Hertz-Versuch durchgeführt an der
+  Hebbelschule Kiel.jpg`, by Benno Kirsch, CC0; cropped to the glowing layers and cathode).
+  No freely licensed photo of the original 1914 tube was found.
