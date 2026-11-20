@@ -238,3 +238,23 @@ These files sit in this folder but are deliberately **not** used in any lesson:
   stay). It breaks the period-only rule on purpose, since students need to see the glow;
   the caption says it is modern. A period alternative is the small Meyers (c. 1885)
   engraving of a Geissler tube on a stand, `Meyers b7 s0029 b1.png`, 382 x 215.
+- **Spectroscopy lab (spectroscopy2.html):** two images embedded as data URLs in the
+  pop-ups over the induction coil and cells. `Ruhmkorff_coil_photo_Rama.jpg` is a
+  museum photograph of a 19th-century Ruhmkorff coil (Commons `Ruhmkorff induction
+  coil-MHS 75-P5200134-black.jpg`, photo by Rama, **CC BY-SA 3.0 FR**: the credit is
+  printed in the pop-up and must stay). `Bunsen_cell_Figuier.png` is the engraving of a
+  single Bunsen cell from Louis Figuier, *Les Merveilles de la science*, vol. 1 (Commons
+  `T1- d696 - Fig. 367. — Couple de la pile de Bunsen.png`, public domain). The coil
+  caption says only "a museum collection", since the Commons record does not name the
+  museum (the accession number MHS 75 suggests Geneva's Musée d'histoire des sciences).
+
+- **Franck–Hertz lab (franck_hertz.html):** three photographs embedded as data URLs.
+  `James_Franck_Nobel_1925.jpg` and `Gustav_Hertz_Nobel_1925.jpg` are the Nobel
+  Foundation portraits (Commons `James Franck 1925.jpg`, `Gustav Hertz.jpg`; public
+  domain; AIP credits the Hertz photo to AB Lagrelius & Westphal).
+  `Berlin_physicists_chemists_1920.jpg` is the 1920 group photograph (Commons `Berliner
+  Physiker u Chemiker 1920.jpg`, unknown photographer, public domain). Caption checks:
+  Commons lists the back row left to right as Grotrian, Westphal, von Baeyer,
+  Pringsheim, Hertz, and the front row as Sponer, Einstein, Ingrid Franck, James Franck,
+  Meitner, Haber, Hahn; the image matches (Hertz far right at the back, bald; Franck in
+  the centre of the front row with a buttonhole flower).
